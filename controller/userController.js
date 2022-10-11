@@ -50,26 +50,16 @@ const updateUser = async (req, res) => {
     const user = await User.findById(req.params.id);
     if (user) {
       user.name = req.body.name;
-      user.email = req.body.email;
-      user.address = req.body.address;
+      user.extra = req.body.extra;
+      user.workplace = req.body.workplace;
       user.phone = req.body.phone;
       user.image = req.body.image;
       const updatedUser = await user.save();
-      const token = signInToken(updatedUser);
-      res.send({
-        token,
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        address: updatedUser.address,
-        phone: updatedUser.phone,
-        image: updatedUser.image,
-      });
+     
     }
+    res.send({'message': 'User updated successfully'});
   } catch (err) {
-    res.status(404).send({
-      message: 'Your email is not valid!',
-    });
+    res.status(404).send(err.message);
   }
 };
 

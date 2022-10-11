@@ -8,15 +8,15 @@ const userSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      required: false,
+      required: true,
     },
     phone: {
       type: String,
-      required: false,
+      required: true,
     },
     workplace: {
       type: String,
-      required: false,
+      required: true,
     },
     extra: {
       type: String,

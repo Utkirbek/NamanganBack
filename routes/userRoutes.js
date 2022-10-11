@@ -15,7 +15,7 @@ const {
 
 
 
-router.post('/register', registerUser);
+router.post('/add', registerUser);
 
 
 
