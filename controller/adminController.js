@@ -77,7 +77,7 @@ const addStaff = async (req, res) => {
         name: req.body.name,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password),
-        phone: req.body.phone,
+
         role: req.body.role,
         image: req.body.image,
       });
@@ -119,7 +119,7 @@ const updateStaff = async (req, res) => {
     if (admin) {
       admin.name = req.body.name;
       admin.email = req.body.email;
-      admin.phone = req.body.phone;
+
       admin.role = req.body.role;
   
       admin.password = req.body.password

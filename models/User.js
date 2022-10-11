@@ -10,33 +10,19 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    address: {
-      type: String,
-      required: false,
-    },
-    country: {
-      type: String,
-      required: false,
-    },
-    city: {
-      type: String,
-      required: false,
-    },
-
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-    },
     phone: {
       type: String,
       required: false,
     },
-    password: {
+    workplace: {
       type: String,
       required: false,
     },
+    extra: {
+      type: String,
+      required: false,
+    },
+
   },
   {
     timestamps: true,
