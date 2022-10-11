@@ -3,7 +3,7 @@ const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 dayjs.extend(utc);
 const jwt = require('jsonwebtoken');
-const { signInToken, tokenForVerify, sendEmail } = require('../config/auth');
+const { signInToken } = require('../config/auth');
 const Admin = require('../models/Admin');
 
 const registerAdmin = async (req, res) => {
@@ -14,6 +14,7 @@ const registerAdmin = async (req, res) => {
         message: 'This Email already Added!',
       });
     } else {
+      
       const newStaff = new Admin({
         name: req.body.name,
         email: req.body.email,
@@ -63,77 +64,22 @@ const loginAdmin = async (req, res) => {
   }
 };
 
-const forgetPassword = async (req, res) => {
-  const isAdded = await Admin.findOne({ email: req.body.verifyEmail });
-  if (!isAdded) {
-    return res.status(404).send({
-      message: 'Admin/Staff Not found with this email!',
-    });
-  } else {
-    const token = tokenForVerify(isAdded);
-    const body = {
-      from: process.env.EMAIL_USER,
-      to: `${req.body.verifyEmail}`,
-      subject: 'Password Reset',
-      html: `<h2>Hello ${req.body.verifyEmail}</h2>
-      <p>A request has been received to change the password for your <strong>Dashtar</strong> account </p>
-
-        <p>This link will expire in <strong> 15 minute</strong>.</p>
-
-        <p style="margin-bottom:20px;">Click this link for reset your password</p>
-
-        <a href=${process.env.ADMIN_URL}/reset-password/${token}  style="background:#22c55e;color:white;border:1px solid #22c55e; padding: 10px 15px; border-radius: 4px; text-decoration:none;">Reset Password </a>
-
-        
-        <p style="margin-top: 35px;">If you did not initiate this request, please contact us immediately at support@dashtar.com</p>
-
-        <p style="margin-bottom:0px;">Thank you</p>
-        <strong>Dashtar Team</strong>
-             `,
-    };
-    const message = 'Please check your email to reset password!';
-    sendEmail(body, res, message);
-  }
-};
-
-const resetPassword = async (req, res) => {
-  const token = req.body.token;
-  const { email } = jwt.decode(token);
-  const staff = await Admin.findOne({ email: email });
-
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET_FOR_VERIFY, (err, decoded) => {
-      if (err) {
-        return res.status(500).send({
-          message: 'Token expired, please try again!',
-        });
-      } else {
-        staff.password = bcrypt.hashSync(req.body.newPassword);
-        staff.save();
-        res.send({
-          message: 'Your password change successful, you can login now!',
-        });
-      }
-    });
-  }
-};
-
 const addStaff = async (req, res) => {
   try {
-    const isAdded = await Admin.find({ email: req.body.data.email });
+    const isAdded = await Admin.findOne({ email: req.body.email });
+    
     if (isAdded) {
       return res.status(500).send({
         message: 'This Email already Added!',
       });
     } else {
       const newStaff = new Admin({
-        name: req.body.data.name,
-        email: req.body.data.email,
-        password: bcrypt.hashSync(req.body.data.password),
-        phone: req.body.data.phone,
-        joiningDate: req.body.data.joiningDate,
-        role: req.body.data.role,
-        image: req.body.data.image,
+        name: req.body.name,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password),
+        phone: req.body.phone,
+        role: req.body.role,
+        image: req.body.image,
       });
       await newStaff.save();
       res.status(200).send({
@@ -171,15 +117,15 @@ const updateStaff = async (req, res) => {
   try {
     const admin = await Admin.findById(req.params.id);
     if (admin) {
-      admin.name = req.body.data.name;
-      admin.email = req.body.data.email;
-      admin.phone = req.body.data.phone;
-      admin.role = req.body.data.role;
-      admin.joiningData = dayjs().utc().format(req.body.data.joiningDate);
-      admin.password = req.body.data.password
-        ? bcrypt.hashSync(req.body.data.password)
+      admin.name = req.body.name;
+      admin.email = req.body.email;
+      admin.phone = req.body.phone;
+      admin.role = req.body.role;
+  
+      admin.password = req.body.password
+        ? bcrypt.hashSync(req.body.password)
         : admin.password;
-      admin.image = req.body.data.image;
+      admin.image = req.body.image;
       const updatedAdmin = await admin.save();
       const token = signInToken(updatedAdmin);
       res.send({
@@ -214,8 +160,6 @@ const deleteStaff = (req, res) => {
 module.exports = {
   registerAdmin,
   loginAdmin,
-  forgetPassword,
-  resetPassword,
   addStaff,
   getAllStaff,
   getStaffById,
