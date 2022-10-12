@@ -1,5 +1,5 @@
 const Order = require('../models/Order');
-const { handleProductQuantity } = require('../config/others');
+
 
 const addOrder = async (req, res) => {
   try {
@@ -9,7 +9,7 @@ const addOrder = async (req, res) => {
     });
     const order = await newOrder.save();
     res.status(201).send(order);
-    handleProductQuantity(order.cart);
+
   } catch (err) {
     res.status(500).send({
       message: err.message,

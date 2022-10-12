@@ -10,7 +10,7 @@ const {
   updateStaff,
   deleteStaff,
 } = require('../controller/adminController');
-const { passwordVerificationLimit } = require('../config/others');
+
 
 //register a staff
 router.post('/register', registerAdmin);

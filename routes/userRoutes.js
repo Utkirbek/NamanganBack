@@ -7,10 +7,6 @@ const {
   updateUser,
   deleteUser,
 } = require('../controller/userController');
-const {
-  passwordVerificationLimit,
-  emailVerificationLimit,
-} = require('../config/others');
 
 
 
