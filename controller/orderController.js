@@ -33,30 +33,7 @@ const getOrderById = async (req, res) => {
   }
 };
 
-const updateOrder = (req, res) => {
-  const newStatus = req.body.status;
-  Order.updateOne(
-    {
-      _id: req.params.id,
-    },
-    {
-      $set: {
-        status: newStatus,
-      },
-    },
-    (err) => {
-      if (err) {
-        res.status(500).send({
-          message: err.message,
-        });
-      } else {
-        res.status(200).send({
-          message: 'Order Updated Successfully!',
-        });
-      }
-    }
-  );
-};
+
 
 const deleteOrder = (req, res) => {
   Order.deleteOne({ _id: req.params.id }, (err) => {
@@ -76,6 +53,5 @@ module.exports = {
   getAllOrders,
   getOrderById,
   getOrderByUser,
-  updateOrder,
   deleteOrder,
 };
