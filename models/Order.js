@@ -8,12 +8,17 @@ const orderSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    cart: [{}],
+    cart: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',
+      required: true,
+    }],
     total: {
       type: Number,
       required: true,
     },
-    paid: {
+    paid: [
+      {
       amount:{
         type: Number,
         required: true,
@@ -22,8 +27,10 @@ const orderSchema = new mongoose.Schema(
         type: Date,
         required: true,
       }
-    },
-    left: {
+    }
+  ],
+    left:[
+      {
       amount:{
         type: Number,
         required: false
@@ -33,6 +40,7 @@ const orderSchema = new mongoose.Schema(
         required: false
       }
     },
+  ]
       
   },
   {
