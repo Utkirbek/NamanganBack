@@ -46,6 +46,11 @@ const productSchema = new mongoose.Schema(
   }
 );
 
+productSchema.methods.minusQuantity = function (amount) {
+  this.quantity -= amount;
+  this.save();
+};
+
 const Product = mongoose.model('Product', productSchema);
 
 module.exports = Product;

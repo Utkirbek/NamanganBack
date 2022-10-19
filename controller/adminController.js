@@ -95,7 +95,10 @@ const addStaff = async (req, res) => {
 
 const getAllStaff = async (req, res) => {
   try {
-    const admins = await Admin.find({}).sort({ _id: -1 });
+    const admins = await (await Admin.find({}).sort({ _id: -1 }));
+    for (let i = 0; i < admins.length; i++) {
+      admins[i].password = undefined;
+    }
     res.send(admins);
   } catch (err) {
     res.status(500).send({ message: err.message });
@@ -105,6 +108,7 @@ const getAllStaff = async (req, res) => {
 const getStaffById = async (req, res) => {
   try {
     const admin = await Admin.findById(req.params.id);
+    admin.password = undefined;
     res.send(admin);
   } catch (err) {
     res.status(500).send({

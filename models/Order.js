@@ -28,7 +28,7 @@ const orderSchema = new mongoose.Schema(
         required: true,
       }
     }
-  ],
+    ],
     left:[
       {
       amount:{
@@ -40,7 +40,7 @@ const orderSchema = new mongoose.Schema(
         required: false
       }
     },
-  ]
+    ]
       
   },
   {
