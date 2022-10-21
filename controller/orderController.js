@@ -1,5 +1,17 @@
 const Order = require('../models/Order');
 
+const createOrder = async (req, res) => {
+  try {
+    
+    const order =await Order.create(req.body);
+    res.send({
+      message: 'Order Created Successfully!',
+    })
+  } catch (err) {   
+    res.status(500).send(err.message);
+  }
+};
+
 const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find({}).sort({ _id: -1 });
@@ -54,4 +66,5 @@ module.exports = {
   getOrderById,
   getOrderByUser,
   deleteOrder,
+  createOrder,
 };

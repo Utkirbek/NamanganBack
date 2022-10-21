@@ -35,7 +35,7 @@ app.use('/api/user/',isAuth, userRoutes);
 
 
 //if you not use admin dashboard then these two route will not needed.
-app.use('/api/admin/',isAuth, adminRoutes);
+app.use('/api/admin/', adminRoutes);
 app.use('/api/orders/', isAuth, orderRoutes);
 
 // Use express's default error handling middleware

@@ -8,11 +8,24 @@ const orderSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    cart: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',
-      required: true,
-    }],
+    cart:[
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Product',
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+        price: {
+          type: Number,
+        },
+      },
+      
+    ],
+
     total: {
       type: Number,
       required: true,
@@ -29,8 +42,7 @@ const orderSchema = new mongoose.Schema(
       }
     }
     ],
-    left:[
-      {
+    left:{
       amount:{
         type: Number,
         required: false
@@ -40,8 +52,6 @@ const orderSchema = new mongoose.Schema(
         required: false
       }
     },
-    ]
-      
   },
   {
     timestamps: true,
@@ -50,3 +60,5 @@ const orderSchema = new mongoose.Schema(
 
 
 const Order = mongoose.model('Order', orderSchema);
+
+module.exports = Order;

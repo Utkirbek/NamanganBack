@@ -4,7 +4,11 @@ const {
   getAllOrders,
   getOrderById,
   getOrderByUser,
+  createOrder,
+  deleteOrder,
 } = require('../controller/orderController');
+
+router.post('/add', createOrder);
 
 //get all orders
 router.get('/', getAllOrders);
@@ -14,5 +18,7 @@ router.get('/user/:id', getOrderByUser);
 
 //get a order by id
 router.get('/:id', getOrderById);
+
+router.delete('/:id', deleteOrder);
 
 module.exports = router;
