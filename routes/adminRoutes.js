@@ -9,6 +9,7 @@ const {
   updateStaff,
   deleteStaff,
   searchAdmin,
+  giveSalary,
 } = require('../controller/adminController');
 
 
@@ -37,5 +38,9 @@ router.delete('/:id', deleteStaff);
 
 //search a staff
 router.get('/search/:name', searchAdmin);
+
+//give salary to a staff
+router.get('/salary/:id', giveSalary);
+
 
 module.exports = router;

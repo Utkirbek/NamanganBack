@@ -123,13 +123,12 @@ const updateStaff = async (req, res) => {
     if (admin) {
       admin.name = req.body.name;
       admin.email = req.body.email;
-
       admin.role = req.body.role;
-  
       admin.password = req.body.password
         ? bcrypt.hashSync(req.body.password)
         : admin.password;
       admin.image = req.body.image;
+      admin.salary_percent = req.body.salary_percent;
       const updatedAdmin = await admin.save();
       const token = signInToken(updatedAdmin);
       res.send({
@@ -177,6 +176,22 @@ const searchAdmin = async (req, res) => {
   }
 };
 
+const giveSalary = async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.params.id);
+    admin.getSalary();
+    res.send({
+      message: 'Salary Given Successfully!',
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+
+
 module.exports = {
   registerAdmin,
   loginAdmin,
@@ -186,4 +201,5 @@ module.exports = {
   updateStaff,
   deleteStaff,
   searchAdmin,
+  giveSalary,
 };

@@ -34,6 +34,17 @@ const adminSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    salary_record: [
+      {
+        amount: {
+          type: Number
+        },
+        date: {
+          type: Date,
+          default: Date.now 
+        }
+      }
+    ]
 
   },
   {
@@ -50,9 +61,14 @@ adminSchema.methods.removeSalary = function (amount) {
   this.save();
 };
 adminSchema.methods.getSalary = function () {
+  this.salary_record.push({
+    amount: this.earned_salary,
+    date: Date.now()
+  });
   this.earned_salary= 0;
   this.save();
 };
+
 
 const Admin = mongoose.models.Admin || mongoose.model('Admin', adminSchema);
 
