@@ -8,7 +8,6 @@ const registerUser = async (req, res) => {
     const user  = await User.create(req.body);
     res.send({'message': 'User created successfully'});
   } catch (err) {
-      
     res.status(500).send({
       message: err.message,
     });
@@ -66,10 +65,30 @@ const deleteUser = (req, res) => {
   });
 };
 
+const searchUser = async (req, res) => {
+  try {
+    if (req.params.name) {
+      const user = await User.find({ name: {
+        $regex: req.params.name,
+      } });
+      res.send(user);
+    }else{
+      res.send({'message': 'No user found'});
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+
+
 module.exports = {
   registerUser,
   getAllUsers,
   getUserById,
   updateUser,
   deleteUser,
+  searchUser,
 };

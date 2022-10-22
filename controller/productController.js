@@ -80,10 +80,30 @@ const deleteProduct = (req, res) => {
   });
 };
 
+const searchProduct = async (req, res) => {
+  try {
+    if (req.params.title) {
+      const product = await Product.find({ title: {
+        $regex: req.params.title,
+      } });
+      res.send(product);
+    }else{
+      res.send({'message': 'No product found'});
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+
+
 module.exports = {
   addProduct,
   getAllProducts,
   getProductById,
   updateProduct,
   deleteProduct,
+  searchProduct,
 };

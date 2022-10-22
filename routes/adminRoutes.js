@@ -3,12 +3,12 @@ const router = express.Router();
 const {
   registerAdmin,
   loginAdmin,
-
   addStaff,
   getAllStaff,
   getStaffById,
   updateStaff,
   deleteStaff,
+  searchAdmin,
 } = require('../controller/adminController');
 
 
@@ -34,5 +34,8 @@ router.put('/:id', updateStaff);
 
 //delete a staff
 router.delete('/:id', deleteStaff);
+
+//search a staff
+router.get('/search/:name', searchAdmin);
 
 module.exports = router;

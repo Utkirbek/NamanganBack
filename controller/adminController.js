@@ -77,7 +77,7 @@ const addStaff = async (req, res) => {
         name: req.body.name,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password),
-
+        salary_percent: req.body.salary_percent,
         role: req.body.role,
         image: req.body.image,
       });
@@ -160,6 +160,22 @@ const deleteStaff = (req, res) => {
     }
   });
 };
+const searchAdmin = async (req, res) => {
+  try {
+    if (req.params.name) {
+      const admin = await Admin.find({ name: {
+        $regex: req.params.name,
+      } });
+      res.send(admin);
+    }else{
+      res.send({'message': 'No admin found'});
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
 
 module.exports = {
   registerAdmin,
@@ -169,4 +185,5 @@ module.exports = {
   getStaffById,
   updateStaff,
   deleteStaff,
+  searchAdmin,
 };

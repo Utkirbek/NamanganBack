@@ -8,6 +8,11 @@ const orderSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    salesman: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Admin',
+      required: true,
+    },
     cart:[
       {
         product: {

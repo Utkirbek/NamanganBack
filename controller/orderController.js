@@ -1,9 +1,12 @@
 const Order = require('../models/Order');
+const Admin = require('../models/Admin');
 
 const createOrder = async (req, res) => {
   try {
     
-    const order =await Order.create(req.body);
+    const order = await Order.create(req.body);
+    const admin = await Admin.findById(req.body.salesman);
+    admin.addSalary(order.total);
     res.send({
       message: 'Order Created Successfully!',
     })
@@ -44,8 +47,6 @@ const getOrderById = async (req, res) => {
     });
   }
 };
-
-
 
 const deleteOrder = (req, res) => {
   Order.deleteOne({ _id: req.params.id }, (err) => {

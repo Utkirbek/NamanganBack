@@ -26,12 +26,33 @@ const adminSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    salary_percent: {
+      type: Number,
+      default: 0,
+    },
+    earned_salary: {
+      type: Number,
+      default: 0,
+    },
 
   },
   {
     timestamps: true,
   }
 );
+
+adminSchema.methods.addSalary = function (amount) {
+  this.earned_salary =  this.earned_salary +  +(amount)/100* this.salary_percent;
+  this.save();
+};
+adminSchema.methods.removeSalary = function (amount) {
+  this.earned_salary -= amount/100*this.salary_percent;
+  this.save();
+};
+adminSchema.methods.getSalary = function () {
+  this.earned_salary= 0;
+  this.save();
+};
 
 const Admin = mongoose.models.Admin || mongoose.model('Admin', adminSchema);
 

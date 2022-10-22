@@ -24,22 +24,23 @@ const signInToken = (user) => {
 const isAuth = async (req, res, next) => {
   const { authorization } = req.headers;
   try {
+    if (authorization) {
+    
+
     const token = authorization.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
+  }else
+  {
+    res.status(401).send({ message: 'Token is not supplied.' });
+  }
   } catch (err) {
     res.status(401).send({
       message: err.message,
     });
   }
 };
-
-
-
-
-
-
 module.exports = {
   signInToken,
   isAuth,
