@@ -35,28 +35,12 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    paid: [
-      {
-      amount:{
-        type: Number,
-        required: true,
-      },
-      date: {
-        type: Date,
-        required: true,
-      }
-    }
-    ],
-    left:{
-      amount:{
-        type: Number,
-        required: false
-      },
-      date:{
-        type: Date,
-        required: false
-      }
+    payment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Payment',
+      required: true,
     },
+
   },
   {
     timestamps: true,
