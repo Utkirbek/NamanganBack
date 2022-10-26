@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const currencySchema = new mongoose.Schema({
-  icon: {
-    type: String,
-    unique: true,
-    required: true,
-  },
   name: {
     type: String,
     unique: true,

@@ -14,12 +14,9 @@ const addProduct = async (req, res) => {
   }
 };
 
-
-
-
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find({}).sort({ _id: -1 });
+    const products = await Product.find({}).sort({ _id: -1 }).populate("currency");
     res.send(products);
   } catch (err) {
     res.status(500).send({
@@ -47,15 +44,11 @@ const updateProduct = async (req, res) => {
     if (product) {
       product.code = req.body.code;
       product.title = req.body.title;
-     
       product.description = req.body.description;
-      
       product.quantity = req.body.quantity;
-  
       product.price = req.body.price;
       product.discounts = req.body.discounts;
       product.image = req.body.image;
-   
       await product.save();
       res.send({ data: product, message: 'Product updated successfully!' });
     }

@@ -27,6 +27,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    currency: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Currency',
+    },
     discounts: [
       {
         price:{
