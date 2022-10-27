@@ -115,23 +115,6 @@ const deleteCategory = (req, res) => {
       });
     }
   });
-
-  //This is for delete children category
-  // Category.updateOne(
-  //   { _id: req.params.id },
-  //   {
-  //     $pull: { children: req.body.title },
-  //   },
-  //   (err) => {
-  //     if (err) {
-  //       res.status(500).send({ message: err.message });
-  //     } else {
-  //       res.status(200).send({
-  //         message: 'Category Deleted Successfully!',
-  //       });
-  //     }
-  //   }
-  // );
 };
 
 module.exports = {
