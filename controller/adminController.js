@@ -115,7 +115,7 @@ const getStaffById = async (req, res) => {
     admin.password = undefined;
     admin.orders = orders;
     admin.role = role;
-    console.log(admin)
+   
     res.send(admin);
   } catch (err) {
     res.status(500).send({
