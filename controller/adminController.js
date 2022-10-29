@@ -44,15 +44,14 @@ const registerAdmin = async (req, res) => {
 const loginAdmin = async (req, res) => {
   try {
     const admin = await Admin.findOne({ email: req.body.email });
+    const role = await Role.findById(admin.role).populate('permissions');
+    
+    admin.role = role;
     if (admin && bcrypt.compareSync(req.body.password, admin.password)) {
       const token = signInToken(admin);
       res.send({
         token,
-        _id: admin._id,
-        name: admin.name,
-        phone: admin.phone,
-        email: admin.email,
-        image: admin.image,
+        admin
       });
     } else {
       res.status(401).send({
@@ -110,11 +109,10 @@ const getAllStaff = async (req, res) => {
 const getStaffById = async (req, res) => {
   try {
     let admin = await Admin.findById(req.params.id);
-    const role = await Role.findById(admin.role).populate('permissions');
     const orders = await Order.find({ salesman: req.params.id });
     admin.password = undefined;
     admin.orders = orders;
-    admin.role = role;
+    
    
     res.send(admin);
   } catch (err) {
