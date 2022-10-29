@@ -23,7 +23,8 @@ const adminSchema = new mongoose.Schema(
 
     },
     role: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Role',
       required: true,
     },
     salary_percent: {
@@ -34,6 +35,7 @@ const adminSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    orders : [],
     salary_record: [
       {
         amount: {

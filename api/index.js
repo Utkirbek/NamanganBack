@@ -8,7 +8,9 @@ const productRoutes = require('../routes/productRoutes');
 const userRoutes = require('../routes/userRoutes');
 const adminRoutes = require('../routes/adminRoutes');
 const orderRoutes = require('../routes/orderRoutes');
-
+const permissionRoutes = require('../routes/permissionRoutes');
+const roleRoutes = require('../routes/roleRoutes');
+const paymentRoutes = require('../routes/paymentRoutes');
 const categoryRoutes = require('../routes/categoryRoutes');
 const couponRoutes = require('../routes/couponRoutes');
 const currencyRoutes = require('../routes/currencyRoutes');
@@ -34,7 +36,9 @@ app.use('/api/category/',isAuth, categoryRoutes);
 app.use('/api/coupon/',isAuth, couponRoutes);
 app.use('/api/user/',isAuth, userRoutes);
 app.use('/api/currency/',isAuth, currencyRoutes);
-
+app.use('/api/permission/',isAuth, permissionRoutes);
+app.use('/api/role/',isAuth, roleRoutes);
+app.use('/api/payment/',isAuth, paymentRoutes);
 
 //if you not use admin dashboard then these two route will not needed.
 app.use('/api/admin/', adminRoutes);
@@ -47,7 +51,5 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-
-
 
 app.listen(PORT, () => console.log(`server running on port ${PORT}`));

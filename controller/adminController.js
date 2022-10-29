@@ -2,9 +2,11 @@ const bcrypt = require('bcryptjs');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 dayjs.extend(utc);
-const jwt = require('jsonwebtoken');
+
 const { signInToken } = require('../config/auth');
 const Admin = require('../models/Admin');
+const Order = require('../models/Order');
+const Role = require('../models/Role');
 
 const registerAdmin = async (req, res) => {
   try {
@@ -107,8 +109,13 @@ const getAllStaff = async (req, res) => {
 
 const getStaffById = async (req, res) => {
   try {
-    const admin = await Admin.findById(req.params.id);
+    let admin = await Admin.findById(req.params.id);
+    const role = await Role.findById(admin.role).populate('permissions');
+    const orders = await Order.find({ salesman: req.params.id });
     admin.password = undefined;
+    admin.orders = orders;
+    admin.role = role;
+    console.log(admin)
     res.send(admin);
   } catch (err) {
     res.status(500).send({

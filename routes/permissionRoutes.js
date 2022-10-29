@@ -5,7 +5,7 @@ const {
     getAllPermission,
     updatePermission,
     deletePermission,
-} = require('../controller/permissioController');
+} = require('../controller/permissionController');
 
 //add a role
 router.post('/add', addPermission);
