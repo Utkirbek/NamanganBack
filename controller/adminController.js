@@ -112,8 +112,6 @@ const getStaffById = async (req, res) => {
     const orders = await Order.find({ salesman: req.params.id });
     admin.password = undefined;
     admin.orders = orders;
-    
-   
     res.send(admin);
   } catch (err) {
     res.status(500).send({

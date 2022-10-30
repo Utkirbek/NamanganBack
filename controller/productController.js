@@ -75,10 +75,16 @@ const deleteProduct = (req, res) => {
 
 const searchProduct = async (req, res) => {
   try {
+    const product = undefined; 
     if (req.params.title) {
-      const product = await Product.find({ title: {
+      if(req.params.title.isString){
+      product = await Product.find({ title: {
         $regex: req.params.title,
       } });
+      }else{
+        product = await Product.find({ code: {  $regex: req.params.title, } });
+      }
+
       res.send(product);
     }else{
       res.send({'message': 'No product found'});
