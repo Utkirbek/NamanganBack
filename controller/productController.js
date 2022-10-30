@@ -25,8 +25,6 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-
-
 const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -52,12 +50,11 @@ const updateProduct = async (req, res) => {
       await product.save();
       res.send({ data: product, message: 'Product updated successfully!' });
     }
-    // handleProductStock(product);
+    
   } catch (err) {
     res.status(404).send(err.message);
   }
 };
-
 
 const deleteProduct = (req, res) => {
   Product.deleteOne({ _id: req.params.id }, (err) => {
