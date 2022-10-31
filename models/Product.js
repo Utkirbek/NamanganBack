@@ -16,12 +16,12 @@ const productSchema = new mongoose.Schema(
     },
     originalPrice: {
       type: Number,
-      required: true,
+      required: false,
       default: 0,
     },
     price: {
       type: Number,
-      required: true,
+      required: false,
       default: 0,
     },
     quantity: {

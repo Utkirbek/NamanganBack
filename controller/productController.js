@@ -1,5 +1,6 @@
 const { contentSecurityPolicy } = require('helmet');
 const Product = require('../models/Product');
+const { search } = require('../routes/productRoutes');
 
 const addProduct = async (req, res) => {
   try {
@@ -74,14 +75,18 @@ const deleteProduct = (req, res) => {
 
 const searchProduct = async (req, res) => {
   try {
-    if(req.params.by === "title"){
-      const product = await Product.find({title: {$regex: req.params.search.toLowerCase(), $options: 'i'}}).populate("currency");
-      res.send(product);
+    if (req.params.title) {
+      const products =  await Product.find({
+        $or: [
+          { title: { $regex: req.params.title} },
+          { code: { $regex: req.params.title } }
+        ]
+      })
+      
+
+      res.send(products);
     }
-    else if(req.params.by === "code"){
-      const product = await Product.find({code: {$regex: req.params.search}});
-      res.send(product);
-    }
+
     else{
       res.status(404).send({
         message: 'Not Found!',
