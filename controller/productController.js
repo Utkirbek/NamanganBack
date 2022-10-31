@@ -1,3 +1,4 @@
+const { contentSecurityPolicy } = require('helmet');
 const Product = require('../models/Product');
 
 const addProduct = async (req, res) => {
@@ -73,22 +74,21 @@ const deleteProduct = (req, res) => {
 
 const searchProduct = async (req, res) => {
   try {
-    const search = req.params.title;
-    const product = undefined; 
-    if (search) {
-      if(req.params.title.isString){
-      product = await Product.find({ title: {
-        $regex: req.params.title,
-      } });
-      }
-      if ((+search).isNumber) {
-        product = await Product.find({ code: {  $regex: req.params.title, } });
-      }
-
+    if(req.params.by === "title"){
+      const product = await Product.find({title: {$regex: req.params.search.toLowerCase(), $options: 'i'}}).populate("currency");
       res.send(product);
-    }else{
-      res.send({'message': 'No product found'});
     }
+    else if(req.params.by === "code"){
+      const product = await Product.find({code: {$regex: req.params.search}});
+      res.send(product);
+    }
+    else{
+      res.status(404).send({
+        message: 'Not Found!',
+      });
+    }
+    
+    
   } catch (err) {
     res.status(500).send({
       message: err.message,
