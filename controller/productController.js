@@ -40,6 +40,7 @@ const updateProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (product) {
+      product.originalPrice = req.body.originalPrice;
       product.code = req.body.code;
       product.title = req.body.title;
       product.description = req.body.description;
@@ -72,13 +73,15 @@ const deleteProduct = (req, res) => {
 
 const searchProduct = async (req, res) => {
   try {
+    const search = req.params.title;
     const product = undefined; 
-    if (req.params.title) {
+    if (search) {
       if(req.params.title.isString){
       product = await Product.find({ title: {
         $regex: req.params.title,
       } });
-      }else{
+      }
+      if ((+search).isNumber) {
         product = await Product.find({ code: {  $regex: req.params.title, } });
       }
 
