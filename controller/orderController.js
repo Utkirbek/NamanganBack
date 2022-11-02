@@ -17,7 +17,7 @@ const createOrder = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find({}).sort({ _id: -1 });
+    const orders = await Order.find({}).sort({ _id: -1 }).populate('user').populate('salesman').populate("cart.product");
     res.send(orders);
   } catch (err) {
     res.status(500).send({

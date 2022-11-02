@@ -13,6 +13,8 @@ const roleRoutes = require('../routes/roleRoutes');
 const categoryRoutes = require('../routes/categoryRoutes');
 const couponRoutes = require('../routes/couponRoutes');
 const currencyRoutes = require('../routes/currencyRoutes');
+const loanRoutes = require('../routes/loanRoutes');
+const kassaRoutes = require('../routes/kassaRoutes');
 const { isAuth } = require('../config/auth');
 
 connectDB();
@@ -37,6 +39,8 @@ app.use('/api/user/',isAuth, userRoutes);
 app.use('/api/currency/',isAuth, currencyRoutes);
 app.use('/api/permission/',isAuth, permissionRoutes);
 app.use('/api/role/',isAuth, roleRoutes);
+app.use('/api/kassa/',isAuth, kassaRoutes);
+app.use('/api/loan/',isAuth, loanRoutes);
 
 
 //if you not use admin dashboard then these two route will not needed.
