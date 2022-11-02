@@ -82,11 +82,8 @@ const searchProduct = async (req, res) => {
           { code: { $regex: req.params.title } }
         ]
       })
-      
-
       res.send(products);
     }
-
     else{
       res.status(404).send({
         message: 'Not Found!',
