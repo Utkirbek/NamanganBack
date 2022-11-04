@@ -16,7 +16,7 @@ const addRole = async (req, res) => {
 
 const getAllRole = async (req, res) => {
   try {
-    const roles = await Role.find({}).sort({ _id: -1 });
+    const roles = await Role.find({}).sort({ _id: -1 }).populate('permissions');
     res.send(roles);
   } catch (err) {
     res.status(500).send({

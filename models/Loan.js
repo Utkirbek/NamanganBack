@@ -19,6 +19,11 @@ const loanSchema = new mongoose.Schema({
         type:String,
         required: true,
     },
+    status: {
+        type: String,
+        enum: ['never', 'some', 'done'],
+        default: 'never',
+    },
 },
 {
     timestamps: true,
