@@ -96,7 +96,9 @@ const addStaff = async (req, res) => {
 
 const getAllStaff = async (req, res) => {
   try {
-    const admins = await (await Admin.find({}).sort({ _id: -1 }));
+    const admins = await await Admin.find({})
+      .sort({ _id: -1 })
+      .populate("role");
     for (let i = 0; i < admins.length; i++) {
       admins[i].password = undefined;
     }
@@ -110,6 +112,8 @@ const getStaffById = async (req, res) => {
   try {
     let admin = await Admin.findById(req.params.id);
     const orders = await Order.find({ salesman: req.params.id });
+    const role = await Role.findById(admin.role).populate("permissions");
+    admin.role = role;
     admin.password = undefined;
     admin.orders = orders;
     res.send(admin);
