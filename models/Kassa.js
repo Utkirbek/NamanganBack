@@ -5,6 +5,7 @@ const kassaSchema = new mongoose.Schema(
     amount: {
       type: String,
       required: true,
+      default: 0,
     },
   },
   {
