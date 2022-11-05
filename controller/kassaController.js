@@ -26,5 +26,5 @@ const getAllKassa = async (req, res) => {
 };
 module.exports = {
   getAllKassa,
-
+  dailyKassa,
 };
