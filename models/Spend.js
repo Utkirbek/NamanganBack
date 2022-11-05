@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const spendSchema = new mongoose.Schema(
   {
     amount: {
-      type: number,
+      type: Number,
       required: true,
     },
     paymentMethod: {
