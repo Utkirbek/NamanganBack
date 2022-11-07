@@ -33,6 +33,7 @@ const updateSpend = async (req, res) => {
     const spend = await Spend.findById(req.params.id);
     if (spend) {
       spend.amount = req.body.amount;
+      spend.spendType = req.body.spendType;
       spend.paymentMethod = req.body.paymentMethod;
       spend.description = req.body.description;
 

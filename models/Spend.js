@@ -10,6 +10,10 @@ const spendSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    spendType: {
+      type: String,
+      required: true,
+    },
     description: {
       type: String,
       required: true,
