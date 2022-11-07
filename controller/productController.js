@@ -50,6 +50,8 @@ const updateProduct = async (req, res) => {
       product.price = req.body.price;
       product.discounts = req.body.discounts;
       product.image = req.body.image;
+      product.currency = req.body.currency;
+      product.minQuantity = req.body.minQuantity;
       await product.save();
       res.send({ data: product, message: 'Product updated successfully!' });
     }

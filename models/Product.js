@@ -34,11 +34,16 @@ const productSchema = new mongoose.Schema(
     },
     currency: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Currency',
+      ref: "Currency",
+    },
+    minQuantity: {
+      type: Number,
+      required: false,
+      default: 0,
     },
     discounts: [
       {
-        price:{
+        price: {
           type: Number,
           required: true,
         },
@@ -46,7 +51,7 @@ const productSchema = new mongoose.Schema(
           type: Number,
           required: true,
         },
-      }
+      },
     ],
   },
 
