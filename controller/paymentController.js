@@ -9,6 +9,7 @@ const addPayment = async (req, res) => {
     await newPayment.save();
     res.status(200).send({
       message: "Payment Added Successfully!",
+      newPayment,
     });
   } catch (err) {
     res.status(500).send({

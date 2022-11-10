@@ -5,7 +5,8 @@ const addLoan = async (req, res) => {
     const newLoan = new Loan(req.body);
     await newLoan.save();
     res.status(200).send({
-      message: 'Loan Added Successfully!',
+      message: "Loan Added Successfully!",
+      newLoan,
     });
   } catch (err) {
     res.status(500).send({
