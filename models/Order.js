@@ -5,19 +5,19 @@ const orderSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: false,
     },
     salesman: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Admin',
+      ref: "Admin",
       required: true,
     },
-    cart:[
+    cart: [
       {
         product: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'Product',
+          ref: "Product",
           required: true,
         },
         quantity: {
@@ -28,7 +28,6 @@ const orderSchema = new mongoose.Schema(
           type: Number,
         },
       },
-      
     ],
 
     total: {
@@ -37,10 +36,14 @@ const orderSchema = new mongoose.Schema(
     },
     payment: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Payment',
+      ref: "Payment",
       required: true,
     },
-
+    loan: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Loan",
+      required: false,
+    },
   },
   {
     timestamps: true,

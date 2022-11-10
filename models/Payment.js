@@ -15,11 +15,6 @@ const paymentSchema = new mongoose.Schema(
       ref: "Loan",
       required: false,
     },
-    order: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Order",
-      required: false,
-    },
   },
   {
     timestamps: true,
