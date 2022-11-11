@@ -6,9 +6,9 @@ const addPayment = async (req, res) => {
   try {
     const newPayment = new Payment(req.body);
     const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
-
+    const admin = await Admin.findById(req.body.admin);
+    await admin.addSalary(req.body.amount);
     await kassa[0].addAmount(newPayment.amount);
-
     await newPayment.save();
     res.status(200).send({
       message: "Payment Added Successfully!",
@@ -39,7 +39,6 @@ const updatePayment = async (req, res) => {
       payment.amount = req.body.amount;
       payment.paymentMethod = req.body.paymentMethod;
       payment.loan = req.body.loan;
-      payment.order = req.body.order;
       await payment.save();
       res.send({ message: "Payment Updated Successfully!" });
     }
@@ -51,6 +50,8 @@ const updatePayment = async (req, res) => {
 const deletePayment = async (req, res) => {
   const payment = await Payment.findById(req.params.id);
   const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+  const admin = await Admin.findById(payment.admin);
+  await admin.removeSalary(payment.amount);
   await kassa[0].minusAmount(payment.amount);
 
   Payment.deleteOne({ _id: req.params.id }, (err) => {
