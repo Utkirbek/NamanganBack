@@ -186,7 +186,7 @@ const searchAdmin = async (req, res) => {
 const giveSalary = async (req, res) => {
   try {
     const admin = await Admin.findById(req.params.id);
-    admin.getSalary();
+    admin.getSalary(req.body.amount);
     res.send({
       message: 'Salary Given Successfully!',
     });

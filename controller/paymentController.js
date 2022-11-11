@@ -6,8 +6,9 @@ const addPayment = async (req, res) => {
   try {
     const newPayment = new Payment(req.body);
     const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
-    const admin = await Admin.findById(req.body.admin);
+    const admin = await Admin.findById(req.body.salesman);
     await admin.addSalary(req.body.amount);
+
     await kassa[0].addAmount(newPayment.amount);
     await newPayment.save();
     res.status(200).send({
@@ -50,7 +51,7 @@ const updatePayment = async (req, res) => {
 const deletePayment = async (req, res) => {
   const payment = await Payment.findById(req.params.id);
   const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
-  const admin = await Admin.findById(payment.admin);
+  const admin = await Admin.findById(payment.salesman);
   await admin.removeSalary(payment.amount);
   await kassa[0].minusAmount(payment.amount);
 

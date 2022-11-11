@@ -55,19 +55,20 @@ const adminSchema = new mongoose.Schema(
 );
 
 adminSchema.methods.addSalary = function (amount) {
-  this.earned_salary =  this.earned_salary +  +(amount)/100* this.salary_percent;
+  this.earned_salary += (amount / 100) * this.salary_percent;
+
   this.save();
 };
 adminSchema.methods.removeSalary = function (amount) {
-  this.earned_salary -= amount/100*this.salary_percent;
+  this.earned_salary -= (amount / 100) * this.salary_percent;
   this.save();
 };
-adminSchema.methods.getSalary = function () {
+adminSchema.methods.getSalary = function (amount) {
   this.salary_record.push({
-    amount: this.earned_salary,
-    date: Date.now()
+    amount: amount,
+    date: Date.now(),
   });
-  this.earned_salary= 0;
+  this.earned_salary -= amount;
   this.save();
 };
 
