@@ -17,7 +17,10 @@ const addLoan = async (req, res) => {
 
 const getAllLoan = async (req, res) => {
   try {
-    const loans = await Loan.find({}).sort({ _id: -1 });
+    const loans = await Loan.find({})
+      .sort({ _id: -1 })
+      .populate("user")
+      .populate("salesman");
     res.send(loans);
   } catch (err) {
     res.status(500).send({

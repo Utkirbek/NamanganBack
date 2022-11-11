@@ -1,11 +1,14 @@
 const Payment = require("../models/Payment");
 const Kassa = require("../models/Kassa");
+const Admin = require("../models/Admin");
 
 const addPayment = async (req, res) => {
   try {
     const newPayment = new Payment(req.body);
     const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+
     await kassa[0].addAmount(newPayment.amount);
+
     await newPayment.save();
     res.status(200).send({
       message: "Payment Added Successfully!",

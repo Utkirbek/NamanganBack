@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const kassaSchema = new mongoose.Schema(
   {
     amount: {
-      type: String,
+      type: Number,
       required: true,
       default: 0,
     },
