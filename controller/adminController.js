@@ -47,6 +47,8 @@ const loginAdmin = async (req, res) => {
     const role = await Role.findById(admin.role).populate('permissions');
     if (role) {
       admin.role = role;
+    } else {
+      admin.role = null;
     }
     if (admin && bcrypt.compareSync(req.body.password, admin.password)) {
       const token = signInToken(admin);
@@ -114,9 +116,17 @@ const getStaffById = async (req, res) => {
     let admin = await Admin.findById(req.params.id);
     const orders = await Order.find({ salesman: req.params.id });
     const role = await Role.findById(admin.role).populate("permissions");
-    admin.role = role;
+    if (role) {
+      admin.role = role;
+    } else {
+      admin.role = null;
+    }
+    if (orders) {
+      admin.orders = orders;
+    } else {
+      admin.orders = null;
+    }
     admin.password = undefined;
-    admin.orders = orders;
     res.send(admin);
   } catch (err) {
     res.status(500).send({
