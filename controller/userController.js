@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const User = require('../models/User');
-const { signInToken } = require('../config/auth');
+
 
 const registerUser = async (req, res) => {
   try {
