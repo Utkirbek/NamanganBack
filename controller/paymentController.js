@@ -1,5 +1,6 @@
 const Payment = require("../models/Payment");
 const Kassa = require("../models/Kassa");
+const Loan = require("../models/Loan");
 const Admin = require("../models/Admin");
 
 const addPayment = async (req, res) => {
@@ -8,8 +9,12 @@ const addPayment = async (req, res) => {
     const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
     const admin = await Admin.findById(req.body.salesman);
     await admin.addSalary(req.body.amount);
-
     await kassa[0].addAmount(newPayment.amount);
+
+    if (req.body.loan) {
+      const loan = await Loan.findById(req.body.loan);
+      await loan.changeStatus();
+    }
     await newPayment.save();
     res.status(200).send({
       message: "Payment Added Successfully!",
