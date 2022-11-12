@@ -32,7 +32,9 @@ const getAllProducts = async (req, res) => {
     const limit = parseInt(size);
     const products = await Product.find({})
       .sort({ _id: -1 })
-      .populate("currency");
+      .populate("currency")
+      .limit(limit)
+      .skip((page - 1) * limit);
     res.send(products);
   } catch (err) {
     res.status(500).send({
