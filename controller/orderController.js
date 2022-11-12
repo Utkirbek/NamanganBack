@@ -3,14 +3,20 @@ const Admin = require('../models/Admin');
 
 const createOrder = async (req, res) => {
   try {
-    
     const order = await Order.create(req.body);
+
     const admin = await Admin.findById(req.body.salesman);
-    admin.addSalary(order.total);
+    if (admin) {
+      admin.addSalary(order.total);
+    } else {
+      res.status(404).send({
+        message: "Admin Not Found",
+      });
+    }
     res.send({
-      message: 'Order Created Successfully!',
-    })
-  } catch (err) {   
+      message: "Order Created Successfully!",
+    });
+  } catch (err) {
     res.status(500).send(err.message);
   }
 };
