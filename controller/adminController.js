@@ -197,7 +197,13 @@ const searchAdmin = async (req, res) => {
 const giveSalary = async (req, res) => {
   try {
     const admin = await Admin.findById(req.params.id);
-    admin.getSalary(req.body.amount);
+    if (admin) {
+      admin.getSalary(req.body.amount);
+    } else {
+      res.status(500).send({
+        message: "Salesman not found!",
+      });
+    }
     res.send({
       message: 'Salary Given Successfully!',
     });
