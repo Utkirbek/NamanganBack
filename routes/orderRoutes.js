@@ -18,7 +18,7 @@ router.get('/user/:id', getOrderByUser);
 
 //get a order by id
 router.get('/:id', getOrderById);
-
+//delete a order
 router.delete('/:id', deleteOrder);
 
 module.exports = router;
