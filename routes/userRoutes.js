@@ -9,12 +9,7 @@ const {
   searchUser,
 } = require('../controller/userController');
 
-
-
-
-router.post('/add', registerUser);
-
-
+router.post("/add", registerUser);
 
 //get all user
 router.get('/', getAllUsers);
