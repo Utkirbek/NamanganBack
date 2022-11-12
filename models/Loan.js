@@ -32,12 +32,14 @@ const loanSchema = new mongoose.Schema(
   }
 ); 
 
-loanSchema.methods.changeStatus = function () {
-  if (this.status === "never") {
-    this.status = "some";
-  } else if (this.amount === 0 && this.status === "some") {
+loanSchema.methods.minusAmount = function (amount) {
+  this.amount -= amount;
+  if (this.amount <= 0) {
     this.status = "done";
+  } else {
+    this.status = "some";
   }
+  return this.save();
 };
 
 const Loan = mongoose.model('Loan', loanSchema);

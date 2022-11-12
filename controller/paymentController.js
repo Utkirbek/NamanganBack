@@ -10,10 +10,10 @@ const addPayment = async (req, res) => {
     const admin = await Admin.findById(req.body.salesman);
     await admin.addSalary(req.body.amount);
     await kassa[0].addAmount(newPayment.amount);
-
+ 
     if (req.body.loan) {
       const loan = await Loan.findById(req.body.loan);
-      await loan.changeStatus();
+      await loan.minusAmount(req.body.amount);
     }
     await newPayment.save();
     res.status(200).send({
