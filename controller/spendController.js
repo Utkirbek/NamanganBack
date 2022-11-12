@@ -5,7 +5,12 @@ const addSpend = async (req, res) => {
   try {
     const newSpend = new Spend(req.body);
     const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
-    await kassa[0].minusAmount(newSpend.amount);
+    if (kassa) {
+      await kassa[0].minusAmount(newSpend.amount);
+    } else {
+      res.status(404).send({ message: "Kassa not found!" });
+    }
+
     await newSpend.save();
     res.status(200).send({
       message: "Spend Added Successfully!",
@@ -60,19 +65,25 @@ const updateSpend = async (req, res) => {
 
 const deleteSpend = async (req, res) => {
   const spend = await Spend.findById(req.params.id);
-  const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
-  await kassa[0].addAmount(spend.amount);
-  Spend.deleteOne({ _id: req.params.id }, (err) => {
-    if (err) {
-      res.status(500).send({
-        message: err.message,
-      });
+  if (spend) {
+    const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+    if (kassa) {
+      await kassa[0].addAmount(spend.amount);
     } else {
-      res.status(200).send({
-        message: "Spend Deleted Successfully!",
-      });
+      res.status(404).send({ message: "Kassa not found!" });
     }
-  });
+    Spend.deleteOne({ _id: req.params.id }, (err) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else {
+        res.status(200).send({
+          message: "Spend Deleted Successfully!",
+        });
+      }
+    });
+  }
 };
 
 module.exports = {
