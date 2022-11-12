@@ -7,16 +7,16 @@ const {
   deleteSpend,
 } = require("../controller/spendController");
 
-//add a role
+//add a spend
 router.post("/add", addSpend);
 
-//get all role
+//get all spend
 router.get("/", getAllSpend);
 
-//update a role
+//update a spend
 router.put("/:id", updateSpend);
 
-//delete a role
+//delete a spend
 router.delete("/:id", deleteSpend);
 
 module.exports = router;
