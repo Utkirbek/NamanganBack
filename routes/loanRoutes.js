@@ -8,20 +8,19 @@ const {
   getLoanByUserId,
 } = require("../controller/loanController");
 
-//add a role
+//add a loan
 router.post("/add", addLoan);
 
-// get loans by id
-
+// get loans by user id
 router.get("/user/:id", getLoanByUserId);
 
-//get all role
+//get all loan
 router.get('/', getAllLoan);
 
-//update a role
+//update a loan
 router.put('/:id', updateLoan);
 
-//delete a role
+//delete a loan
 router.delete('/:id', deleteLoan);
 
 
