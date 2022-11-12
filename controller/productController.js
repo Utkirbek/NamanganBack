@@ -1,13 +1,11 @@
-const { contentSecurityPolicy } = require('helmet');
-const Product = require('../models/Product');
-const { search } = require('../routes/productRoutes');
+const Product = require("../models/Product");
 
 const addProduct = async (req, res) => {
   try {
     const newProduct = new Product(req.body);
     await newProduct.save();
     res.status(200).send({
-      message: 'Product Added Successfully!',
+      message: "Product Added Successfully!",
     });
   } catch (err) {
     res.status(500).send({
@@ -18,7 +16,6 @@ const addProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   try {
-    
     let { page, size } = req.query;
 
     if (!page) {
@@ -74,9 +71,8 @@ const updateProduct = async (req, res) => {
       product.currency = req.body.currency;
       product.minQuantity = req.body.minQuantity;
       await product.save();
-      res.send({ data: product, message: 'Product updated successfully!' });
+      res.send({ data: product, message: "Product updated successfully!" });
     }
-    
   } catch (err) {
     res.status(404).send(err.message);
   }
@@ -90,7 +86,7 @@ const deleteProduct = (req, res) => {
       });
     } else {
       res.status(200).send({
-        message: 'Product Deleted Successfully!',
+        message: "Product Deleted Successfully!",
       });
     }
   });
@@ -99,29 +95,24 @@ const deleteProduct = (req, res) => {
 const searchProduct = async (req, res) => {
   try {
     if (req.params.title) {
-      const products =  await Product.find({
+      const products = await Product.find({
         $or: [
-          { title: { $regex: req.params.title} },
-          { code: { $regex: req.params.title } }
-        ]
-      })
+          { title: { $regex: req.params.title } },
+          { code: { $regex: req.params.title } },
+        ],
+      });
       res.send(products);
-    }
-    else{
+    } else {
       res.status(404).send({
-        message: 'Not Found!',
+        message: "Not Found!",
       });
     }
-    
-    
   } catch (err) {
     res.status(500).send({
       message: err.message,
     });
   }
 };
-
-
 
 module.exports = {
   addProduct,
