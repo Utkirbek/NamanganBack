@@ -7,16 +7,16 @@ const {
     deletePermission,
 } = require('../controller/permissionController');
 
-//add a role
+//add a permission
 router.post('/add', addPermission);
 
-//get all role
+//get all permission
 router.get('/', getAllPermission);
 
-//update a role
+//update a permission
 router.put('/:id', updatePermission);
 
-//delete a role
+//delete a permission
 router.delete('/:id', deletePermission);
 
 
