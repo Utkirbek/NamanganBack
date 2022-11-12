@@ -16,7 +16,20 @@ const dailyKassa = async (req, res) => {
 
 const getAllKassa = async (req, res) => {
   try {
-    const kassas = await Kassa.find({}).sort({ _id: -1 });
+    let { page, size } = req.query;
+
+    if (!page) {
+      page = 1;
+    }
+
+    if (!size) {
+      size = 20;
+    }
+    const limit = parseInt(size);
+    const kassas = await Kassa.find({})
+      .sort({ _id: -1 })
+      .limit(limit)
+      .skip((page - 1) * limit);
     res.send(kassas);
   } catch (err) {
     res.status(500).send({

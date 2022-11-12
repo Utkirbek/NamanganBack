@@ -29,7 +29,20 @@ const addPayment = async (req, res) => {
 
 const getAllPayment = async (req, res) => {
   try {
-    const payments = await Payment.find({}).sort({ _id: -1 });
+    let { page, size } = req.query;
+
+    if (!page) {
+      page = 1;
+    }
+
+    if (!size) {
+      size = 20;
+    }
+    const limit = parseInt(size);
+    const payments = await Payment.find({})
+      .sort({ _id: -1 })
+      .limit(limit)
+      .skip((page - 1) * limit);
     res.send(payments);
   } catch (err) {
     res.status(500).send({

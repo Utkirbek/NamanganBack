@@ -17,7 +17,23 @@ const createOrder = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find({}).sort({ _id: -1 }).populate('user').populate('salesman').populate("cart.product");
+    let { page, size } = req.query;
+
+    if (!page) {
+      page = 1;
+    }
+
+    if (!size) {
+      size = 20;
+    }
+    const limit = parseInt(size);
+    const orders = await Order.find({})
+      .sort({ _id: -1 })
+      .populate("user")
+      .populate("salesman")
+      .populate("cart.product")
+      .limit(limit)
+      .skip((page - 1) * limit);
     res.send(orders);
   } catch (err) {
     res.status(500).send({

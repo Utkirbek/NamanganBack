@@ -26,7 +26,7 @@ const getAllProducts = async (req, res) => {
     }
 
     if (!size) {
-      size = 10;
+      size = 20;
     }
 
     const limit = parseInt(size);

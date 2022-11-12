@@ -17,10 +17,22 @@ const addLoan = async (req, res) => {
 
 const getAllLoan = async (req, res) => {
   try {
+    let { page, size } = req.query;
+
+    if (!page) {
+      page = 1;
+    }
+
+    if (!size) {
+      size = 20;
+    }
+    const limit = parseInt(size);
     const loans = await Loan.find({})
       .sort({ _id: -1 })
       .populate("user")
-      .populate("salesman");
+      .populate("salesman")
+      .limit(limit)
+      .skip((page - 1) * limit);
     res.send(loans);
   } catch (err) {
     res.status(500).send({

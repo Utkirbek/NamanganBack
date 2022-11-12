@@ -19,7 +19,20 @@ const addSpend = async (req, res) => {
 
 const getAllSpend = async (req, res) => {
   try {
-    const spends = await Spend.find({}).sort({ _id: -1 });
+    let { page, size } = req.query;
+
+    if (!page) {
+      page = 1;
+    }
+
+    if (!size) {
+      size = 20;
+    }
+    const limit = parseInt(size);
+    const spends = await Spend.find({})
+      .sort({ _id: -1 })
+      .limit(limit)
+      .skip((page - 1) * limit);
     res.send(spends);
   } catch (err) {
     res.status(500).send({
