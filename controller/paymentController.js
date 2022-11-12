@@ -6,11 +6,19 @@ const Admin = require("../models/Admin");
 const addPayment = async (req, res) => {
   try {
     const newPayment = new Payment(req.body);
+
     const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+    if (kassa) {
+      await kassa[0].addAmount(newPayment.amount);
+    } else {
+      res.status(404).send({ message: "Kassa not found!" });
+    }
     const admin = await Admin.findById(req.body.salesman);
-    await admin.addSalary(req.body.amount);
-    await kassa[0].addAmount(newPayment.amount);
- 
+    if (admin) {
+      await admin.addSalary(req.body.amount);
+    } else {
+      res.status(404).send({ message: "Salesman not found!" });
+    }
     if (req.body.loan) {
       const loan = await Loan.findById(req.body.loan);
       await loan.minusAmount(req.body.amount);
@@ -69,22 +77,35 @@ const updatePayment = async (req, res) => {
 
 const deletePayment = async (req, res) => {
   const payment = await Payment.findById(req.params.id);
-  const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
-  const admin = await Admin.findById(payment.salesman);
-  await admin.removeSalary(payment.amount);
-  await kassa[0].minusAmount(payment.amount);
-
-  Payment.deleteOne({ _id: req.params.id }, (err) => {
-    if (err) {
-      res.status(500).send({
-        message: err.message,
-      });
+  if (payment) {
+    const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+    if (kassa) {
+      await kassa[0].minusAmount(payment.amount);
     } else {
-      res.status(200).send({
-        message: "Payment Deleted Successfully!",
-      });
+      res.status(404).send({ message: "Kassa not found!" });
     }
-  });
+
+    const admin = await Admin.findById(payment.salesman);
+    if (admin) {
+      await admin.removeSalary(payment.amount);
+    } else {
+      res.status(404).send({ message: "Salesman not found!" });
+    }
+
+    Payment.deleteOne({ _id: req.params.id }, (err) => {
+      if (err) {
+        res.status(500).send({
+          message: err.message,
+        });
+      } else {
+        res.status(200).send({
+          message: "Payment Deleted Successfully!",
+        });
+      }
+    });
+  } else {
+    res.status(404).send({ message: "Payment not found!" });
+  }
 };
 
 module.exports = {
