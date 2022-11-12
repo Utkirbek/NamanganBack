@@ -42,7 +42,8 @@ const getAllPayment = async (req, res) => {
     const payments = await Payment.find({})
       .sort({ _id: -1 })
       .limit(limit)
-      .skip((page - 1) * limit);
+      .skip((page - 1) * limit)
+      .populate("salesman");
     res.send(payments);
   } catch (err) {
     res.status(500).send({
