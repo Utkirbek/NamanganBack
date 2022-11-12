@@ -40,7 +40,7 @@ router.delete('/:id', deleteStaff);
 router.get('/search/:name', searchAdmin);
 
 //give salary to a staff
-router.get('/salary/:id', giveSalary);
+router.post("/salary/:id", giveSalary);
 
 
 module.exports = router;
