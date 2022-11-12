@@ -57,9 +57,23 @@ const deleteLoan = (req, res) => {
   });
 };
 
+const getLoanByUserId = async (req, res) => {
+  try {
+    const loan = await Loan.find({ user: req.params.id });
+    res.status(200).send({
+      loan,
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
 module.exports = {
   addLoan,
   getAllLoan,
   updateLoan,
   deleteLoan,
+  getLoanByUserId,
 };

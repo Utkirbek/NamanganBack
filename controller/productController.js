@@ -18,7 +18,21 @@ const addProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find({}).sort({ _id: -1 }).populate("currency");
+    
+    let { page, size } = req.query;
+
+    if (!page) {
+      page = 1;
+    }
+
+    if (!size) {
+      size = 10;
+    }
+
+    const limit = parseInt(size);
+    const products = await Product.find({})
+      .sort({ _id: -1 })
+      .populate("currency");
     res.send(products);
   } catch (err) {
     res.status(500).send({
