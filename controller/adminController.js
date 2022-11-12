@@ -45,8 +45,9 @@ const loginAdmin = async (req, res) => {
   try {
     const admin = await Admin.findOne({ email: req.body.email });
     const role = await Role.findById(admin.role).populate('permissions');
-    
-    admin.role = role;
+    if (role) {
+      admin.role = role;
+    }
     if (admin && bcrypt.compareSync(req.body.password, admin.password)) {
       const token = signInToken(admin);
       res.send({
