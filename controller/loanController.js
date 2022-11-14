@@ -1,4 +1,5 @@
 const Loan = require('../models/Loan');
+const User = require("../models/User");
 
 const addLoan = async (req, res) => {
   try {
@@ -41,17 +42,17 @@ const getAllLoan = async (req, res) => {
   }
 };
 
-const updateLoan= async (req, res) => {
+const updateLoan = async (req, res) => {
   try {
     const loan = await Loan.findById(req.params.id);
     if (loan) {
       loan.amount = req.body.amount;
-      loan.shouldPay= req.body.shouldPay 
+      loan.shouldPay = req.body.shouldPay;
       await loan.save();
-      res.send({ message: 'Loan Updated Successfully!' });
+      res.send({ message: "Loan Updated Successfully!" });
     }
   } catch (err) {
-    res.status(404).send({ message: 'Loan not found!' });
+    res.status(404).send({ message: "Loan not found!" });
   }
 };
 
@@ -63,10 +64,19 @@ const deleteLoan = (req, res) => {
       });
     } else {
       res.status(200).send({
-        message: 'Loan Deleted Successfully!',
+        message: "Loan Deleted Successfully!",
       });
     }
   });
+};
+
+const getLoanByUser = async (req, res) => {
+  try {
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
 };
 
 const getLoanByUserId = async (req, res) => {

@@ -182,10 +182,19 @@ const searchAdmin = async (req, res) => {
     if (req.params.name) {
       const admin = await Admin.find({ name: {
         $regex: req.params.name,
-      } });
-      res.send(admin);
+      }
+      });
+      if (admin)
+      {
+        res.send(admin);
+      } else
+      {
+        res.status(404).send({
+          message: 'Admin Not Found!',
+        });
+      }
     }else{
-      res.send({'message': 'No admin found'});
+      res.send({ message: "Search Name is provided" });
     }
   } catch (err) {
     res.status(500).send({

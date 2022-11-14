@@ -34,7 +34,7 @@ const productSchema = new mongoose.Schema(
     },
     unit: {
       type: String,
-      required: true,
+      required: false,
     },
     currency: {
       type: mongoose.Schema.Types.ObjectId,
