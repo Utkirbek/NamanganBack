@@ -1,12 +1,12 @@
 require('dotenv').config();
 
 const User = require('../models/User');
-
+const Loan = require("../models/Loan");
 
 const registerUser = async (req, res) => {
   try {
-    const user  = await User.create(req.body);
-    res.send({'message': 'User created successfully'});
+    const user = await User.create(req.body);
+    res.send({ message: "User created successfully" });
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -43,9 +43,8 @@ const updateUser = async (req, res) => {
       user.phone = req.body.phone;
       user.image = req.body.image;
       const updatedUser = await user.save();
-     
     }
-    res.send({'message': 'User updated successfully'});
+    res.send({ message: "User updated successfully" });
   } catch (err) {
     res.status(404).send(err.message);
   }
@@ -59,7 +58,7 @@ const deleteUser = (req, res) => {
       });
     } else {
       res.status(200).send({
-        message: 'User Deleted Successfully!',
+        message: "User Deleted Successfully!",
       });
     }
   });
@@ -68,12 +67,14 @@ const deleteUser = (req, res) => {
 const searchUser = async (req, res) => {
   try {
     if (req.params.name) {
-      const user = await User.find({ name: {
-        $regex: req.params.name,
-      } });
+      const user = await User.find({
+        name: {
+          $regex: req.params.name,
+        },
+      });
       res.send(user);
-    }else{
-      res.send({'message': 'No user found'});
+    } else {
+      res.send({ message: "No user found" });
     }
   } catch (err) {
     res.status(500).send({
@@ -81,6 +82,24 @@ const searchUser = async (req, res) => {
     });
   }
 };
+
+const getLoanByUser = async (req, res) => {
+  try {
+    const loans = await Loan.find({ user: req.params.id }).sort({ _id: -1 });
+    if (loans) {
+      res.send(loans);
+    } else {
+      res.send({ message: "No loan found" });
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+  
+      
 
 
 
@@ -91,4 +110,5 @@ module.exports = {
   updateUser,
   deleteUser,
   searchUser,
+  getLoanByUser,
 };
