@@ -28,7 +28,8 @@ const getUserById = async (req, res) => {
 
     const loans = await Loan.find({ user: user._id });
     if (user) {
-      res.send({ user, loans });
+      user.loans = loans;
+      res.send(user);
     } else {
       res.status(404).send({ message: "User not found" });
     }
