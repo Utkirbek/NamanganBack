@@ -25,7 +25,14 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-    res.send(user);
+  
+    const loans = await Loan.find({ user: req.params.id });
+    if (user) {
+      data = { ...user, loans: loans };
+      res.send(data);
+    } else {
+      res.status(404).send({ message: "User not found" });
+    }
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -83,20 +90,7 @@ const searchUser = async (req, res) => {
   }
 };
 
-const getLoanByUser = async (req, res) => {
-  try {
-    const loans = await Loan.find({ user: req.params.id }).sort({ _id: -1 });
-    if (loans) {
-      res.send(loans);
-    } else {
-      res.send({ message: "No loan found" });
-    }
-  } catch (err) {
-    res.status(500).send({
-      message: err.message,
-    });
-  }
-};
+
 
   
       
