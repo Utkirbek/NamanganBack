@@ -26,7 +26,7 @@ const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
   
-    const loans = await Loan.find({ user: req.params.id });
+    const loans = await Loan.find({ user: user._id });
     if (user) {
       data = { ...user, loans: loans };
       res.send(data);
