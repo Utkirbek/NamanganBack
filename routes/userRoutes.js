@@ -27,7 +27,6 @@ router.delete("/:id", deleteUser);
 //search a user
 router.get("/search/:name", searchUser);
 
-// get loan by user
-router.get("/loan/:id", getLoanByUser);
+
 
 module.exports = router;
