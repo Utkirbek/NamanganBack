@@ -49,7 +49,7 @@ const getAllProducts = async (req, res) => {
 
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate("currency");
     res.send(product);
   } catch (err) {
     res.status(500).send({
@@ -103,7 +103,7 @@ const searchProduct = async (req, res) => {
           { title: { $regex: req.params.title } },
           { code: { $regex: req.params.title } },
         ],
-      });
+      }).populate("currency");
       res.send(products);
     } else {
       res.status(404).send({
