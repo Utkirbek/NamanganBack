@@ -27,7 +27,9 @@ const getAllProducts = async (req, res) => {
     }
 
     const limit = parseInt(size);
-    const getAllProducts = await Product.find({});
+    const getAllProducts = await Product.find({})
+      .populate("currency")
+      .sort({ _id: -1 });
     const products = await Product.find({})
       .sort({ _id: -1 })
       .populate("currency")
