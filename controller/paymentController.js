@@ -22,6 +22,8 @@ const addPayment = async (req, res) => {
     if (req.body.loan) {
       const loan = await Loan.findById(req.body.loan);
       await loan.minusAmount(req.body.amount);
+    } else {
+      res.status(404).send({ message: "Loan not found!" });
     }
     await newPayment.save();
     res.status(200).send({
@@ -91,6 +93,14 @@ const deletePayment = async (req, res) => {
     } else {
       res.status(404).send({ message: "Salesman not found!" });
     }
+    const loan = await Loan.findById(payment.loan);
+    if (loan) {
+      await loan.plusAmount(payment.amount);
+    } else {
+      res.status(404).send({ message: "Loan not found!" });
+    }
+
+
 
     Payment.deleteOne({ _id: req.params.id }, (err) => {
       if (err) {
