@@ -35,9 +35,16 @@ const getAllProducts = async (req, res) => {
       .populate("currency")
       .limit(limit)
       .skip((page - 1) * limit);
+
+    const Products = [];
+    products.forEach((product) => {
+      const calculatedPrice = product.price * product.currency.equalsTo;
+      product.price = calculatedPrice;
+      Products.push(product);
+    });
     res.send({
-      products: products,
-      count: products.length,
+      products: Products,
+      count: Products.length,
       totalPage: Math.ceil(getAllProducts.length / limit),
     });
   } catch (err) {
@@ -51,6 +58,8 @@ const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate("currency");
 
+    const calculatedPrice = product.price * product.currency.equalsTo;
+    product.price = calculatedPrice;
     res.send(product);
   } catch (err) {
     res.status(500).send({
