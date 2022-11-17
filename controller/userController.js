@@ -76,7 +76,7 @@ const searchUser = async (req, res) => {
     if (req.params.name) {
       const user = await User.find({
         name: {
-          $regex: new RegExp(req.params.name, "i"),
+          $regex: new RegExp(req.params.name, "i"),git 
         },
       });
       res.send(user);
