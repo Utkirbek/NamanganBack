@@ -180,9 +180,10 @@ const deleteStaff = (req, res) => {
 const searchAdmin = async (req, res) => {
   try {
     if (req.params.name) {
-      const admin = await Admin.find({ name: {
-        $regex: req.params.name,
-      }
+      const admin = await Admin.find({
+        name: {
+          $regex: new RegExp(req.params.title, "i"),
+        },
       });
       if (admin)
       {
