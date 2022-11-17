@@ -110,7 +110,7 @@ const searchProduct = async (req, res) => {
     if (req.params.title) {
       const products = await Product.find({
         $or: [
-          { title: { $regex: req.params.title } },
+          { title: { $regex: new RegExp(req.params.title, "i") } },
           { code: { $regex: req.params.title } },
         ],
       }).populate("currency");
