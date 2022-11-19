@@ -60,9 +60,10 @@ const getAllProducts = async (req, res) => {
 const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate("currency");
-
-    const calculatedPrice = product.price * product.currency.equalsTo;
-    product.price = calculatedPrice;
+    if (product.currency) {
+      const calculatedPrice = product.price * product.currency.equalsTo;
+      product.price = calculatedPrice;
+    }
     res.send(product);
   } catch (err) {
     res.status(500).send({
@@ -120,8 +121,11 @@ const searchProduct = async (req, res) => {
 
       const Products = [];
       products.forEach((product) => {
-        const calculatedPrice = product.price * product.currency.equalsTo;
-        product.price = calculatedPrice;
+        if (product.currency) {
+          const calculatedPrice = product.price * product.currency.equalsTo;
+          product.price = calculatedPrice;
+          Products.push(product);
+        }
         Products.push(product);
       });
       res.send(Products);
