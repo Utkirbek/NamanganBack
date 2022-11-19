@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Admin = require("../models/Admin");
 const Product = require("../models/Product");
 const Kassa = require("../models/Kassa");
+const Spend = require("../models/Spend");
 
 const mainStatistics = async (req, res) => {
   try {
@@ -121,7 +122,83 @@ const pieChartIncome = async (req, res) => {
   }
 };
 
+const pieChartSpend = async (req, res) => {
+  try {
+    weeks = [];
+    const currentMonth = new Date();
+    currentMonth.setDate(1);
+    currentMonth.setMonth(currentMonth.getMonth());
+    const monthName = currentMonth.toLocaleString("default", {
+      month: "long",
+    });
+
+    for (let i = 0; i < 4; i++) {
+      const start = new Date();
+      start.setDate(currentMonth.getDate() + 7 * i);
+      const end = new Date();
+      end.setDate(currentMonth.getDate() + 7 * (i + 1));
+      const spend = await Spend.find({
+        createdAt: { $gte: start, $lte: end },
+      });
+      let total = 0;
+      spend.forEach((item) => {
+        total += item.amount;
+      });
+      if (i == 0) {
+        weeks.push({
+          name: "First week",
+          value: total,
+        });
+      } else if (i == 1) {
+        weeks.push({
+          name: "Second week",
+          value: total,
+        });
+      } else if (i == 2) {
+        weeks.push({
+          name: "Third week",
+          value: total,
+        });
+      } else {
+        weeks.push({
+          name: "Fourth week",
+          value: total,
+        });
+      }
+    }
+    data = {
+      month: monthName,
+      weeks: weeks,
+    };
+
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+const pieChartStaffSalary = async (req, res) => {
+  try {
+    data = [];
+    const admins = await Admin.find();
+    admins.forEach((item) => {
+      data.push({
+        name: item.name,
+        value: item.earned_salary,
+      });
+    });
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
 module.exports = {
   mainStatistics,
   pieChartIncome,
+  pieChartSpend,
+  pieChartStaffSalary,
 };
