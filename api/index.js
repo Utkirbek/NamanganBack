@@ -17,6 +17,7 @@ const loanRoutes = require("../routes/loanRoutes");
 const kassaRoutes = require("../routes/kassaRoutes");
 const paymentRoutes = require("../routes/paymentRoutes");
 const spendRoutes = require("../routes/spendRoutes");
+const statisticsRoutes = require("../routes/statisticsRoutes");
 
 const kassaController = require("../controller/kassaController");
 const { isAuth } = require("../config/auth");
@@ -47,6 +48,7 @@ app.use("/api/kassa/", isAuth, kassaRoutes);
 app.use("/api/loan/", isAuth, loanRoutes);
 app.use("/api/payment/", isAuth, paymentRoutes);
 app.use("/api/spend/", isAuth, spendRoutes);
+app.use("/api/statistics/", isAuth, statisticsRoutes);
 
 
 //if you not use admin dashboard then these two route will not needed.
