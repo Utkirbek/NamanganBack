@@ -38,8 +38,11 @@ const getAllProducts = async (req, res) => {
 
     const Products = [];
     products.forEach((product) => {
-      const calculatedPrice = product.price * product.currency.equalsTo;
-      product.price = calculatedPrice;
+      if (product.currency) {
+        const calculatedPrice = product.price * product.currency.equalsTo;
+        product.price = calculatedPrice;
+        Products.push(product);
+      }
       Products.push(product);
     });
     res.send({
