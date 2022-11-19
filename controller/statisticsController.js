@@ -3,6 +3,8 @@ const Admin = require("../models/Admin");
 const Product = require("../models/Product");
 const Kassa = require("../models/Kassa");
 const Spend = require("../models/Spend");
+const Order = require("../models/Order");
+const Loan = require("../models/Loan");
 
 const mainStatistics = async (req, res) => {
   try {
@@ -57,7 +59,7 @@ const mainStatistics = async (req, res) => {
         diff: total - lastMonthTotal,
       },
     };
-    res.status(200).json(data);
+    res.status(200).send(data);
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -114,7 +116,7 @@ const pieChartIncome = async (req, res) => {
       weeks: weeks,
     };
 
-    res.status(200).json(data);
+    res.status(200).send(data);
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -171,7 +173,7 @@ const pieChartSpend = async (req, res) => {
       weeks: weeks,
     };
 
-    res.status(200).json(data);
+    res.status(200).send(data);
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -188,11 +190,70 @@ const pieChartStaffSalary = async (req, res) => {
         value: item.earned_salary,
       });
     });
-    res.status(200).json(data);
+    res.status(200).send(data);
   } catch (err) {
     res.status(500).send({
       message: err.message,
     });
+  }
+};
+
+const barChart = async (req, res) => {
+  try {
+    const currentMonth = new Date();
+    currentMonth.setDate(1);
+    currentMonth.setMonth(currentMonth.getMonth());
+    const monthName = currentMonth.toLocaleString("default", {
+      month: "long",
+    });
+
+    const days = [];
+    for (let i = 0; i < 30; i++) {
+      const start = new Date();
+      start.setDate(currentMonth.getDate() + i);
+      const end = new Date();
+      end.setDate(currentMonth.getDate() + i + 1);
+
+      const dayName = start.toLocaleString("default", { weekday: "long" });
+
+      const kassa = await Kassa.find({
+        createdAt: { $gte: start, $lte: end },
+      });
+      let kassaTotal = 0;
+      kassa.forEach((item) => {
+        kassaTotal += item.amount;
+      });
+      const spend = await Spend.find({
+        createdAt: { $gte: start, $lte: end },
+      });
+      let spendTotal = 0;
+      spend.forEach((item) => {
+        spendTotal += item.amount;
+      });
+      const loan = await Loan.find({
+        createdAt: { $gte: start, $lte: end },
+      });
+      let loanTotal = 0;
+      loan.forEach((item) => {
+        loanTotal += item.amount;
+      });
+
+      const orders = await Order.countDocuments({
+        createdAt: { $gte: start, $lte: end },
+      });
+
+      data = {
+        day: `${dayName} / ${monthName} ${i + 1}`,
+        kassa: kassaTotal,
+        spend: spendTotal,
+        loan: loanTotal,
+        order: orders,
+      };
+      days.push(data);
+    }
+    res.status(200).send(days);
+  } catch (err) {
+    res.status(500).send({ message: err.message });
   }
 };
 
@@ -201,4 +262,5 @@ module.exports = {
   pieChartIncome,
   pieChartSpend,
   pieChartStaffSalary,
+  barChart,
 };
