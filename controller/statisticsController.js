@@ -70,7 +70,6 @@ const pieChartIncome = async (req, res) => {
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setMonth(currentMonth.getMonth());
-    // get the name of current month
     const monthName = currentMonth.toLocaleString("default", {
       month: "long",
     });
