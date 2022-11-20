@@ -38,9 +38,13 @@ const getAllProducts = async (req, res) => {
 
     const Products = [];
     products.forEach((product) => {
-      const calculatedPrice = product.price * product.currency.equalsTo;
-      product.price = calculatedPrice;
-      Products.push(product);
+      if (product.currency) {
+        const calculatedPrice = product.price * product.currency.equalsTo;
+        product.price = calculatedPrice;
+        Products.push(product);
+      } else {
+        Products.push(product);
+      }
     });
     res.send({
       products: Products,
@@ -108,19 +112,25 @@ const deleteProduct = (req, res) => {
 
 const searchProduct = async (req, res) => {
   try {
-    if (req.params.title) {
+    const search = req.params.title.toString();
+
+    if (search) {
       const products = await Product.find({
         $or: [
-          { title: { $regex: new RegExp(req.params.title, "i") } },
-          { code: { $regex: req.params.title } },
+          { title: { $regex: new RegExp(search, "i") } },
+          { code: { $regex: search } },
         ],
       }).populate("currency");
-
       const Products = [];
+
       products.forEach((product) => {
-        const calculatedPrice = product.price * product.currency.equalsTo;
-        product.price = calculatedPrice;
-        Products.push(product);
+        if (product.currency) {
+          const calculatedPrice = product.price * product.currency.equalsTo;
+          product.price = calculatedPrice;
+          Products.push(product);
+        } else {
+          Products.push(product);
+        }
       });
       res.send(Products);
     } else {
