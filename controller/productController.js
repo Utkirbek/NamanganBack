@@ -42,8 +42,10 @@ const getAllProducts = async (req, res) => {
         const calculatedPrice = product.price * product.currency.equalsTo;
         product.price = calculatedPrice;
         Products.push(product);
+      } else {
+        Products.push(product);
       }
-      Products.push(product);
+      
     });
     res.send({
       products: Products,
@@ -125,8 +127,10 @@ const searchProduct = async (req, res) => {
           const calculatedPrice = product.price * product.currency.equalsTo;
           product.price = calculatedPrice;
           Products.push(product);
+        } else {
+          Products.push(product);
         }
-        Products.push(product);
+        
       });
       res.send(Products);
     } else {
