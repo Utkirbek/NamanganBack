@@ -179,22 +179,21 @@ const deleteStaff = (req, res) => {
 };
 const searchAdmin = async (req, res) => {
   try {
-    if (req.params.name) {
+    const search = req.params.name.toString();
+    if (search) {
       const admin = await Admin.find({
         name: {
-          $regex: new RegExp(req.params.title, "i"),
+          $regex: new RegExp(search, "i"),
         },
       });
-      if (admin)
-      {
+      if (admin) {
         res.send(admin);
-      } else
-      {
+      } else {
         res.status(404).send({
-          message: 'Admin Not Found!',
+          message: "Admin Not Found!",
         });
       }
-    }else{
+    } else {
       res.send({ message: "Search Name is provided" });
     }
   } catch (err) {
