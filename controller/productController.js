@@ -27,9 +27,7 @@ const getAllProducts = async (req, res) => {
     }
 
     const limit = parseInt(size);
-    const getAllProducts = await Product.find({})
-      .populate('currency')
-      .sort({ _id: -1 });
+
     const products = await Product.find({})
       .sort({ _id: -1 })
       .populate('currency')
@@ -37,11 +35,8 @@ const getAllProducts = async (req, res) => {
       .skip((page - 1) * limit);
 
     const Products = [];
-    if (minQuantity === true && noPrice === true) {
-      res.status(404).send({
-        message: 'Only one parametr can be filtered',
-      });
-    } else if (minQuantity === true) {
+
+    if (minQuantity === 'true') {
       products.forEach((product) => {
         if (product.currency) {
           const calculatedPrice =
@@ -62,7 +57,7 @@ const getAllProducts = async (req, res) => {
           }
         }
       });
-    } else if (noPrice === true) {
+    } else if (noPrice === 'true') {
       products.forEach((product) => {
         if (product.currency) {
           const calculatedPrice =
@@ -95,11 +90,17 @@ const getAllProducts = async (req, res) => {
         }
       });
     }
-    res.send({
-      products: Products,
-      count: Products.length,
-      totalPage: Math.ceil(getAllProducts.length / limit),
-    });
+    if (minQuantity === 'true' && noPrice === 'true') {
+      res.send({
+        message: 'Only one parametr can be filtered',
+      });
+    } else {
+      res.send({
+        products: Products,
+        count: Products.length,
+        totalPage: Math.ceil(Products.length / limit),
+      });
+    }
   } catch (err) {
     res.status(500).send({
       message: err.message,
