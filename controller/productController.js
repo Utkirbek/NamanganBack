@@ -1,11 +1,11 @@
-const Product = require("../models/Product");
+const Product = require('../models/Product');
 
 const addProduct = async (req, res) => {
   try {
     const newProduct = new Product(req.body);
     await newProduct.save();
     res.status(200).send({
-      message: "Product Added Successfully!",
+      message: 'Product Added Successfully!',
     });
   } catch (err) {
     res.status(500).send({
@@ -16,7 +16,7 @@ const addProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   try {
-    let { page, size } = req.query;
+    let { page, size, minQuantity, noPrice } = req.query;
 
     if (!page) {
       page = 1;
@@ -28,24 +28,73 @@ const getAllProducts = async (req, res) => {
 
     const limit = parseInt(size);
     const getAllProducts = await Product.find({})
-      .populate("currency")
+      .populate('currency')
       .sort({ _id: -1 });
     const products = await Product.find({})
       .sort({ _id: -1 })
-      .populate("currency")
+      .populate('currency')
       .limit(limit)
       .skip((page - 1) * limit);
 
     const Products = [];
-    products.forEach((product) => {
-      if (product.currency) {
-        const calculatedPrice = product.price * product.currency.equalsTo;
-        product.price = calculatedPrice;
-        Products.push(product);
-      } else {
-        Products.push(product);
-      }
-    });
+    if (minQuantity === true && noPrice === true) {
+      res.status(404).send({
+        message: 'Only one parametr can be filtered',
+      });
+    } else if (minQuantity === true) {
+      products.forEach((product) => {
+        if (product.currency) {
+          const calculatedPrice =
+            product.price * product.currency.equalsTo;
+          product.price = calculatedPrice;
+          if (
+            product.quantity <= product.minQuantity ||
+            product.quantity <= 5
+          ) {
+            Products.push(product);
+          }
+        } else {
+          if (
+            product.quantity <= product.minQuantity ||
+            product.quantity <= 5
+          ) {
+            Products.push(product);
+          }
+        }
+      });
+    } else if (noPrice === true) {
+      products.forEach((product) => {
+        if (product.currency) {
+          const calculatedPrice =
+            product.price * product.currency.equalsTo;
+          product.price = calculatedPrice;
+          if (
+            product.price === null ||
+            product.originalPrice === null
+          ) {
+            Products.push(product);
+          }
+        } else {
+          if (
+            product.price === null ||
+            product.originalPrice === null
+          ) {
+            Products.push(product);
+          }
+        }
+      });
+    } else {
+      products.forEach((product) => {
+        if (product.currency) {
+          const calculatedPrice =
+            product.price * product.currency.equalsTo;
+          product.price = calculatedPrice;
+          Products.push(product);
+        } else {
+          Products.push(product);
+        }
+      });
+    }
     res.send({
       products: Products,
       count: Products.length,
@@ -60,9 +109,12 @@ const getAllProducts = async (req, res) => {
 
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate("currency");
+    const product = await Product.findById(req.params.id).populate(
+      'currency'
+    );
     if (product.currency) {
-      const calculatedPrice = product.price * product.currency.equalsTo;
+      const calculatedPrice =
+        product.price * product.currency.equalsTo;
       product.price = calculatedPrice;
     }
     res.send(product);
@@ -89,7 +141,10 @@ const updateProduct = async (req, res) => {
       product.minQuantity = req.body.minQuantity;
       product.unit = req.body.unit;
       await product.save();
-      res.send({ data: product, message: "Product updated successfully!" });
+      res.send({
+        data: product,
+        message: 'Product updated successfully!',
+      });
     }
   } catch (err) {
     res.status(404).send(err.message);
@@ -104,7 +159,7 @@ const deleteProduct = (req, res) => {
       });
     } else {
       res.status(200).send({
-        message: "Product Deleted Successfully!",
+        message: 'Product Deleted Successfully!',
       });
     }
   });
@@ -117,15 +172,16 @@ const searchProduct = async (req, res) => {
     if (search) {
       const products = await Product.find({
         $or: [
-          { title: { $regex: new RegExp(search, "i") } },
+          { title: { $regex: new RegExp(search, 'i') } },
           { code: { $regex: search } },
         ],
-      }).populate("currency");
+      }).populate('currency');
       const Products = [];
 
       products.forEach((product) => {
         if (product.currency) {
-          const calculatedPrice = product.price * product.currency.equalsTo;
+          const calculatedPrice =
+            product.price * product.currency.equalsTo;
           product.price = calculatedPrice;
           Products.push(product);
         } else {
@@ -135,7 +191,7 @@ const searchProduct = async (req, res) => {
       res.send(Products);
     } else {
       res.status(404).send({
-        message: "Not Found!",
+        message: 'Not Found!',
       });
     }
   } catch (err) {
