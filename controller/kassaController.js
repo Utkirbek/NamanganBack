@@ -4,9 +4,9 @@ const dailyKassa = async (req, res) => {
   try {
     const newKassa = new Kassa();
     await newKassa.save();
-    console.log("new kassa created");
+    console.log('new kassa created');
   } catch (err) {
-    console.log("error in creating new kassa");
+    console.log('error in creating new kassa');
   }
 };
 

@@ -28,6 +28,7 @@ const getAllProducts = async (req, res) => {
 
     const limit = parseInt(size);
 
+    const AllProducts = await Product.find({});
     const products = await Product.find({})
       .sort({ _id: -1 })
       .populate('currency')
@@ -98,7 +99,7 @@ const getAllProducts = async (req, res) => {
       res.send({
         products: Products,
         count: Products.length,
-        totalPage: Math.ceil(Products.length / limit),
+        totalPage: Math.ceil(AllProducts.length / limit),
       });
     }
   } catch (err) {
