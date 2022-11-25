@@ -10,11 +10,11 @@ const createOrder = async (req, res) => {
       admin.addSalary(order.total);
     } else {
       res.status(404).send({
-        message: "Admin Not Found",
+        message: 'Admin Not Found',
       });
     }
     res.send({
-      message: "Order Created Successfully!",
+      message: 'Order Created Successfully!',
     });
   } catch (err) {
     res.status(500).send(err.message);
@@ -35,9 +35,9 @@ const getAllOrders = async (req, res) => {
     const limit = parseInt(size);
     const orders = await Order.find({})
       .sort({ _id: -1 })
-      .populate("user")
-      .populate("salesman")
-      .populate("cart.product")
+      .populate('user')
+      .populate('salesman')
+      .populate('cart.product')
       .limit(limit)
       .skip((page - 1) * limit);
     res.send(orders);
@@ -50,7 +50,9 @@ const getAllOrders = async (req, res) => {
 
 const getOrderByUser = async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.params.id }).sort({ _id: -1 });
+    const orders = await Order.find({ user: req.params.id }).sort({
+      _id: -1,
+    });
     res.send(orders);
   } catch (err) {
     res.status(500).send({
@@ -84,10 +86,30 @@ const deleteOrder = (req, res) => {
   });
 };
 
+const updateOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      if (order.salesman !== req.body.salesman) {
+        res.send({ message: 'You cannot update this order' });
+      } else {
+        order.cart = req.body.cart;
+        order.total = req.body.total;
+        order.payment = req.body.payment;
+        order.loan = req.body.loan;
+        await spend.save();
+        res.send({ message: 'Order Updated Successfully!' });
+      }
+    }
+  } catch (err) {
+    res.status(404).send({ message: 'Order not found!' });
+  }
+};
 module.exports = {
   getAllOrders,
   getOrderById,
   getOrderByUser,
   deleteOrder,
   createOrder,
+  updateOrder,
 };
