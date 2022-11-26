@@ -42,7 +42,7 @@ const getAllProducts = async (req, res) => {
         if (product.currency) {
           const calculatedPrice =
             product.price * product.currency.equalsTo;
-          product.price = calculatedPrice;
+          product.price = calculatedPrice.toFixed(2);
           if (
             product.quantity <= product.minQuantity ||
             product.quantity <= 5
@@ -63,7 +63,7 @@ const getAllProducts = async (req, res) => {
         if (product.currency) {
           const calculatedPrice =
             product.price * product.currency.equalsTo;
-          product.price = calculatedPrice;
+          product.price = calculatedPrice.toFixed(2);
           if (
             product.price === null ||
             product.originalPrice === null
@@ -84,7 +84,7 @@ const getAllProducts = async (req, res) => {
         if (product.currency) {
           const calculatedPrice =
             product.price * product.currency.equalsTo;
-          product.price = calculatedPrice;
+          product.price = calculatedPrice.toFixed(2);
           Products.push(product);
         } else {
           Products.push(product);
@@ -117,7 +117,7 @@ const getProductById = async (req, res) => {
     if (product.currency) {
       const calculatedPrice =
         product.price * product.currency.equalsTo;
-      product.price = calculatedPrice;
+      product.price = calculatedPrice.toFixed(2);
     }
     res.send(product);
   } catch (err) {
@@ -184,7 +184,7 @@ const searchProduct = async (req, res) => {
         if (product.currency) {
           const calculatedPrice =
             product.price * product.currency.equalsTo;
-          product.price = calculatedPrice;
+          product.price = calculatedPrice.toFixed();
           Products.push(product);
         } else {
           Products.push(product);
