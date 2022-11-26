@@ -48,6 +48,7 @@ const getAllPayment = async (req, res) => {
     if (!size) {
       size = 20;
     }
+    const AllPayments = await Payment.find({});
     const limit = parseInt(size);
     const payments = await Payment.find({})
       .sort({ _id: -1 })
@@ -57,7 +58,7 @@ const getAllPayment = async (req, res) => {
     res.send({
       payments: payments,
       count: payments.length,
-      totalPage: Math.ceil(payments.length / limit),
+      totalPage: Math.ceil(AllPayments.length / limit),
     });
   } catch (err) {
     res.status(500).send({
