@@ -5,19 +5,19 @@ const orderSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: false,
     },
     salesman: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Admin",
+      ref: 'Admin',
       required: true,
     },
     cart: [
       {
         product: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
+          ref: 'Product',
           required: true,
         },
         quantity: {
@@ -34,14 +34,23 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    cashtoatl: {
+      type: Number,
+
+      required: false,
+    },
+    laonTotal: {
+      type: Number,
+      required: false,
+    },
     payment: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Payment",
+      ref: 'Payment',
       required: true,
     },
     loan: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Loan",
+      ref: 'Loan',
       required: false,
     },
   },
@@ -49,7 +58,6 @@ const orderSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
 
 const Order = mongoose.model('Order', orderSchema);
 

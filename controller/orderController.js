@@ -1,11 +1,33 @@
 const Order = require('../models/Order');
 const Admin = require('../models/Admin');
+const Payment = require('../models/Payment');
+const Loan = require('../models/Loan');
 
 const createOrder = async (req, res) => {
   try {
-    const order = await Order.create(req.body);
+    const data = req.body;
+    if (data.cashTotal > 0) {
+      const payment = await Payment.create({
+        salesman: data.salesman,
+        total: data.cashTotal,
+        paymentMethod: data.paymentMethod,
+      });
+    }
+    if (loanTotal > 0) {
+      const loan = await Loan.create({
+        salesman: data.salesman,
+        total: data.loanTotal,
+        user: data.user,
+        shouldPay: data.shouldPay,
+        paymentMethod: data.paymentMethod,
+      });
+    }
+    data.payment = payment._id;
+    data.laon = loan._id;
 
-    const admin = await Admin.findById(req.body.salesman);
+    const order = await Order.create(data);
+
+    const admin = await Admin.findById(data.salesman);
     if (admin) {
       admin.addSalary(order.total);
     } else {
