@@ -82,6 +82,12 @@ const updatePayment = async (req, res) => {
         } else {
           res.status(404).send({ message: 'Kassa not found!' });
         }
+        const admin = await Admin.findById(req.body.salesman);
+        if (admin) {
+          await admin.removeSalary(paymentDiff);
+        } else {
+          res.status(404).send({ message: 'Salesman not found!' });
+        }
         await payment.save();
 
         res.send({ message: 'Payment Updated Successfully!' });

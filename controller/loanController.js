@@ -1,12 +1,12 @@
 const Loan = require('../models/Loan');
-const User = require("../models/User");
+const User = require('../models/User');
 
 const addLoan = async (req, res) => {
   try {
     const newLoan = new Loan(req.body);
     await newLoan.save();
     res.status(200).send({
-      message: "Loan Added Successfully!",
+      message: 'Loan Added Successfully!',
       newLoan,
     });
   } catch (err) {
@@ -30,8 +30,8 @@ const getAllLoan = async (req, res) => {
     const limit = parseInt(size);
     const loans = await Loan.find({})
       .sort({ _id: -1 })
-      .populate("user")
-      .populate("salesman")
+      .populate('user')
+      .populate('salesman')
       .limit(limit)
       .skip((page - 1) * limit);
     res.send(loans);
@@ -49,10 +49,10 @@ const updateLoan = async (req, res) => {
       loan.amount = req.body.amount;
       loan.shouldPay = req.body.shouldPay;
       await loan.save();
-      res.send({ message: "Loan Updated Successfully!" });
+      res.send({ message: 'Loan Updated Successfully!' });
     }
   } catch (err) {
-    res.status(404).send({ message: "Loan not found!" });
+    res.status(404).send({ message: 'Loan not found!' });
   }
 };
 
@@ -64,7 +64,7 @@ const deleteLoan = (req, res) => {
       });
     } else {
       res.status(200).send({
-        message: "Loan Deleted Successfully!",
+        message: 'Loan Deleted Successfully!',
       });
     }
   });
