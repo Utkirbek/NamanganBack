@@ -15,7 +15,7 @@ const createOrder = async (req, res) => {
         paymentMethod: data.paymentMethod,
       });
     }
-    if (loanTotal > 0) {
+    if (data.loanTotal > 0) {
       loan = await Loan.create({
         salesman: data.salesman,
         amount: data.loanTotal,
