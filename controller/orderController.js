@@ -17,7 +17,7 @@ const createOrder = async (req, res) => {
       });
       const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
       if (kassa) {
-        await kassa[0].addAmount(payment.amount);
+        await kassa[0].addAmount(data.cashTotal);
       } else {
         res.status(404).send({ message: 'Kassa not found!' });
       }
