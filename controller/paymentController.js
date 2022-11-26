@@ -71,12 +71,25 @@ const updatePayment = async (req, res) => {
   try {
     const payment = await Payment.findById(req.params.id);
     if (payment) {
-      payment.amount = req.body.amount;
-      payment.paymentMethod = req.body.paymentMethod;
-      payment.loan = req.body.loan;
-      await payment.save();
+      if (payment.salesman === req.body.salesman) {
+        const paymentDiff = payment.amount - req.body.amount;
+        payment.amount = req.body.amount;
+        payment.paymentMethod = req.body.paymentMethod;
+        payment.loan = req.body.loan;
+        const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+        if (kassa) {
+          await kassa[0].minusAmount(paymentDiff);
+        } else {
+          res.status(404).send({ message: 'Kassa not found!' });
+        }
+        await payment.save();
 
-      res.send({ message: 'Payment Updated Successfully!' });
+        res.send({ message: 'Payment Updated Successfully!' });
+      } else {
+        res.send({
+          message: 'You cannot update this payment',
+        });
+      }
     }
   } catch (err) {
     res.status(404).send({ message: 'Payment not found!' });
