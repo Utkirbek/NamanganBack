@@ -6,15 +6,17 @@ const Loan = require('../models/Loan');
 const createOrder = async (req, res) => {
   try {
     const data = req.body;
+    let payment;
+    let loan;
     if (data.cashTotal > 0) {
-      const payment = await Payment.create({
+      payment = await Payment.create({
         salesman: data.salesman,
         total: data.cashTotal,
         paymentMethod: data.paymentMethod,
       });
     }
     if (loanTotal > 0) {
-      const loan = await Loan.create({
+      loan = await Loan.create({
         salesman: data.salesman,
         total: data.loanTotal,
         user: data.user,
@@ -23,7 +25,7 @@ const createOrder = async (req, res) => {
       });
     }
     data.payment = payment._id;
-    data.laon = loan._id;
+    data.loan = loan._id;
 
     const order = await Order.create(data);
 
