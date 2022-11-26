@@ -54,7 +54,11 @@ const getAllPayment = async (req, res) => {
       .limit(limit)
       .skip((page - 1) * limit)
       .populate('salesman');
-    res.send(payments);
+    res.send({
+      payments: payments,
+      count: payments.length,
+      totalPage: Math.ceil(payments.length / limit),
+    });
   } catch (err) {
     res.status(500).send({
       message: err.message,
