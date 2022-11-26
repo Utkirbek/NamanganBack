@@ -2,6 +2,7 @@ const Order = require('../models/Order');
 const Admin = require('../models/Admin');
 const Payment = require('../models/Payment');
 const Loan = require('../models/Loan');
+const Kassa = require('../models/Loan');
 
 const createOrder = async (req, res) => {
   try {
@@ -14,6 +15,18 @@ const createOrder = async (req, res) => {
         amount: data.cashTotal,
         paymentMethod: data.paymentMethod,
       });
+      const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+      if (kassa) {
+        await kassa[0].addAmount(payment.amount);
+      } else {
+        res.status(404).send({ message: 'Kassa not found!' });
+      }
+      const admin = await Admin.findById(data.salesman);
+      if (admin) {
+        await admin.addSalary(data.cashTotal);
+      } else {
+        res.status(404).send({ message: 'Salesman not found!' });
+      }
     }
     if (data.loanTotal > 0) {
       loan = await Loan.create({
