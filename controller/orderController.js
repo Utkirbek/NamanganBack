@@ -21,7 +21,6 @@ const createOrder = async (req, res) => {
         amount: data.loanTotal,
         user: data.user,
         shouldPay: data.shouldPay,
-        paymentMethod: data.paymentMethod,
       });
     }
     data.payment = payment._id;
