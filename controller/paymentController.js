@@ -71,31 +71,25 @@ const updatePayment = async (req, res) => {
   try {
     const payment = await Payment.findById(req.params.id);
     if (payment) {
-      if (payment.salesman === req.body.salesman) {
-        const paymentDiff = payment.amount - req.body.amount;
-        payment.amount = req.body.amount;
-        payment.paymentMethod = req.body.paymentMethod;
-        payment.loan = req.body.loan;
-        const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
-        if (kassa) {
-          await kassa[0].minusAmount(paymentDiff);
-        } else {
-          res.status(404).send({ message: 'Kassa not found!' });
-        }
-        const admin = await Admin.findById(req.body.salesman);
-        if (admin) {
-          await admin.removeSalary(paymentDiff);
-        } else {
-          res.status(404).send({ message: 'Salesman not found!' });
-        }
-        await payment.save();
-
-        res.send({ message: 'Payment Updated Successfully!' });
+      const paymentDiff = payment.amount - req.body.amount;
+      payment.amount = req.body.amount;
+      payment.paymentMethod = req.body.paymentMethod;
+      payment.loan = req.body.loan;
+      const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+      if (kassa) {
+        await kassa[0].minusAmount(paymentDiff);
       } else {
-        res.send({
-          message: 'You cannot update this payment',
-        });
+        res.status(404).send({ message: 'Kassa not found!' });
       }
+      const admin = await Admin.findById(req.body.salesman);
+      if (admin) {
+        await admin.removeSalary(paymentDiff);
+      } else {
+        res.status(404).send({ message: 'Salesman not found!' });
+      }
+      await payment.save();
+
+      res.send({ message: 'Payment Updated Successfully!' });
     }
   } catch (err) {
     res.status(404).send({ message: 'Payment not found!' });
