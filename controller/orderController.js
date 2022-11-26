@@ -120,16 +120,8 @@ const updateOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
     if (order) {
-      if (order.salesman !== req.body.salesman) {
-        res.send({ message: 'You cannot update this order' });
-      } else {
-        order.cart = req.body.cart;
-        order.total = req.body.total;
-        order.payment = req.body.payment;
-        order.loan = req.body.loan;
-        await spend.save();
-        res.send({ message: 'Order Updated Successfully!' });
-      }
+      await spend.save();
+      res.send({ message: 'Order Updated Successfully!' });
     }
   } catch (err) {
     res.status(404).send({ message: 'Order not found!' });

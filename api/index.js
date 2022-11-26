@@ -38,23 +38,23 @@ app.get('/', (req, res) => {
 });
 
 //this for route will need for store front, also for admin dashboard
-app.use('/api/products/', isAuth, productRoutes);
-app.use('/api/category/', isAuth, categoryRoutes);
-app.use('/api/coupon/', isAuth, couponRoutes);
-app.use('/api/user/', isAuth, userRoutes);
-app.use('/api/currency/', isAuth, currencyRoutes);
-app.use('/api/permission/', isAuth, permissionRoutes);
-app.use('/api/role/', isAuth, roleRoutes);
-app.use('/api/kassa/', isAuth, kassaRoutes);
-app.use('/api/loan/', isAuth, loanRoutes);
-app.use('/api/payment/', isAuth, paymentRoutes);
-app.use('/api/spend/', isAuth, spendRoutes);
+app.use('/api/products/:shop', isAuth, productRoutes);
+app.use('/api/category/:shop', isAuth, categoryRoutes);
+app.use('/api/coupon/:shop', isAuth, couponRoutes);
+app.use('/api/user/:shop', isAuth, userRoutes);
+app.use('/api/currency/:shop', isAuth, currencyRoutes);
+app.use('/api/permission/:shop', isAuth, permissionRoutes);
+app.use('/api/role/:shop', isAuth, roleRoutes);
+app.use('/api/kassa/:shop', isAuth, kassaRoutes);
+app.use('/api/loan/:shop', isAuth, loanRoutes);
+app.use('/api/payment/:shop', isAuth, paymentRoutes);
+app.use('/api/spend/:shop', isAuth, spendRoutes);
 app.use('/api/shop/', isAuth, shopRoutes);
-app.use('/api/statistics/', isAuth, statisticsRoutes);
+app.use('/api/statistics/:shop', isAuth, statisticsRoutes);
 
 //if you not use admin dashboard then these two route will not needed.
 app.use('/api/admin/', adminRoutes);
-app.use('/api/orders/', isAuth, orderRoutes);
+app.use('/api/orders/:shop', isAuth, orderRoutes);
 
 // Use express's default error handling middleware
 app.use((err, req, res, next) => {
