@@ -11,14 +11,14 @@ const createOrder = async (req, res) => {
     if (data.cashTotal > 0) {
       payment = await Payment.create({
         salesman: data.salesman,
-        total: data.cashTotal,
+        amount: data.cashTotal,
         paymentMethod: data.paymentMethod,
       });
     }
     if (loanTotal > 0) {
       loan = await Loan.create({
         salesman: data.salesman,
-        total: data.loanTotal,
+        amount: data.loanTotal,
         user: data.user,
         shouldPay: data.shouldPay,
         paymentMethod: data.paymentMethod,
