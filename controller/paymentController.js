@@ -5,7 +5,10 @@ const Admin = require('../models/Admin');
 
 const addPayment = async (req, res) => {
   try {
-    const newPayment = new Payment(req.body);
+    const data = req.body;
+
+    data.shop = erq.params.shop;
+    const newPayment = new Payment(data);
 
     const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
     if (kassa) {

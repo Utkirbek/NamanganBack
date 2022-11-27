@@ -29,9 +29,10 @@ const getAllLoan = async (req, res) => {
     if (!size) {
       size = 20;
     }
+
     const limit = parseInt(size);
-    const AllLoans = await Loan.find({});
-    const loans = await Loan.find({})
+    const AllLoans = await Loan.find({ shop: req.params.shop });
+    const loans = await Loan.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .populate('user')
       .populate('salesman')
@@ -76,15 +77,6 @@ const deleteLoan = (req, res) => {
       });
     }
   });
-};
-
-const getLoanByUser = async (req, res) => {
-  try {
-  } catch (err) {
-    res.status(500).send({
-      message: err.message,
-    });
-  }
 };
 
 const getLoanByUserId = async (req, res) => {
