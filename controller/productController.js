@@ -27,74 +27,53 @@ const getAllProducts = async (req, res) => {
     }
 
     const limit = parseInt(size);
-
+    let products;
     const AllProducts = await Product.find({});
-    const products = await Product.find({})
-      .sort({ _id: -1 })
-      .populate('currency')
-      .limit(limit)
-      .skip((page - 1) * limit);
+    if (minQuantity === 'true') {
+      products = await Product.find({
+        $or: [
+          { $expr: { $lt: ['$quantity', '$minQuantity'] } },
+          { quantity: { $lt: 5 } },
+        ],
+      })
+        .sort({ _id: -1 })
+        .populate('currency')
+        .limit(limit)
+        .skip((page - 1) * limit);
+    } else if (noPrice === 'true') {
+      products = await Product.find({
+        $or: [
+          { price: null },
+          { price: 0 },
+          { originalPrice: null },
+          { originalPrice: 0 },
+        ],
+      })
+        .sort({ _id: -1 })
+        .populate('currency')
+        .limit(limit)
+        .skip((page - 1) * limit);
+    } else {
+      products = await Product.find({})
+        .sort({ _id: -1 })
+        .populate('currency')
+        .limit(limit)
+        .skip((page - 1) * limit);
+    }
 
     const Products = [];
 
-    if (minQuantity === 'true') {
-      products.forEach((product) => {
-        if (product.currency) {
-          const calculatedPrice =
-            product.price * product.currency.equalsTo;
-          product.price = calculatedPrice.toFixed(2);
-          if (
-            product.quantity <= product.minQuantity ||
-            product.quantity <= 5
-          ) {
-            Products.push(product);
-          }
-        } else {
-          if (
-            product.quantity <= product.minQuantity ||
-            product.quantity <= 5
-          ) {
-            Products.push(product);
-          }
-        }
-      });
-    } else if (noPrice === 'true') {
-      products.forEach((product) => {
-        if (product.currency) {
-          const calculatedPrice =
-            product.price * product.currency.equalsTo;
-          product.price = calculatedPrice.toFixed(2);
-          if (
-            product.price === null ||
-            product.originalPrice === null ||
-            product.price === 0 ||
-            product.originalPrice === 0
-          ) {
-            Products.push(product);
-          }
-        } else {
-          if (
-            product.price === null ||
-            product.originalPrice === null ||
-            product.price === 0 ||
-            product.originalPrice === 0
-          ) {
-            Products.push(product);
-          }
-        }
-      });
-    } else {
-      products.forEach((product) => {
-        if (product.currency) {
-          const calculatedPrice =
-            product.price * product.currency.equalsTo;
-          product.price = calculatedPrice.toFixed(2);
-          Products.push(product);
-        } else {
-          Products.push(product);
-        }
-      });
-    }
+    products.forEach((product) => {
+      if (product.currency) {
+        const calculatedPrice =
+          product.price * product.currency.equalsTo;
+        product.price = calculatedPrice.toFixed(2);
+        Products.push(product);
+      } else {
+        Products.push(product);
+      }
+    });
+
     if (minQuantity === 'true' && noPrice === 'true') {
       res.send({
         message: 'Only one parametr can be filtered',
