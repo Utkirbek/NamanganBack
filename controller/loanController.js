@@ -28,13 +28,18 @@ const getAllLoan = async (req, res) => {
       size = 20;
     }
     const limit = parseInt(size);
+    const AllLoans = await Loan.find({});
     const loans = await Loan.find({})
       .sort({ _id: -1 })
       .populate('user')
       .populate('salesman')
       .limit(limit)
       .skip((page - 1) * limit);
-    res.send(loans);
+    res.send({
+      loans: loans,
+      count: loans.length,
+      totalPage: Math.ceil(AllLoans.length / limit),
+    });
   } catch (err) {
     res.status(500).send({
       message: err.message,
