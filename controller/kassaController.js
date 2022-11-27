@@ -25,12 +25,14 @@ const getAllKassa = async (req, res) => {
     if (!size) {
       size = 20;
     }
+    const shop = await Shop.findById(req.params.shop);
     const limit = parseInt(size);
     const AllKassa = await Kassa.find({});
-    const kassas = await Kassa.find({})
+    const kassas = await Kassa.find({ shop: shop._id })
       .sort({ _id: -1 })
       .limit(limit)
-      .skip((page - 1) * limit);
+      .skip((page - 1) * limit)
+      .populate('shop');
     res.send({
       kassas: kassas,
       count: kassas.length,
