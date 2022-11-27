@@ -66,14 +66,18 @@ const getAllProducts = async (req, res) => {
           product.price = calculatedPrice.toFixed(2);
           if (
             product.price === null ||
-            product.originalPrice === null
+            product.originalPrice === null ||
+            product.price === 0 ||
+            product.originalPrice === 0
           ) {
             Products.push(product);
           }
         } else {
           if (
             product.price === null ||
-            product.originalPrice === null
+            product.originalPrice === null ||
+            product.price === 0 ||
+            product.originalPrice === 0
           ) {
             Products.push(product);
           }
