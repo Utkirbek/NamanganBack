@@ -63,6 +63,7 @@ const getAllOrders = async (req, res) => {
       size = 20;
     }
     const limit = parseInt(size);
+    const AllOrders = await Order.find({});
     const orders = await Order.find({})
       .sort({ _id: -1 })
       .populate('user')
@@ -70,7 +71,11 @@ const getAllOrders = async (req, res) => {
       .populate('cart.product')
       .limit(limit)
       .skip((page - 1) * limit);
-    res.send(orders);
+    res.send({
+      orders: orders,
+      count: orders.length,
+      totalPage: Math.ceil(AllOrders.length / limit),
+    });
   } catch (err) {
     res.status(500).send({
       message: err.message,
