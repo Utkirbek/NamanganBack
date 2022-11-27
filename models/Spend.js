@@ -1,9 +1,14 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const spendSchema = new mongoose.Schema(
   {
     amount: {
       type: Number,
+      required: true,
+    },
+    shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Shop',
       required: true,
     },
     paymentMethod: {
@@ -24,6 +29,6 @@ const spendSchema = new mongoose.Schema(
   }
 );
 
-const Spend = mongoose.model("Spend", spendSchema);
+const Spend = mongoose.model('Spend', spendSchema);
 
 module.exports = Spend;

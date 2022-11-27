@@ -13,6 +13,11 @@ const orderSchema = new mongoose.Schema(
       ref: 'Admin',
       required: true,
     },
+    shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Shop',
+      required: true,
+    },
     cart: [
       {
         product: {
