@@ -36,6 +36,7 @@ const getAllProducts = async (req, res) => {
           { quantity: { $lt: 5 } },
         ],
       })
+        .lean()
         .sort({ _id: -1 })
         .populate('currency')
         .limit(limit)
@@ -49,12 +50,14 @@ const getAllProducts = async (req, res) => {
           { originalPrice: 0 },
         ],
       })
+        .lean()
         .sort({ _id: -1 })
         .populate('currency')
         .limit(limit)
         .skip((page - 1) * limit);
     } else {
       products = await Product.find({})
+        .lean()
         .sort({ _id: -1 })
         .populate('currency')
         .limit(limit)
@@ -67,7 +70,7 @@ const getAllProducts = async (req, res) => {
       if (product.currency) {
         const calculatedPrice =
           product.price * product.currency.equalsTo;
-        product.price = calculatedPrice.toFixed(2);
+        product.calculatedPrice = calculatedPrice.toFixed(2);
         Products.push(product);
       } else {
         Products.push(product);
@@ -94,13 +97,13 @@ const getAllProducts = async (req, res) => {
 
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate(
-      'currency'
-    );
+    const product = await Product.findById(req.params.id)
+      .lean()
+      .populate('currency');
     if (product.currency) {
       const calculatedPrice =
         product.price * product.currency.equalsTo;
-      product.price = calculatedPrice.toFixed(2);
+      product.calculatedPrice = calculatedPrice.toFixed(2);
     }
     res.send(product);
   } catch (err) {
@@ -160,14 +163,16 @@ const searchProduct = async (req, res) => {
           { title: { $regex: new RegExp(search, 'i') } },
           { code: { $regex: search } },
         ],
-      }).populate('currency');
+      })
+        .populate('currency')
+        .lean();
       const Products = [];
 
       products.forEach((product) => {
         if (product.currency) {
           const calculatedPrice =
             product.price * product.currency.equalsTo;
-          product.price = calculatedPrice.toFixed();
+          product.calculatedPrice = calculatedPrice.toFixed();
           Products.push(product);
         } else {
           Products.push(product);
