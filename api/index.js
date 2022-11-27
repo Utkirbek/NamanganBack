@@ -10,8 +10,7 @@ const adminRoutes = require('../routes/adminRoutes');
 const orderRoutes = require('../routes/orderRoutes');
 const permissionRoutes = require('../routes/permissionRoutes');
 const roleRoutes = require('../routes/roleRoutes');
-const categoryRoutes = require('../routes/categoryRoutes');
-const couponRoutes = require('../routes/couponRoutes');
+
 const currencyRoutes = require('../routes/currencyRoutes');
 const loanRoutes = require('../routes/loanRoutes');
 const kassaRoutes = require('../routes/kassaRoutes');
@@ -38,13 +37,12 @@ app.get('/', (req, res) => {
 });
 
 //this for route will need for store front, also for admin dashboard
-app.use('/api/products/:shop', isAuth, productRoutes);
-app.use('/api/category/:shop', isAuth, categoryRoutes);
-app.use('/api/coupon/:shop', isAuth, couponRoutes);
-app.use('/api/user/:shop', isAuth, userRoutes);
-app.use('/api/currency/:shop', isAuth, currencyRoutes);
-app.use('/api/permission/:shop', isAuth, permissionRoutes);
-app.use('/api/role/:shop', isAuth, roleRoutes);
+app.use('/api/products/', isAuth, productRoutes);
+
+app.use('/api/user/', isAuth, userRoutes);
+app.use('/api/currency/', isAuth, currencyRoutes);
+app.use('/api/permission/', isAuth, permissionRoutes);
+app.use('/api/role/', isAuth, roleRoutes);
 app.use('/api/kassa/:shop', isAuth, kassaRoutes);
 app.use('/api/loan/:shop', isAuth, loanRoutes);
 app.use('/api/payment/:shop', isAuth, paymentRoutes);
