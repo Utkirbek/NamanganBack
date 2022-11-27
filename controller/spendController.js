@@ -1,19 +1,21 @@
-const Spend = require("../models/Spend");
-const Kassa = require("../models/Kassa");
+const Spend = require('../models/Spend');
+const Kassa = require('../models/Kassa');
 
 const addSpend = async (req, res) => {
   try {
-    const newSpend = new Spend(req.body);
+    const data = req.body;
+    data.shop = req.params.shop;
+    const newSpend = new Spend(data);
     const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
     if (kassa) {
       await kassa[0].minusAmount(newSpend.amount);
     } else {
-      res.status(404).send({ message: "Kassa not found!" });
+      res.status(404).send({ message: 'Kassa not found!' });
     }
 
     await newSpend.save();
     res.status(200).send({
-      message: "Spend Added Successfully!",
+      message: 'Spend Added Successfully!',
     });
   } catch (err) {
     res.status(500).send({
@@ -34,11 +36,17 @@ const getAllSpend = async (req, res) => {
       size = 20;
     }
     const limit = parseInt(size);
-    const spends = await Spend.find({})
+
+    const AllSpends = await Spend.find({ shop: req.params.shop });
+    const spends = await Spend.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .limit(limit)
       .skip((page - 1) * limit);
-    res.send(spends);
+    res.send({
+      spends: spends,
+      count: spends.length,
+      totalPage: Math.ceil(AllSpends.length / limit),
+    });
   } catch (err) {
     res.status(500).send({
       message: err.message,
@@ -56,10 +64,10 @@ const updateSpend = async (req, res) => {
       spend.description = req.body.description;
 
       await spend.save();
-      res.send({ message: "Spend Updated Successfully!" });
+      res.send({ message: 'Spend Updated Successfully!' });
     }
   } catch (err) {
-    res.status(404).send({ message: "Spend not found!" });
+    res.status(404).send({ message: 'Spend not found!' });
   }
 };
 
@@ -70,7 +78,7 @@ const deleteSpend = async (req, res) => {
     if (kassa) {
       await kassa[0].addAmount(spend.amount);
     } else {
-      res.status(404).send({ message: "Kassa not found!" });
+      res.status(404).send({ message: 'Kassa not found!' });
     }
     Spend.deleteOne({ _id: req.params.id }, (err) => {
       if (err) {
@@ -79,7 +87,7 @@ const deleteSpend = async (req, res) => {
         });
       } else {
         res.status(200).send({
-          message: "Spend Deleted Successfully!",
+          message: 'Spend Deleted Successfully!',
         });
       }
     });
