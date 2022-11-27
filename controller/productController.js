@@ -70,6 +70,7 @@ const getAllProducts = async (req, res) => {
         .limit(limit)
         .skip((page - 1) * limit);
     } else {
+      AllProducts = await Product.find({});
       products = await Product.find({})
         .lean()
         .sort({ _id: -1 })
