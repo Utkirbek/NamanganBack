@@ -37,7 +37,9 @@ const createOrder = async (req, res) => {
         message: 'Admin Not Found',
       });
     }
-    const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+    const kassa = await Kassa.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
     if (kassa) {
       await kassa[0].addAmount(data.cashTotal);
     } else {

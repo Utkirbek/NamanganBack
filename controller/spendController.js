@@ -74,7 +74,9 @@ const updateSpend = async (req, res) => {
 const deleteSpend = async (req, res) => {
   const spend = await Spend.findById(req.params.id);
   if (spend) {
-    const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+    const kassa = await Kassa.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
     if (kassa) {
       await kassa[0].addAmount(spend.amount);
     } else {

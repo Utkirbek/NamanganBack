@@ -10,7 +10,9 @@ const addPayment = async (req, res) => {
     data.shop = erq.params.shop;
     const newPayment = new Payment(data);
 
-    const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+    const kassa = await Kassa.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
     if (kassa) {
       await kassa[0].addAmount(newPayment.amount);
     } else {
