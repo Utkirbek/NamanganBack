@@ -51,9 +51,9 @@ const getAllPayment = async (req, res) => {
     if (!size) {
       size = 20;
     }
-    const AllPayments = await Payment.find({});
+    const AllPayments = await Payment.find({ shop: req.params.shop });
     const limit = parseInt(size);
-    const payments = await Payment.find({})
+    const payments = await Payment.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .limit(limit)
       .skip((page - 1) * limit)
