@@ -15,6 +15,7 @@ const createOrder = async (req, res) => {
         amount: data.cashTotal,
         paymentMethod: data.paymentMethod,
       });
+      data.payment = payment._id;
     }
     if (data.hasLoan === 'true') {
       loan = await Loan.create({
@@ -23,9 +24,8 @@ const createOrder = async (req, res) => {
         user: data.user,
         shouldPay: data.shouldPay,
       });
+      data.loan = loan._id;
     }
-    data.payment = payment._id;
-    data.loan = loan._id;
 
     const order = await Order.create(data);
 
