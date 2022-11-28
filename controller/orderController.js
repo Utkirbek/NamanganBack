@@ -74,7 +74,6 @@ const getAllOrders = async (req, res) => {
     const AllOrders = await Order.find({});
     const orders = await Order.find({})
       .sort({ _id: -1 })
-      .populate('user')
       .populate('salesman')
       .populate('cart.product')
       .limit(limit)
