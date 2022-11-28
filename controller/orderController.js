@@ -9,7 +9,15 @@ const createOrder = async (req, res) => {
     const data = req.body;
     let payment;
     let loan;
-    if (data.cashTotal > 0) {
+    if (data.hasLoan === 'false') {
+      payment = await Payment.create({
+        salesman: data.salesman,
+        amount: data.total,
+        paymentMethod: data.paymentMethod,
+      });
+      data.payment = payment._id;
+      data.cashTotal = total;
+    } else {
       payment = await Payment.create({
         salesman: data.salesman,
         amount: data.cashTotal,
