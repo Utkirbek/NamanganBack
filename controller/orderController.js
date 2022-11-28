@@ -14,7 +14,7 @@ const createOrder = async (req, res) => {
         salesman: data.salesman,
         amount: data.total,
         paymentMethod: data.paymentMethod,
-      });
+      }).lean();
       data.payment = payment._id;
       data.cashTotal = total;
     } else {
@@ -22,7 +22,7 @@ const createOrder = async (req, res) => {
         salesman: data.salesman,
         amount: data.cashTotal,
         paymentMethod: data.paymentMethod,
-      });
+      }).lean();
       data.payment = payment._id;
     }
     if (data.hasLoan === 'true') {
@@ -31,7 +31,7 @@ const createOrder = async (req, res) => {
         amount: data.loanTotal,
         user: data.user,
         shouldPay: data.shouldPay,
-      });
+      }).lean();
       data.loan = loan._id;
     }
 
