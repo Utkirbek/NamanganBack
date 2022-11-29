@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const spendSchema = new mongoose.Schema(
   {
@@ -16,7 +16,7 @@ const spendSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   {
@@ -24,6 +24,6 @@ const spendSchema = new mongoose.Schema(
   }
 );
 
-const Spend = mongoose.model("Spend", spendSchema);
+const Spend = mongoose.model('Spend', spendSchema);
 
 module.exports = Spend;

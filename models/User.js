@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      required:  false,
+      required: false,
     },
     phone: {
       type: String,
@@ -16,24 +16,17 @@ const userSchema = new mongoose.Schema(
     },
     workplace: {
       type: String,
-      required: true,
+      required: false,
     },
     extra: {
       type: String,
       required: false,
     },
-
   },
   {
     timestamps: true,
   }
 );
-
-
-
-
-
-
 
 const User = mongoose.model('User', userSchema);
 
