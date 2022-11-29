@@ -47,7 +47,7 @@ app.use('/api/kassa/:shop', isAuth, kassaRoutes);
 app.use('/api/loan/:shop', isAuth, loanRoutes);
 app.use('/api/payment/:shop', isAuth, paymentRoutes);
 app.use('/api/spend/:shop', isAuth, spendRoutes);
-app.use('/api/shop/', isAuth, shopRoutes);
+app.use('/api/shop/', shopRoutes);
 app.use('/api/statistics/:shop', isAuth, statisticsRoutes);
 
 //if you not use admin dashboard then these two route will not needed.
