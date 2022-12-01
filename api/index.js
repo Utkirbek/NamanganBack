@@ -31,7 +31,7 @@ app.use(express.json({ limit: '4mb' }));
 app.use(helmet());
 app.use(cors());
 
-//root route
+//root routes
 app.get('/', (req, res) => {
   res.send('App works properly!');
 });
