@@ -20,7 +20,6 @@ const adminSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-
     },
     role: {
       type: mongoose.Schema.Types.ObjectId,
@@ -35,19 +34,18 @@ const adminSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    orders : [],
+    orders: [],
     salary_record: [
       {
         amount: {
-          type: Number
+          type: Number,
         },
         date: {
           type: Date,
-          default: Date.now 
-        }
-      }
-    ]
-
+          default: Date.now,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
@@ -72,7 +70,7 @@ adminSchema.methods.getSalary = function (amount) {
   this.save();
 };
 
-
-const Admin = mongoose.models.Admin || mongoose.model('Admin', adminSchema);
+const Admin =
+  mongoose.models.Admin || mongoose.model('Admin', adminSchema);
 
 module.exports = Admin;
