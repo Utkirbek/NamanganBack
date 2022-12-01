@@ -103,7 +103,7 @@ const addStaff = async (req, res) => {
 
 const getAllStaff = async (req, res) => {
   try {
-    const admins = await await Admin.find({})
+    const admins = await Admin.find({})
       .sort({ _id: -1 })
       .populate('role');
     for (let i = 0; i < admins.length; i++) {
