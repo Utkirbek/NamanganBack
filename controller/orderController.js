@@ -9,23 +9,33 @@ const createOrder = async (req, res) => {
     const data = req.body;
     let payment;
     let loan;
-    if (data.cashTotal > 0) {
+    if (data.hasLoan === 'false') {
+      payment = await Payment.create({
+        salesman: data.salesman,
+        amount: data.total,
+        paymentMethod: data.paymentMethod,
+      });
+      data.payment = payment._id;
+      data.cashTotal = total;
+    } else {
       payment = await Payment.create({
         salesman: data.salesman,
         amount: data.cashTotal,
         paymentMethod: data.paymentMethod,
       });
+      data.payment = payment._id;
     }
-    if (data.hasLoan === 'true') {
+
+    if (data.hasLoan === 'true' && user !== '') {
+
       loan = await Loan.create({
         salesman: data.salesman,
         amount: data.loanTotal,
         user: data.user,
         shouldPay: data.shouldPay,
       });
+      data.loan = loan._id;
     }
-    data.payment = payment._id;
-    data.loan = loan._id;
 
     const order = await Order.create(data);
 
@@ -65,14 +75,18 @@ const getAllOrders = async (req, res) => {
       size = 20;
     }
     const limit = parseInt(size);
+    const AllOrders = await Order.find({});
     const orders = await Order.find({})
       .sort({ _id: -1 })
-      .populate('user')
       .populate('salesman')
       .populate('cart.product')
       .limit(limit)
       .skip((page - 1) * limit);
-    res.send(orders);
+    res.send({
+      orders: orders,
+      count: orders.length,
+      totalPage: Math.ceil(AllOrders.length / limit),
+    });
   } catch (err) {
     res.status(500).send({
       message: err.message,

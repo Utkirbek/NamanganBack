@@ -27,76 +27,75 @@ const getAllProducts = async (req, res) => {
     }
 
     const limit = parseInt(size);
+    let products;
+    let AllProducts;
+    if (minQuantity === 'true') {
 
-    const AllProducts = await Product.find({});
-    const products = await Product.find({})
-      .sort({ _id: -1 })
-      .populate('currency')
-      .limit(limit)
-      .skip((page - 1) * limit);
+      AllProducts = await Product.find({
+        $or: [
+          { $expr: { $lt: ['$quantity', '$minQuantity'] } },
+          { quantity: { $lt: 5 } },
+        ],
+
+      });
+      products = await Product.find({
+        $or: [
+          { $expr: { $lt: ['$quantity', '$minQuantity'] } },
+          { quantity: { $lt: 5 } },
+        ],
+      })
+        .lean()
+        .sort({ _id: -1 })
+        .populate('currency')
+        .limit(limit)
+        .skip((page - 1) * limit);
+    } else if (noPrice === 'true') {
+
+      AllProducts = await Product.find({
+        $or: [
+          { price: null },
+          { price: 0 },
+          { originalPrice: null },
+          { originalPrice: 0 },
+        ],
+
+      });
+      products = await Product.find({
+        $or: [
+          { price: null },
+          { price: 0 },
+          { originalPrice: null },
+          { originalPrice: 0 },
+        ],
+      })
+        .lean()
+        .sort({ _id: -1 })
+        .populate('currency')
+        .limit(limit)
+        .skip((page - 1) * limit);
+    } else {
+      AllProducts = await Product.find({});
+      products = await Product.find({})
+        .lean()
+        .sort({ _id: -1 })
+        .populate('currency')
+        .limit(limit)
+        .skip((page - 1) * limit);
+    }
 
     const Products = [];
 
-    if (minQuantity === 'true') {
-      products.forEach((product) => {
-        if (product.currency) {
-          const calculatedPrice =
-            product.price * product.currency.equalsTo;
-          product.price = calculatedPrice.toFixed(2);
-          if (
-            product.quantity <= product.minQuantity ||
-            product.quantity <= 5
-          ) {
-            console.log(product);
-            Products.push(product);
-          }
-        } else {
-          if (
-            product.quantity <= product.minQuantity ||
-            product.quantity <= 5
-          ) {
-            console.log(product);
-            Products.push(product);
-          }
-        }
-      });
-    } else if (noPrice === 'true') {
-      products.forEach((product) => {
-        if (product.currency) {
-          const calculatedPrice =
-            product.price * product.currency.equalsTo;
-          product.price = calculatedPrice.toFixed(2);
-          if (
-            product.price === null ||
-            product.originalPrice === null ||
-            product.price === 0 ||
-            product.originalPrice === 0
-          ) {
-            Products.push(product);
-          }
-        } else {
-          if (
-            product.price === null ||
-            product.originalPrice === null ||
-            product.price === 0 ||
-            product.originalPrice === 0
-          ) {
-            Products.push(product);
-          }
-        }
-      });
-    } else {
-      products.forEach((product) => {
-        if (product.currency) {
-          const calculatedPrice =
-            product.price * product.currency.equalsTo;
-          product.price = calculatedPrice.toFixed(2);
-          Products.push(product);
-        } else {
-          Products.push(product);
-        }
-      });
-    }
+    products.forEach((product) => {
+      if (product.currency) {
+        const calculatedPrice =
+          product.price * product.currency.equalsTo;
+        product.calculatedPrice = calculatedPrice.toFixed(2);
+        Products.push(product);
+      } else {
+        Products.push(product);
+      }
+    });
+
     if (minQuantity === 'true' && noPrice === 'true') {
       res.send({
         message: 'Only one parametr can be filtered',
@@ -117,13 +116,13 @@ const getAllProducts = async (req, res) => {
 
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate(
-      'currency'
-    );
+    const product = await Product.findById(req.params.id)
+      .lean()
+      .populate('currency');
     if (product.currency) {
       const calculatedPrice =
         product.price * product.currency.equalsTo;
-      product.price = calculatedPrice.toFixed(2);
+      product.calculatedPrice = calculatedPrice.toFixed(2);
     }
     res.send(product);
   } catch (err) {
@@ -183,14 +182,16 @@ const searchProduct = async (req, res) => {
           { title: { $regex: new RegExp(search, 'i') } },
           { code: { $regex: search } },
         ],
-      }).populate('currency');
+      })
+        .populate('currency')
+        .lean();
       const Products = [];
 
       products.forEach((product) => {
         if (product.currency) {
           const calculatedPrice =
             product.price * product.currency.equalsTo;
-          product.price = calculatedPrice.toFixed();
+          product.calculatedPrice = calculatedPrice.toFixed();
           Products.push(product);
         } else {
           Products.push(product);

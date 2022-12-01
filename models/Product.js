@@ -30,7 +30,7 @@ const productSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
+      required: false,
     },
     unit: {
       type: String,
@@ -38,7 +38,8 @@ const productSchema = new mongoose.Schema(
     },
     currency: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Currency",
+      ref: 'Currency',
+      required: true,
     },
     minQuantity: {
       type: Number,

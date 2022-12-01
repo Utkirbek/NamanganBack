@@ -4,9 +4,9 @@ const AutoIncrement = require('mongoose-sequence')(mongoose);
 const orderSchema = new mongoose.Schema(
   {
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: 'User',
-      required: false,
+      default: '',
     },
     salesman: {
       type: mongoose.Schema.Types.ObjectId,
@@ -42,7 +42,7 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    cashtoatl: {
+    cashTotal: {
       type: Number,
 
       required: false,

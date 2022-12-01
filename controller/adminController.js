@@ -16,7 +16,6 @@ const registerAdmin = async (req, res) => {
         message: 'This Email already Added!',
       });
     } else {
-      
       const newStaff = new Admin({
         name: req.body.name,
         email: req.body.email,
@@ -44,17 +43,22 @@ const registerAdmin = async (req, res) => {
 const loginAdmin = async (req, res) => {
   try {
     const admin = await Admin.findOne({ email: req.body.email });
-    const role = await Role.findById(admin.role).populate('permissions');
+    const role = await Role.findById(admin.role).populate(
+      'permissions'
+    );
     if (role) {
       admin.role = role;
     } else {
       admin.role = null;
     }
-    if (admin && bcrypt.compareSync(req.body.password, admin.password)) {
+    if (
+      admin &&
+      bcrypt.compareSync(req.body.password, admin.password)
+    ) {
       const token = signInToken(admin);
       res.send({
         token,
-        admin
+        admin,
       });
     } else {
       res.status(401).send({
@@ -71,7 +75,7 @@ const loginAdmin = async (req, res) => {
 const addStaff = async (req, res) => {
   try {
     const isAdded = await Admin.findOne({ email: req.body.email });
-    
+
     if (isAdded) {
       return res.status(500).send({
         message: 'This Email already Added!',
@@ -101,7 +105,7 @@ const getAllStaff = async (req, res) => {
   try {
     const admins = await await Admin.find({})
       .sort({ _id: -1 })
-      .populate("role");
+      .populate('role');
     for (let i = 0; i < admins.length; i++) {
       admins[i].password = undefined;
     }
@@ -115,7 +119,9 @@ const getStaffById = async (req, res) => {
   try {
     let admin = await Admin.findById(req.params.id);
     const orders = await Order.find({ salesman: req.params.id });
-    const role = await Role.findById(admin.role).populate("permissions");
+    const role = await Role.findById(admin.role).populate(
+      'permissions'
+    );
     if (role) {
       admin.role = role;
     } else {
@@ -158,6 +164,8 @@ const updateStaff = async (req, res) => {
         image: updatedAdmin.image,
         joiningData: updatedAdmin.joiningData,
       });
+    } else {
+      res.status(404).send('Staff not found');
     }
   } catch (err) {
     res.status(404).send(err.message);
@@ -183,18 +191,18 @@ const searchAdmin = async (req, res) => {
     if (search) {
       const admin = await Admin.find({
         name: {
-          $regex: new RegExp(search, "i"),
+          $regex: new RegExp(search, 'i'),
         },
       });
       if (admin) {
         res.send(admin);
       } else {
         res.status(404).send({
-          message: "Admin Not Found!",
+          message: 'Admin Not Found!',
         });
       }
     } else {
-      res.send({ message: "Search Name is provided" });
+      res.send({ message: 'Search Name is provided' });
     }
   } catch (err) {
     res.status(500).send({
@@ -210,7 +218,7 @@ const giveSalary = async (req, res) => {
       admin.getSalary(req.body.amount);
     } else {
       res.status(500).send({
-        message: "Salesman not found!",
+        message: 'Salesman not found!',
       });
     }
     res.send({
@@ -222,8 +230,6 @@ const giveSalary = async (req, res) => {
     });
   }
 };
-
-
 
 module.exports = {
   registerAdmin,
