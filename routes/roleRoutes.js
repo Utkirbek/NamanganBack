@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const {
-    addRole,
-    getAllRole,
-    getRoleById,
-    updateRole,
-    deleteRole,
+  addRole,
+  getAllRole,
+  getRoleById,
+  updateRole,
+  deleteRole,
 } = require('../controller/roleController');
 
 //add a role
@@ -22,6 +22,5 @@ router.put('/:id', updateRole);
 
 //delete a role
 router.delete('/:id', deleteRole);
-
 
 module.exports = router;

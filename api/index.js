@@ -52,7 +52,7 @@ app.use('/api/statistics/:shop', isAuth, statisticsRoutes);
 
 //if you not use admin dashboard then these two route will not needed.
 app.use('/api/admin/', adminRoutes);
-app.use('/api/orders/shop', isAuth, orderRoutes);
+app.use('/api/orders/:shop', isAuth, orderRoutes);
 
 // Use express's default error handling middleware
 app.use((err, req, res, next) => {
