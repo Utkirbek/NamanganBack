@@ -25,7 +25,9 @@ const createOrder = async (req, res) => {
       });
       data.payment = payment._id;
     }
+
     if (data.hasLoan === 'true' && user !== '') {
+
       loan = await Loan.create({
         salesman: data.salesman,
         amount: data.loanTotal,
@@ -45,7 +47,9 @@ const createOrder = async (req, res) => {
         message: 'Admin Not Found',
       });
     }
-    const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+    const kassa = await Kassa.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
     if (kassa) {
       await kassa[0].addAmount(data.cashTotal);
     } else {
@@ -132,16 +136,8 @@ const updateOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
     if (order) {
-      if (order.salesman !== req.body.salesman) {
-        res.send({ message: 'You cannot update this order' });
-      } else {
-        order.cart = req.body.cart;
-        order.total = req.body.total;
-        order.payment = req.body.payment;
-        order.loan = req.body.loan;
-        await spend.save();
-        res.send({ message: 'Order Updated Successfully!' });
-      }
+      await spend.save();
+      res.send({ message: 'Order Updated Successfully!' });
     }
   } catch (err) {
     res.status(404).send({ message: 'Order not found!' });

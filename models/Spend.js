@@ -6,6 +6,11 @@ const spendSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Shop',
+      required: true,
+    },
     paymentMethod: {
       type: String,
       required: true,

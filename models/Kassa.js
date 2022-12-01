@@ -7,6 +7,11 @@ const kassaSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
+    shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Shop',
+      required: true,
+    },
   },
   {
     timestamps: true,

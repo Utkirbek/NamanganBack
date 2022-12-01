@@ -30,11 +30,13 @@ const getAllProducts = async (req, res) => {
     let products;
     let AllProducts;
     if (minQuantity === 'true') {
+
       AllProducts = await Product.find({
         $or: [
           { $expr: { $lt: ['$quantity', '$minQuantity'] } },
           { quantity: { $lt: 5 } },
         ],
+
       });
       products = await Product.find({
         $or: [
@@ -48,6 +50,7 @@ const getAllProducts = async (req, res) => {
         .limit(limit)
         .skip((page - 1) * limit);
     } else if (noPrice === 'true') {
+
       AllProducts = await Product.find({
         $or: [
           { price: null },
@@ -55,6 +58,7 @@ const getAllProducts = async (req, res) => {
           { originalPrice: null },
           { originalPrice: 0 },
         ],
+
       });
       products = await Product.find({
         $or: [

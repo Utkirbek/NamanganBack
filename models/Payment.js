@@ -1,10 +1,15 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const paymentSchema = new mongoose.Schema(
   {
     salesman: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Admin",
+      ref: 'Admin',
+      required: true,
+    },
+    shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Shop',
       required: true,
     },
     amount: {
@@ -17,7 +22,7 @@ const paymentSchema = new mongoose.Schema(
     },
     loan: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Loan",
+      ref: 'Loan',
       required: false,
     },
   },
@@ -26,6 +31,6 @@ const paymentSchema = new mongoose.Schema(
   }
 );
 
-const Payment = mongoose.model("Payment", paymentSchema);
+const Payment = mongoose.model('Payment', paymentSchema);
 
 module.exports = Payment;

@@ -13,6 +13,11 @@ const orderSchema = new mongoose.Schema(
       ref: 'Admin',
       required: true,
     },
+    shop: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Shop',
+      required: true,
+    },
     cart: [
       {
         product: {
@@ -26,6 +31,9 @@ const orderSchema = new mongoose.Schema(
         },
         price: {
           type: Number,
+        },
+        unit: {
+          type: String,
         },
       },
     ],
