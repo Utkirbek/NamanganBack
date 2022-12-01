@@ -27,6 +27,9 @@ const createOrder = async (req, res) => {
     }
 
     if (data.hasLoan === 'true' && user !== '') {
+
+
+
       loan = await Loan.create({
         salesman: data.salesman,
         amount: data.loanTotal,
