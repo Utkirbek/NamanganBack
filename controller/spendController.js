@@ -3,6 +3,8 @@ const Kassa = require('../models/Kassa');
 
 const addSpend = async (req, res) => {
   try {
+    let data = req.body;
+    data.shop = req.params.shop;
     const newSpend = new Spend(data);
     const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
     if (kassa) {
@@ -35,8 +37,8 @@ const getAllSpend = async (req, res) => {
     }
     const limit = parseInt(size);
 
-    const AllSpends = await Spend.find({});
-    const spends = await Spend.find({})
+    const AllSpends = await Spend.find({ shop: req.params.shop });
+    const spends = await Spend.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .limit(limit)
       .skip((page - 1) * limit);

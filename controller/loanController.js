@@ -3,6 +3,8 @@ const User = require('../models/User');
 
 const addLoan = async (req, res) => {
   try {
+    let data = req.body;
+    data.shop = req.params.shop;
     const newLoan = new Loan(data);
     await newLoan.save();
     res.status(200).send({
@@ -30,10 +32,8 @@ const getAllLoan = async (req, res) => {
 
     const limit = parseInt(size);
 
-
     const AllLoans = await Loan.find({ shop: req.params.shop });
     const loans = await Loan.find({ shop: req.params.shop })
-
 
       .sort({ _id: -1 })
       .populate('user')

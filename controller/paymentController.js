@@ -5,6 +5,8 @@ const Admin = require('../models/Admin');
 
 const addPayment = async (req, res) => {
   try {
+    let data = req.body;
+    data.shop = req.params.shop;
     const newPayment = new Payment(data);
 
     const kassa = await Kassa.find({}).sort({ _id: -1 }).limit(1);
@@ -48,9 +50,9 @@ const getAllPayment = async (req, res) => {
     if (!size) {
       size = 20;
     }
-    const AllPayments = await Payment.find({});
+    const AllPayments = await Payment.find({ shop: req.params.shop });
     const limit = parseInt(size);
-    const payments = await Payment.find({})
+    const payments = await Payment.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .limit(limit)
       .skip((page - 1) * limit)
