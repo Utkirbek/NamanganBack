@@ -2,11 +2,17 @@ const Kassa = require('../models/Kassa');
 const Shop = require('../models/Shop');
 
 const dailyKassa = async (req, res) => {
+
   try {
+    
     const shops = await Shop.find({});
-    for (let i = 0; i <= shops.lenght; i++) {
+    
+    for (let i = 0; i <= shops.length -1 ; i++) {
+      
+     
       const newKassa = new Kassa({ shop: shops[i]._id });
       await newKassa.save();
+     
       console.log('new kassa created');
     }
   } catch (err) {
@@ -16,6 +22,7 @@ const dailyKassa = async (req, res) => {
 
 const getAllKassa = async (req, res) => {
   try {
+    
     let { page, size } = req.query;
 
     if (!page) {
@@ -27,8 +34,8 @@ const getAllKassa = async (req, res) => {
     }
 
     const limit = parseInt(size);
-    const AllKassa = await Kassa.find({ shop: req.params.shop });
-    const kassas = await Kassa.find({ shop: req.params.shop })
+    const AllKassa = await Kassa.find({  });
+    const kassas = await Kassa.find({ })
       .sort({ _id: -1 })
       .limit(limit)
       .skip((page - 1) * limit)

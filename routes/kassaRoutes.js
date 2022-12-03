@@ -6,7 +6,9 @@ const { getAllKassa, dailyKassa } = require("../controller/kassaController");
 router.get("/", getAllKassa);
 
 //create new kassa
-router.post("/add", dailyKassa);
+router.get("/add", dailyKassa);
+
+
 
 
 
