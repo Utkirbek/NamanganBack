@@ -9,20 +9,20 @@ const {
   updateOrder,
 } = require('../controller/orderController');
 
-router.post('/add', createOrder);
+router.post('/:shop/add', createOrder);
 
 //get all orders
-router.get('/', getAllOrders);
+router.get('/:shop/', getAllOrders);
 
 //get all order by a user
-router.get('/user/:id', getOrderByUser);
+router.get('/:shop/user/:id', getOrderByUser);
 
 //update a order
-router.put('/:id', updateOrder);
+router.put('/:shop/:id', updateOrder);
 
 //get a order by id
-router.get('/:id', getOrderById);
+router.get('/:shop/:id', getOrderById);
 //delete a order
-router.delete('/:id', deleteOrder);
+router.delete('/:shop/:id', deleteOrder);
 
 module.exports = router;

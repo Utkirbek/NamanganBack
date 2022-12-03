@@ -8,15 +8,15 @@ const {
 } = require('../controller/paymentController');
 
 //add a payment
-router.post('/add', addPayment);
+router.post('/:shop/add', addPayment);
 
 //get all payment
-router.get('/', getAllPayment);
+router.get('/:shop/', getAllPayment);
 
 //update a payment
-router.put('/:id', updatePayment);
+router.put('/:shop/:id', updatePayment);
 
 //delete a payment
-router.delete('/:id', deletePayment);
+router.delete('/:shop/:id', deletePayment);
 
 module.exports = router;

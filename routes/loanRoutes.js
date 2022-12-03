@@ -9,19 +9,19 @@ const {
 } = require("../controller/loanController");
 
 //add a loan
-router.post("/add", addLoan);
+router.post("/:shop/add", addLoan);
 
 // get loans by user id
-router.get("/user/:id", getLoanByUserId);
+router.get("/:shop/user/:id", getLoanByUserId);
 
 //get all loan
-router.get('/', getAllLoan);
+router.get('/:shop/', getAllLoan);
 
 //update a loan
-router.put('/:id', updateLoan);
+router.put('/:shop/:id', updateLoan);
 
 //delete a loan
-router.delete('/:id', deleteLoan);
+router.delete('/:shop/:id', deleteLoan);
 
 
 module.exports = router;

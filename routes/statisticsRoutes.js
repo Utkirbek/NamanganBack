@@ -9,10 +9,10 @@ const {
 } = require('../controller/statisticsController');
 
 //add a coupon
-router.get('/main', mainStatistics);
-router.get('/pie/income', pieChartIncome);
-router.get('/pie/spend', pieChartSpend);
-router.get('/pie/staffsalary', pieChartStaffSalary);
-router.get('/bar', barChart);
+router.get('/:shop/main', mainStatistics);
+router.get('/:shop/pie/income', pieChartIncome);
+router.get('/:shop/pie/spend', pieChartSpend);
+router.get('/:shop/pie/staffsalary', pieChartStaffSalary);
+router.get('/:shop/bar', barChart);
 
 module.exports = router;

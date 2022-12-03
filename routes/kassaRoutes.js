@@ -3,10 +3,10 @@ const router = express.Router();
 const { getAllKassa, dailyKassa } = require("../controller/kassaController");
 
 //get all kassa
-router.get("/", getAllKassa);
+router.get("/:shop/", getAllKassa);
 
 //create new kassa
-router.get("/add", dailyKassa);
+router.get("/:shop/add", dailyKassa);
 
 
 

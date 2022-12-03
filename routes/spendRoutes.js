@@ -8,15 +8,15 @@ const {
 } = require('../controller/spendController');
 
 //add a spend
-router.post('/add', addSpend);
+router.post('/:shop/add', addSpend);
 
 //get all spend
-router.get('/', getAllSpend);
+router.get('/:shop/', getAllSpend);
 
 //update a spend
-router.put('/:id', updateSpend);
+router.put('/:shop/:id', updateSpend);
 
 //delete a spend
-router.delete('/:id', deleteSpend);
+router.delete('/:shop/:id', deleteSpend);
 
 module.exports = router;
