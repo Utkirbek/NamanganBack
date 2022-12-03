@@ -9,7 +9,7 @@ const addPayment = async (req, res) => {
     data.shop = req.params.shop;
     const newPayment = new Payment(data);
 
-    const kassa = await Kassa.find({}).sort({ _id: -1 }).limit(1);
+    const kassa = await Kassa.find({shop: req.params.shop}).sort({ _id: -1 }).limit(1);
     if (kassa) {
       await kassa[0].addAmount(newPayment.amount);
     } else {
@@ -50,13 +50,14 @@ const getAllPayment = async (req, res) => {
     if (!size) {
       size = 20;
     }
-    const AllPayments = await Payment.find({ shop: req.params.shop });
+    const AllPayments = await Payment.find({  });
     const limit = parseInt(size);
-    const payments = await Payment.find({ shop: req.params.shop })
+    const payments = await Payment.find({ })
       .sort({ _id: -1 })
       .limit(limit)
       .skip((page - 1) * limit)
-      .populate('salesman');
+      .populate('salesman')
+      .populate('shop')
     res.send({
       payments: payments,
       count: payments.length,
@@ -77,7 +78,7 @@ const updatePayment = async (req, res) => {
       payment.amount = req.body.amount;
       payment.paymentMethod = req.body.paymentMethod;
       payment.loan = req.body.loan;
-      const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+      const kassa = await Kassa.find({shop: req.params.shop}).sort({ _id: -1 }).limit(1);
       if (kassa) {
         await kassa[0].minusAmount(paymentDiff);
       } else {
@@ -101,7 +102,7 @@ const updatePayment = async (req, res) => {
 const deletePayment = async (req, res) => {
   const payment = await Payment.findById(req.params.id);
   if (payment) {
-    const kassa = await Kassa.find().sort({ _id: -1 }).limit(1);
+    const kassa = await Kassa.find({shop: req.params.shop}).sort({ _id: -1 }).limit(1);
     if (kassa) {
       await kassa[0].minusAmount(payment.amount);
     } else {
