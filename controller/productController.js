@@ -180,9 +180,9 @@ const searchProduct = async (req, res) => {
 
     if (search) {
       if(search.charAt(0) === "+"){
-        products = await Product.find({code : search.slice(1)})
+        products = await Product.find({code : search.slice(1)}).lean()
       }else{
-        products = await Product.find( { title: { $regex: new RegExp(search, 'i') } })
+        products = await Product.find( { title: { $regex: new RegExp(search, 'i') } }).lean()
       }
       
       const Products = [];
