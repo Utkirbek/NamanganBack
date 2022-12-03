@@ -37,8 +37,8 @@ const getAllSpend = async (req, res) => {
     }
     const limit = parseInt(size);
 
-    const AllSpends = await Spend.find({  });
-    const spends = await Spend.find({  })
+    const AllSpends = await Spend.find({ shop:req.params.shop });
+    const spends = await Spend.find({ shop:req.params.shop })
       .populate("shop")
       .sort({ _id: -1 })
       .limit(limit)

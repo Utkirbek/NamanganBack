@@ -27,7 +27,7 @@ const mainStatistics = async (req, res) => {
       createdAt: { $lte: lastMonth },
     });
 
-    const kassa = await Kassa.find();
+    const kassa = await Kassa.find({shop:req.params.shop});
     const lastMonthKassa = await Kassa.find({
       createdAt: { $lte: lastMonth },
     });
@@ -83,6 +83,7 @@ const pieChartIncome = async (req, res) => {
       const end = new Date();
       end.setDate(currentMonth.getDate() + 7 * (i + 1));
       const kassa = await Kassa.find({
+        shop:req.params.shop,
         createdAt: { $gte: start, $lte: end },
       });
       let total = 0;
@@ -140,6 +141,7 @@ const pieChartSpend = async (req, res) => {
       const end = new Date();
       end.setDate(currentMonth.getDate() + 7 * (i + 1));
       const spend = await Spend.find({
+        shop:req.params.shop,
         createdAt: { $gte: start, $lte: end },
       });
       let total = 0;
@@ -217,6 +219,7 @@ const barChart = async (req, res) => {
       const dayName = start.toLocaleString("default", { weekday: "long" });
 
       const kassa = await Kassa.find({
+        shop:req.params.shop,
         createdAt: { $gte: start, $lte: end },
       });
       let kassaTotal = 0;

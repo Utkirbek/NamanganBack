@@ -32,8 +32,8 @@ const getAllLoan = async (req, res) => {
 
     const limit = parseInt(size);
 
-    const AllLoans = await Loan.find({ });
-    const loans = await Loan.find({  })
+    const AllLoans = await Loan.find({ shop:req.params.shop});
+    const loans = await Loan.find({  shop:req.params.shop})
 
       .sort({ _id: -1 })
       .populate('user')

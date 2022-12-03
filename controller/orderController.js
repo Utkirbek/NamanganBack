@@ -75,8 +75,8 @@ const getAllOrders = async (req, res) => {
       size = 20;
     }
     const limit = parseInt(size);
-    const AllOrders = await Order.find({ });
-    const orders = await Order.find({  })
+    const AllOrders = await Order.find({ shop:req.params.shop});
+    const orders = await Order.find({shop:req.params.shop  })
       .sort({ _id: -1 })
       .populate('salesman')
       .populate("shop")

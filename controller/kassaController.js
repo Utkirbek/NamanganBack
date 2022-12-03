@@ -34,8 +34,8 @@ const getAllKassa = async (req, res) => {
     }
 
     const limit = parseInt(size);
-    const AllKassa = await Kassa.find({  });
-    const kassas = await Kassa.find({ })
+    const AllKassa = await Kassa.find({shop:req.params.shop  });
+    const kassas = await Kassa.find({shop:req.params.shop })
       .sort({ _id: -1 })
       .limit(limit)
       .skip((page - 1) * limit)
