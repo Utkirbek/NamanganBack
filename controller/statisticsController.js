@@ -226,31 +226,10 @@ const barChart = async (req, res) => {
       kassa.forEach((item) => {
         kassaTotal += item.amount;
       });
-      const spend = await Spend.find({
-        createdAt: { $gte: start, $lte: end },
-      });
-      let spendTotal = 0;
-      spend.forEach((item) => {
-        spendTotal += item.amount;
-      });
-      const loan = await Loan.find({
-        createdAt: { $gte: start, $lte: end },
-      });
-      let loanTotal = 0;
-      loan.forEach((item) => {
-        loanTotal += item.amount;
-      });
-
-      const orders = await Order.countDocuments({
-        createdAt: { $gte: start, $lte: end },
-      });
-
+  
       data = {
         day: `${dayName} / ${monthName} ${i + 1}`,
         kassa: kassaTotal,
-        spend: spendTotal,
-        loan: loanTotal,
-        order: orders,
       };
       days.push(data);
     }
