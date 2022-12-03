@@ -175,14 +175,14 @@ const deleteProduct = (req, res) => {
 const searchProduct = async (req, res) => {
   try {
     const search = req.params.title.toString();
-    console.log(search)
+    
     let products ;
 
     if (search) {
       if(search.charAt(0) === "+"){
-        products = await Product.find({code : search.slice(1)}).lean()
+        products = await Product.find({code : search.slice(1)}).lean().populate("currency")
       }else{
-        products = await Product.find( { title: { $regex: new RegExp(search, 'i') } }).lean()
+        products = await Product.find( { title: { $regex: new RegExp(search, 'i') } }).lean().populate("currency")
       }
       
       const Products = [];
