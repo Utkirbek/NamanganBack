@@ -44,7 +44,7 @@ const productSchema = new mongoose.Schema(
     sellingCurrency: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Currency',
-      required: true,
+      required: false,
     },
     minQuantity: {
       type: Number,
