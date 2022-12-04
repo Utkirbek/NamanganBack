@@ -88,6 +88,7 @@ const getAllOrders = async (req, res) => {
       .populate('salesman')
       .populate('shop')
       .populate('cart.product')
+      .populate('cart.product')
       .limit(limit)
       .skip((page - 1) * limit);
     res.send({
