@@ -11,7 +11,7 @@ const createOrder = async (req, res) => {
     data.shop = req.params.shop;
     let payment;
     let loan;
-    if (data.hasLoan === false) {
+    if (data.hasLoan === false && data.cashTotal === null) {
       payment = await Payment.create({
         salesman: data.salesman,
         amount: data.total,
