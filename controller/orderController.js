@@ -1,13 +1,11 @@
 const Order = require('../models/Order');
-const Admin = require('../models/Admin');
+const Product = require('../models/Product');
 const Payment = require('../models/Payment');
 const Loan = require('../models/Loan');
 const Kassa = require('../models/Kassa');
 
 const createOrder = async (req, res) => {
   try {
-
-
     let data = req.body;
     data.shop = req.params.shop;
     let payment;
@@ -41,6 +39,11 @@ const createOrder = async (req, res) => {
 
     const order = await Order.create(data);
 
+    for (let i = 0; i <= order.cart.length; i++) {
+      const product = Product.findById(order.cart[i].product);
+      product.minusQuantity(order.cart[i].quantity);
+    }
+
     const admin = await Admin.findById(data.salesman);
     if (admin) {
       admin.addSalary(order.total);
@@ -49,7 +52,9 @@ const createOrder = async (req, res) => {
         message: 'Admin Not Found',
       });
     }
-    const kassa = await Kassa.find({shop : req.params.shop}).sort({ _id: -1 }).limit(1);
+    const kassa = await Kassa.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
     if (kassa) {
       await kassa[0].addAmount(data.cashTotal);
     } else {
@@ -75,11 +80,11 @@ const getAllOrders = async (req, res) => {
       size = 20;
     }
     const limit = parseInt(size);
-    const AllOrders = await Order.find({ shop:req.params.shop});
-    const orders = await Order.find({shop:req.params.shop  })
+    const AllOrders = await Order.find({ shop: req.params.shop });
+    const orders = await Order.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .populate('salesman')
-      .populate("shop")
+      .populate('shop')
       .populate('cart.product')
       .limit(limit)
       .skip((page - 1) * limit);
