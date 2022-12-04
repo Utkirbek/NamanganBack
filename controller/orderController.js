@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
+const Admin = require('../models/Admin');
 const Payment = require('../models/Payment');
 const Loan = require('../models/Loan');
 const Kassa = require('../models/Kassa');
