@@ -18,7 +18,7 @@ const createOrder = async (req, res) => {
         paymentMethod: data.paymentMethod,
       });
       data.payment = payment._id;
-      data.cashTotal = total;
+      data.cashTotal = data.total;
     } else {
       payment = await Payment.create({
         shop: data.shop,
