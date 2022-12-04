@@ -21,6 +21,7 @@ const createOrder = async (req, res) => {
       data.cashTotal = total;
     } else {
       payment = await Payment.create({
+        shop: data.shop,
         salesman: data.salesman,
         amount: data.cashTotal,
         paymentMethod: data.paymentMethod,
@@ -28,7 +29,7 @@ const createOrder = async (req, res) => {
       data.payment = payment._id;
     }
 
-    if (data.hasLoan === 'true' && user !== '') {
+    if (data.hasLoan === 'true') {
       loan = await Loan.create({
         shop: data.shop,
         salesman: data.salesman,
@@ -36,6 +37,7 @@ const createOrder = async (req, res) => {
         user: data.user,
         shouldPay: data.shouldPay,
       });
+      console.log(loan);
       data.loan = loan._id;
     }
 
