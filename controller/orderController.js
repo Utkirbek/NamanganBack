@@ -39,8 +39,9 @@ const createOrder = async (req, res) => {
 
     const order = await Order.create(data);
 
-    for (let i = 0; i <= order.cart.length; i++) {
-      const product = Product.findById(order.cart[i].product);
+    for (let i = 0; i < order.cart.length; i++) {
+      const product = await Product.findById(order.cart[i].product);
+
       product.minusQuantity(order.cart[i].quantity);
     }
 
