@@ -29,7 +29,7 @@ const createOrder = async (req, res) => {
       data.payment = payment._id;
     }
 
-    if (data.hasLoan === 'true') {
+    if (data.hasLoan === true) {
       loan = await Loan.create({
         shop: data.shop,
         salesman: data.salesman,
