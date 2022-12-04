@@ -45,6 +45,7 @@ const getAllProducts = async (req, res) => {
         .lean()
         .sort({ _id: -1 })
         .populate('currency')
+        .populate('sellingCurrency')
         .limit(limit)
         .skip((page - 1) * limit);
     } else if (noPrice === 'true') {
@@ -67,6 +68,7 @@ const getAllProducts = async (req, res) => {
         .lean()
         .sort({ _id: -1 })
         .populate('currency')
+        .populate('sellingCurrency')
         .limit(limit)
         .skip((page - 1) * limit);
     } else {
@@ -75,6 +77,7 @@ const getAllProducts = async (req, res) => {
         .lean()
         .sort({ _id: -1 })
         .populate('currency')
+        .populate('sellingCurrency')
         .limit(limit)
         .skip((page - 1) * limit);
     }
@@ -119,7 +122,8 @@ const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id)
       .lean()
-      .populate('currency');
+      .populate('currency')
+      .populate('sellingCurrency');
     if (product.currency) {
       const calculatedPrice =
         product.price * product.sellingCurrency.equalsTo;
@@ -188,13 +192,15 @@ const searchProduct = async (req, res) => {
       if (search.charAt(0) === '+') {
         products = await Product.find({ code: search.slice(1) })
           .lean()
-          .populate('currency');
+          .populate('currency')
+          .populate('sellingCurrency');
       } else {
         products = await Product.find({
           title: { $regex: new RegExp(search, 'i') },
         })
           .lean()
-          .populate('currency');
+          .populate('currency')
+          .populate('sellingCurrency');
       }
 
       const Products = [];
