@@ -1,10 +1,10 @@
-const User = require("../models/User");
-const Admin = require("../models/Admin");
-const Product = require("../models/Product");
-const Kassa = require("../models/Kassa");
-const Spend = require("../models/Spend");
-const Order = require("../models/Order");
-const Loan = require("../models/Loan");
+const User = require('../models/User');
+const Admin = require('../models/Admin');
+const Product = require('../models/Product');
+const Kassa = require('../models/Kassa');
+const Spend = require('../models/Spend');
+const Order = require('../models/Order');
+const Profit = require('../models/Profit');
 
 const mainStatistics = async (req, res) => {
   try {
@@ -27,7 +27,7 @@ const mainStatistics = async (req, res) => {
       createdAt: { $lte: lastMonth },
     });
 
-    const kassa = await Kassa.find({shop:req.params.shop});
+    const kassa = await Kassa.find({ shop: req.params.shop });
     const lastMonthKassa = await Kassa.find({
       createdAt: { $lte: lastMonth },
     });
@@ -73,8 +73,8 @@ const pieChartIncome = async (req, res) => {
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setMonth(currentMonth.getMonth());
-    const monthName = currentMonth.toLocaleString("default", {
-      month: "long",
+    const monthName = currentMonth.toLocaleString('default', {
+      month: 'long',
     });
 
     for (let i = 0; i < 4; i++) {
@@ -83,7 +83,7 @@ const pieChartIncome = async (req, res) => {
       const end = new Date();
       end.setDate(currentMonth.getDate() + 7 * (i + 1));
       const kassa = await Kassa.find({
-        shop:req.params.shop,
+        shop: req.params.shop,
         createdAt: { $gte: start, $lte: end },
       });
       let total = 0;
@@ -92,22 +92,22 @@ const pieChartIncome = async (req, res) => {
       });
       if (i == 0) {
         weeks.push({
-          name: "First week",
+          name: 'First week',
           value: total,
         });
       } else if (i == 1) {
         weeks.push({
-          name: "Second week",
+          name: 'Second week',
           value: total,
         });
       } else if (i == 2) {
         weeks.push({
-          name: "Third week",
+          name: 'Third week',
           value: total,
         });
       } else {
         weeks.push({
-          name: "Fourth week",
+          name: 'Fourth week',
           value: total,
         });
       }
@@ -131,8 +131,8 @@ const pieChartSpend = async (req, res) => {
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setMonth(currentMonth.getMonth());
-    const monthName = currentMonth.toLocaleString("default", {
-      month: "long",
+    const monthName = currentMonth.toLocaleString('default', {
+      month: 'long',
     });
 
     for (let i = 0; i < 4; i++) {
@@ -141,7 +141,7 @@ const pieChartSpend = async (req, res) => {
       const end = new Date();
       end.setDate(currentMonth.getDate() + 7 * (i + 1));
       const spend = await Spend.find({
-        shop:req.params.shop,
+        shop: req.params.shop,
         createdAt: { $gte: start, $lte: end },
       });
       let total = 0;
@@ -150,22 +150,22 @@ const pieChartSpend = async (req, res) => {
       });
       if (i == 0) {
         weeks.push({
-          name: "First week",
+          name: 'First week',
           value: total,
         });
       } else if (i == 1) {
         weeks.push({
-          name: "Second week",
+          name: 'Second week',
           value: total,
         });
       } else if (i == 2) {
         weeks.push({
-          name: "Third week",
+          name: 'Third week',
           value: total,
         });
       } else {
         weeks.push({
-          name: "Fourth week",
+          name: 'Fourth week',
           value: total,
         });
       }
@@ -205,8 +205,8 @@ const barChart = async (req, res) => {
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setMonth(currentMonth.getMonth());
-    const monthName = currentMonth.toLocaleString("default", {
-      month: "long",
+    const monthName = currentMonth.toLocaleString('default', {
+      month: 'long',
     });
 
     const days = [];
@@ -216,20 +216,22 @@ const barChart = async (req, res) => {
       const end = new Date();
       end.setDate(currentMonth.getDate() + i + 1);
 
-      const dayName = start.toLocaleString("default", { weekday: "long" });
+      const dayName = start.toLocaleString('default', {
+        weekday: 'long',
+      });
 
-      const kassa = await Kassa.find({
-        shop:req.params.shop,
+      const profit = await Profit.find({
+        shop: req.params.shop,
         createdAt: { $gte: start, $lte: end },
       });
-      let kassaTotal = 0;
-      kassa.forEach((item) => {
-        kassaTotal += item.amount;
+      let profitTotal = 0;
+      profit.forEach((item) => {
+        profitTotal += item.amount;
       });
-  
+
       data = {
-        day: `${dayName} / ${monthName} ${i + 1}`,
-        kassa: kassaTotal,
+        date: `${dayName} / ${monthName} ${i + 1}`,
+        value: profitTotal,
       };
       days.push(data);
     }
