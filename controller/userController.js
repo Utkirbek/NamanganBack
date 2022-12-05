@@ -78,8 +78,9 @@ const searchUser = async (req, res) => {
     let user;
     if (req.params.name) {
       if (search.charAt(0) === '+') {
+        console.log(search.slice(1));
         user = await User.find({
-          phone: search.slice(1),
+          phone: { $regex: new RegExp(search.slice(1)) },
         });
       } else {
         user = await User.find({
