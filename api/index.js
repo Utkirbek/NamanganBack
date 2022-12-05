@@ -14,11 +14,12 @@ const roleRoutes = require('../routes/roleRoutes');
 const currencyRoutes = require('../routes/currencyRoutes');
 const loanRoutes = require('../routes/loanRoutes');
 const kassaRoutes = require('../routes/kassaRoutes');
+const profitRoutes = require('../routes/profitRoutes');
 const paymentRoutes = require('../routes/paymentRoutes');
 const spendRoutes = require('../routes/spendRoutes');
 const shopRoutes = require('../routes/shopRoutes');
 const statisticsRoutes = require('../routes/statisticsRoutes');
-
+const profitController = require('../controller/profitController');
 const kassaController = require('../controller/kassaController');
 const { isAuth } = require('../config/auth');
 
@@ -44,6 +45,7 @@ app.use('/api/currency/', isAuth, currencyRoutes);
 app.use('/api/permission/', isAuth, permissionRoutes);
 app.use('/api/role/', isAuth, roleRoutes);
 app.use('/api/kassa/', isAuth, kassaRoutes);
+app.use('/api/profit/', isAuth, profitRoutes);
 app.use('/api/loan/', isAuth, loanRoutes);
 app.use('/api/payment/', isAuth, paymentRoutes);
 app.use('/api/spend/', isAuth, spendRoutes);
@@ -66,5 +68,6 @@ app.listen(PORT, () => console.log(`server running on port ${PORT}`));
 
 cron.schedule('0 0 0 * * *', () => {
   kassaController.dailyKassa();
+  profitController.dailyProfit();
   console.log('running a task every day at 1:00 AM');
 });
