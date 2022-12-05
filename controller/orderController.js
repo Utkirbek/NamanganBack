@@ -4,6 +4,8 @@ const Admin = require('../models/Admin');
 const Payment = require('../models/Payment');
 const Loan = require('../models/Loan');
 const Kassa = require('../models/Kassa');
+const Profit = require('../models/Profit');
+const Currency = require('../models/Currency');
 
 const createOrder = async (req, res) => {
   try {
@@ -43,10 +45,49 @@ const createOrder = async (req, res) => {
 
     const order = await Order.create(data);
 
+    const profit = await Profit.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
+    if (profit) {
+    } else {
+      res.status(404).send({ message: 'Kassa not found!' });
+    }
+
     for (let i = 0; i < order.cart.length; i++) {
       const product = await Product.findById(order.cart[i].product);
+      let calculatedProfit;
+      if (
+        product.sellingCurrency &&
+        product.currency &&
+        product.originalPrice
+      ) {
+        const currency = await Currency.findById(product.currency);
+        const sellingCurrency = await Currency.findById(
+          product.sellingCurrency
+        );
 
+        const originalPrice =
+          +product.originalPrice * +currency.equalsTo;
+        const sellingPrice =
+          +product.price * +sellingCurrency.equalsTo;
+
+        calculatedProfit =
+          (+sellingPrice - +originalPrice) * order.cart[i].quantity;
+      } else if (product.currency && product.originalPrice) {
+        const currency = await Currency.findById(product.currency);
+
+        const originalPrice =
+          +product.originalPrice * +currency.equalsTo;
+        const sellingPrice = +product.price * +currency.equalsTo;
+
+        calculatedProfit =
+          (+sellingPrice - +originalPrice) * order.cart[i].quantity;
+      } else {
+        calculatedProfit = 0;
+      }
       product.minusQuantity(order.cart[i].quantity);
+
+      profit[0].addAmount(calculatedProfit);
     }
 
     const admin = await Admin.findById(data.salesman);
