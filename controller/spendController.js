@@ -6,7 +6,9 @@ const addSpend = async (req, res) => {
     let data = req.body;
     data.shop = req.params.shop;
     const newSpend = new Spend(data);
-    const kassa = await Kassa.find({shop:req.params.shop}).sort({ _id: -1 }).limit(1);
+    const kassa = await Kassa.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
     if (kassa) {
       await kassa[0].minusAmount(newSpend.amount);
     } else {
@@ -37,9 +39,9 @@ const getAllSpend = async (req, res) => {
     }
     const limit = parseInt(size);
 
-    const AllSpends = await Spend.find({ shop:req.params.shop });
-    const spends = await Spend.find({ shop:req.params.shop })
-      .populate("shop")
+    const AllSpends = await Spend.find({ shop: req.params.shop });
+    const spends = await Spend.find({ shop: req.params.shop })
+      .populate('shop')
       .sort({ _id: -1 })
       .limit(limit)
       .skip((page - 1) * limit);
@@ -75,9 +77,12 @@ const updateSpend = async (req, res) => {
 const deleteSpend = async (req, res) => {
   const spend = await Spend.findById(req.params.id);
   if (spend) {
-    const kassa = await Kassa.find({shop:req.body.shop}).sort({ _id: -1 }).limit(1);
+    const kassa = await Kassa.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
+
     if (kassa) {
-      await kassa[0].addAmount(spend.amount);
+      await kassa[0].minusAmount(spend.amount);
     } else {
       res.status(404).send({ message: 'Kassa not found!' });
     }
