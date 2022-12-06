@@ -10,7 +10,7 @@ const addSpend = async (req, res) => {
       .sort({ _id: -1 })
       .limit(1);
     if (kassa) {
-      await kassa[0].minusAmount(newSpend.amount);
+      await kassa[0].addAmount(newSpend.amount);
     } else {
       res.status(404).send({ message: 'Kassa not found!' });
     }
