@@ -8,6 +8,25 @@ const Profit = require('../models/Profit');
 
 const mainStatistics = async (req, res) => {
   try {
+    const Allproducts = await Product.find({}).populate('currency');
+
+    let budget = 0;
+
+    Allproducts.forEach((product) => {
+      if (product.currency) {
+        let amount =
+          +product.currency.equalsTo *
+          +product.originalPrice *
+          product.quantity;
+
+        budget = budget + amount;
+      } else {
+        let amount = +product.originalPrice * product.quantity;
+
+        budget = budget + amount;
+      }
+    });
+
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
     const admins = await Admin.countDocuments();
@@ -57,6 +76,9 @@ const mainStatistics = async (req, res) => {
       kassa: {
         total: total,
         diff: total - lastMonthTotal,
+      },
+      budget: {
+        total: budget.toFixed(1),
       },
     };
     res.status(200).send(data);
