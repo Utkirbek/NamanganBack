@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const uploader = require('../config/multer');
+
 const {
   registerUser,
   getAllUsers,
@@ -11,7 +11,7 @@ const {
   getLoanByUser,
 } = require('../controller/userController');
 
-router.post('/add', uploader.single('file'), registerUser);
+router.post('/add', registerUser);
 
 //get all user
 router.get('/', getAllUsers);

@@ -7,10 +7,7 @@ const Cloudinary = require('../config/cloudinary');
 
 const registerUser = async (req, res) => {
   try {
-    const upload = await cloudinary.v2.uploader.upload(req.file.path);
-    let data = req.body;
-    data.image = upload.secure_url;
-    const user = await User.create(data);
+    const user = await User.create(req.body);
     res.send({ message: 'User created successfully' });
   } catch (err) {
     res.status(500).send({
