@@ -233,8 +233,45 @@ const searchProduct = async (req, res) => {
     });
   }
 };
+const allProducts = async (req, res) => {
+  try {
+    let AllProducts = await Product.find({});
+    let products = await Product.find({})
+      .lean()
+      .sort({ _id: -1 })
+      .populate('currency')
+      .populate('sellingCurrency');
+
+    const Products = [];
+
+    products.forEach((product) => {
+      if (product.sellingCurrency) {
+        const calculatedPrice =
+          product.price * product.sellingCurrency.equalsTo;
+        product.calculatedPrice = calculatedPrice.toFixed(2);
+        Products.push(product);
+      } else if (product.currency) {
+        const calculatedPrice =
+          product.price * product.currency.equalsTo;
+        product.calculatedPrice = calculatedPrice.toFixed(2);
+        Products.push(product);
+      } else {
+        Products.push(product);
+      }
+    });
+
+    res.send({
+      Products,
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
 
 module.exports = {
+  allProducts,
   addProduct,
   getAllProducts,
   getProductById,
