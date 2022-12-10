@@ -16,7 +16,12 @@ const registerAdmin = async (req, res) => {
         message: 'This Email already Added!',
       });
     } else {
+      const upload = await cloudinary.v2.uploader.upload(
+        req.file.path
+      );
+
       const newStaff = new Admin({
+        image: upload.secure_url,
         name: req.body.name,
         email: req.body.email,
         role: req.body.role,
@@ -27,6 +32,7 @@ const registerAdmin = async (req, res) => {
       res.send({
         token,
         _id: staff._id,
+        image: upload.secure_url,
         name: staff.name,
         email: staff.email,
         role: staff.role,
@@ -81,8 +87,12 @@ const addStaff = async (req, res) => {
         message: 'This Email already Added!',
       });
     } else {
+      const upload = await cloudinary.v2.uploader.upload(
+        req.file.path
+      );
       const newStaff = new Admin({
         name: req.body.name,
+        image: upload.secure_url,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password),
         salary_percent: req.body.salary_percent,
