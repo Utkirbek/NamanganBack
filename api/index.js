@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const cron = require('node-cron');
+const multer = require('multer');
 const connectDB = require('../config/db');
 const productRoutes = require('../routes/productRoutes');
 const userRoutes = require('../routes/userRoutes');
@@ -22,20 +23,18 @@ const statisticsRoutes = require('../routes/statisticsRoutes');
 const profitController = require('../controller/profitController');
 const kassaController = require('../controller/kassaController');
 const { isAuth } = require('../config/auth');
+const cloudinary = require('../config/cloudinary');
+const uploader = require('../config/multer');
 
+const upload = multer();
 connectDB();
 const app = express();
 
 app.set('trust proxy', 1);
 
-app.use(express.json({ limit: '4mb' }));
+app.use(express.json());
 app.use(helmet());
 app.use(cors());
-
-//root routes
-app.get('/', (req, res) => {
-  res.send('App works properly!');
-});
 
 //this for route will need for store front, also for admin dashboard
 app.use('/api/products/', isAuth, productRoutes);

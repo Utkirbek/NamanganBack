@@ -1,15 +1,15 @@
 require('dotenv').config();
-
+const cloudinary = require('../config/cloudinary');
+const uploader = require('../config/multer');
 const User = require('../models/User');
 const Loan = require('../models/Loan');
 const Cloudinary = require('../config/cloudinary');
 
 const registerUser = async (req, res) => {
   try {
+    const upload = await cloudinary.v2.uploader.upload(req.file.path);
     let data = req.body;
-    const image = Cloudinary.UploadImage(data.image);
-    data.image = image;
-
+    data.image = upload.secure_url;
     const user = await User.create(data);
     res.send({ message: 'User created successfully' });
   } catch (err) {

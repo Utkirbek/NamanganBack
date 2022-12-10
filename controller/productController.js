@@ -2,7 +2,10 @@ const Product = require('../models/Product');
 
 const addProduct = async (req, res) => {
   try {
-    const newProduct = new Product(req.body);
+    const upload = await cloudinary.v2.uploader.upload(req.file.path);
+    let data = req.body;
+    data.image = upload.secure_url;
+    const newProduct = new Product(data);
     await newProduct.save();
     res.status(200).send({
       message: 'Product Added Successfully!',
