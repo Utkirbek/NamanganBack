@@ -36,6 +36,14 @@ app.use(express.json());
 app.use(helmet());
 app.use(cors());
 
+app.post('/api/upload', uploader.single('file'), async (req, res) => {
+  const upload = await cloudinary.v2.uploader.upload(req.file.path);
+  return res.json({
+    success: true,
+    file: upload.secure_url,
+  });
+});
+
 //this for route will need for store front, also for admin dashboard
 app.use('/api/products/', isAuth, productRoutes);
 
