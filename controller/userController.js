@@ -2,10 +2,15 @@ require('dotenv').config();
 
 const User = require('../models/User');
 const Loan = require('../models/Loan');
+const Cloudinary = require('../config/cloudinary');
 
 const registerUser = async (req, res) => {
   try {
-    const user = await User.create(req.body);
+    let data = req.body;
+    const image = Cloudinary.UploadImage(data.image);
+    data.image = image;
+
+    const user = await User.create(data);
     res.send({ message: 'User created successfully' });
   } catch (err) {
     res.status(500).send({
