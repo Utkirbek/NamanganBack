@@ -91,7 +91,9 @@ const mainStatistics = async (req, res) => {
 
 const pieChartIncome = async (req, res) => {
   try {
+    let { isAll } = req.query;
     weeks = [];
+    let kassa;
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setMonth(currentMonth.getMonth());
@@ -104,10 +106,17 @@ const pieChartIncome = async (req, res) => {
       start.setDate(currentMonth.getDate() + 7 * i);
       const end = new Date();
       end.setDate(currentMonth.getDate() + 7 * (i + 1));
-      const kassa = await Kassa.find({
-        shop: req.params.shop,
-        createdAt: { $gte: start, $lte: end },
-      });
+      if (isAll === true) {
+        kassa = await Kassa.find({
+          createdAt: { $gte: start, $lte: end },
+        });
+      } else {
+        kassa = await Kassa.find({
+          shop: req.params.shop,
+          createdAt: { $gte: start, $lte: end },
+        });
+      }
+
       let total = 0;
       kassa.forEach((item) => {
         total += item.amount;
@@ -150,6 +159,8 @@ const pieChartIncome = async (req, res) => {
 const pieChartSpend = async (req, res) => {
   try {
     weeks = [];
+    let spend;
+    let { isAll } = req.query;
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setMonth(currentMonth.getMonth());
@@ -162,10 +173,18 @@ const pieChartSpend = async (req, res) => {
       start.setDate(currentMonth.getDate() + 7 * i);
       const end = new Date();
       end.setDate(currentMonth.getDate() + 7 * (i + 1));
-      const spend = await Spend.find({
-        shop: req.params.shop,
-        createdAt: { $gte: start, $lte: end },
-      });
+
+      if (isAll === true) {
+        spend = await Spend.find({
+          createdAt: { $gte: start, $lte: end },
+        });
+      } else {
+        spend = await Spend.find({
+          shop: req.params.shop,
+          createdAt: { $gte: start, $lte: end },
+        });
+      }
+
       let total = 0;
       spend.forEach((item) => {
         total += item.amount;
@@ -230,6 +249,7 @@ const pieChartStaffSalary = async (req, res) => {
 
 const barChart = async (req, res) => {
   try {
+    let { isAll } = req.query;
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setMonth(currentMonth.getMonth());
@@ -238,6 +258,7 @@ const barChart = async (req, res) => {
     });
 
     const days = [];
+    let profit;
     for (let i = 0; i < 30; i++) {
       const start = new Date();
       start.setDate(currentMonth.getDate() + i);
@@ -247,11 +268,17 @@ const barChart = async (req, res) => {
       const dayName = start.toLocaleString('default', {
         weekday: 'long',
       });
+      if (isAll === true) {
+        profit = await Profit.find({
+          createdAt: { $gte: start, $lte: end },
+        });
+      } else {
+        profit = await Profit.find({
+          shop: req.params.shop,
+          createdAt: { $gte: start, $lte: end },
+        });
+      }
 
-      const profit = await Profit.find({
-        shop: req.params.shop,
-        createdAt: { $gte: start, $lte: end },
-      });
       let profitTotal = 0;
       profit.forEach((item) => {
         profitTotal += item.amount;
