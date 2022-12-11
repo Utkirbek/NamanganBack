@@ -206,7 +206,7 @@ const pieChartSpend = async (req, res) => {
 };
 const pieChartStaffSalary = async (req, res) => {
   try {
-    data = [];
+    data = new Array();
     const admins = await Admin.find();
     admins.forEach((item) => {
       data.push({
