@@ -208,12 +208,18 @@ const pieChartStaffSalary = async (req, res) => {
   try {
     data = new Array();
     const admins = await Admin.find();
-    admins.forEach((item) => {
-      data.unshift({
-        name: item.name,
-        value: item.earned_salary,
+    for (let i = 0; i < admins.length; i++) {
+      data.push({
+        name: admins[i].name,
+        value: admins[i].earned_salary,
       });
-    });
+    }
+    // admins.forEach((item) => {
+    //   data.unshift({
+    //     name: item.name,
+    //     value: item.earned_salary,
+    //   });
+    // });
     res.status(200).send(data);
   } catch (err) {
     res.status(500).send({
