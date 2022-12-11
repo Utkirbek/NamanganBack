@@ -7,12 +7,15 @@ const {
   createOrder,
   deleteOrder,
   updateOrder,
+  searchOrder,
 } = require('../controller/orderController');
 
 router.post('/:shop/add', createOrder);
 
 //get all orders
 router.get('/:shop/', getAllOrders);
+//get all orders
+router.get('/:shop/search/:title', searchOrder);
 
 //get all order by a user
 router.get('/:shop/user/:id', getOrderByUser);

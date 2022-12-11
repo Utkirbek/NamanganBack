@@ -199,6 +199,26 @@ const updateOrder = async (req, res) => {
     res.status(404).send({ message: 'Order not found!' });
   }
 };
+
+const searchOrder = async (req, res) => {
+  try {
+    const search = req.params.title.toString();
+    const orders = await Order.find({
+      shop: req.params.shop,
+      code: search,
+    })
+      .sort({ _id: -1 })
+      .populate('salesman')
+      .populate('shop')
+      .populate('cart.product');
+
+    res.send(orders);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
 module.exports = {
   getAllOrders,
   getOrderById,
@@ -206,4 +226,5 @@ module.exports = {
   deleteOrder,
   createOrder,
   updateOrder,
+  searchOrder,
 };
