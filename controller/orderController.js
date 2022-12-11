@@ -44,6 +44,9 @@ const createOrder = async (req, res) => {
     }
 
     const order = await Order.create(data);
+    order.setNext('code', function (err, user) {
+      if (err) console.log('Cannot increment the Code because ', err);
+    });
 
     const profit = await Profit.find({ shop: req.params.shop })
       .sort({ _id: -1 })
