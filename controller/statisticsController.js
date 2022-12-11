@@ -209,7 +209,7 @@ const pieChartStaffSalary = async (req, res) => {
     data = new Array();
     const admins = await Admin.find();
     admins.forEach((item) => {
-      data.push({
+      data.unshift({
         name: item.name,
         value: item.earned_salary,
       });
