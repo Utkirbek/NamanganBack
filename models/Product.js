@@ -74,6 +74,10 @@ productSchema.methods.minusQuantity = function (amount) {
   this.quantity -= amount;
   this.save();
 };
+productSchema.methods.plusQuantity = function (amount) {
+  this.quantity += amount;
+  this.save();
+};
 
 const Product = mongoose.model('Product', productSchema);
 
