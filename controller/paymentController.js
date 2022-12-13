@@ -2,60 +2,37 @@ const Payment = require('../models/Payment');
 const Kassa = require('../models/Kassa');
 const Loan = require('../models/Loan');
 const Admin = require('../models/Admin');
-const { find } = require('../models/Admin');
 
 const addPayment = async (req, res) => {
   try {
-    let amount = req.body.amount;
-    while (0 < +amount) {
-      const loans = await Loan.find({
-        user: req.body.user,
-        isDone: 'false',
-      });
-      let newPayment;
-      let paymentAmount = 0;
-      const needToBeRemoved = loans[0].amount;
-      if (needToBeRemoved <= amount) {
-        paymentAmount = amount - needToBeRemoved;
-        let data = req.body;
-        data.amount = paymentAmount;
-        data.shop = req.params.shop;
+    let data = req.body;
+    data.shop = req.params.shop;
+    const newPayment = new Payment(data);
 
-        newPayment = new Payment(data);
-      } else {
-        let needToBeRemoved = amount;
-        paymentAmount = needToBeRemoved;
-        let data = req.body;
-        data.amount = paymentAmount;
-        data.shop = req.params.shop;
-
-        newPayment = new Payment(data);
-      }
-      const kassa = await Kassa.find({ shop: req.params.shop })
-        .sort({ _id: -1 })
-        .limit(1);
-      if (kassa) {
-        await kassa[0].addAmount(newPayment.amount);
-      } else {
-        res.status(404).send({ message: 'Kassa not found!' });
-      }
-      const admin = await Admin.findById(req.body.salesman);
-      if (admin) {
-        await admin.addSalary(req.body.amount);
-      } else {
-        res.status(404).send({ message: 'Salesman not found!' });
-      }
-      if (loans[0]) {
-        const loan = await Loan.findById(loans[0]._id);
-        await loan.minusAmount(req.body.amount);
-      } else {
-        res.status(404).send({ message: 'Loan not found!' });
-      }
-      await newPayment.save();
+    const kassa = await Kassa.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
+    if (kassa) {
+      await kassa[0].addAmount(newPayment.amount);
+    } else {
+      res.status(404).send({ message: 'Kassa not found!' });
     }
-
+    const admin = await Admin.findById(req.body.salesman);
+    if (admin) {
+      await admin.addSalary(req.body.amount);
+    } else {
+      res.status(404).send({ message: 'Salesman not found!' });
+    }
+    if (req.body.loan) {
+      const loan = await Loan.findById(req.body.loan);
+      await loan.minusAmount(req.body.amount);
+    } else {
+      res.status(404).send({ message: 'Loan not found!' });
+    }
+    await newPayment.save();
     res.status(200).send({
       message: 'Payment Added Successfully!',
+      newPayment,
     });
   } catch (err) {
     res.status(500).send({
@@ -63,7 +40,6 @@ const addPayment = async (req, res) => {
     });
   }
 };
-
 const getAllPayment = async (req, res) => {
   try {
     let { page, size } = req.query;
