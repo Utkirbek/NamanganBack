@@ -25,10 +25,10 @@ const loanSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    status: {
+    isDone: {
       type: String,
-      enum: ['never', 'some', 'done'],
-      default: 'never',
+      enum: ['true', 'false'],
+      default: 'false',
     },
   },
   {
@@ -38,19 +38,15 @@ const loanSchema = new mongoose.Schema(
 
 loanSchema.methods.minusAmount = function (amount) {
   this.amount -= amount;
-  if (this.amount <= 0) {
-    this.status = 'done';
-  } else {
-    this.status = 'some';
+  if (this.amount === 0) {
+    this.isDone = 'true';
   }
   return this.save();
 };
 loanSchema.methods.plusAmount = function (amount) {
   this.amount += amount;
-  if (this.amount <= 0) {
-    this.status = 'done';
-  } else {
-    this.status = 'some';
+  if (this.amount > 0) {
+    this.isDone = 'false';
   }
   return this.save();
 };
