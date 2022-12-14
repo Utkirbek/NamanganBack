@@ -6,9 +6,11 @@ const Loan = require('../models/Loan');
 const Kassa = require('../models/Kassa');
 const Profit = require('../models/Profit');
 const Currency = require('../models/Currency');
+const User = require('../models/User');
 
 const createOrder = async (req, res) => {
   try {
+    let user = User.findById(req.body.user);
     let data = req.body;
     data.shop = req.params.shop;
     let payment;
@@ -39,6 +41,8 @@ const createOrder = async (req, res) => {
         user: data.user,
         shouldPay: data.shouldPay,
       });
+      user.plusLoan(loan.amount);
+      user.addLoanHistory(loan._id);
 
       data.loan = loan._id;
     }

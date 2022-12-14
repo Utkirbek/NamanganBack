@@ -2,9 +2,11 @@ const Payment = require('../models/Payment');
 const Kassa = require('../models/Kassa');
 const Loan = require('../models/Loan');
 const Admin = require('../models/Admin');
+const User = require('../models/User');
 
 const addPayment = async (req, res) => {
   try {
+    let user;
     let data = req.body;
     data.shop = req.params.shop;
     const newPayment = new Payment(data);
@@ -12,24 +14,29 @@ const addPayment = async (req, res) => {
     const kassa = await Kassa.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .limit(1);
+
     if (kassa) {
       await kassa[0].addAmount(newPayment.amount);
     } else {
       res.status(404).send({ message: 'Kassa not found!' });
     }
+
     const admin = await Admin.findById(req.body.salesman);
     if (admin) {
       await admin.addSalary(req.body.amount);
     } else {
       res.status(404).send({ message: 'Salesman not found!' });
     }
-    if (req.body.loan) {
-      const loan = await Loan.findById(req.body.loan);
-      await loan.minusAmount(req.body.amount);
+
+    if (req.body.userId) {
+      user = await User.findById(req.body.userId);
+      await user.minusAmount(req.body.amount);
     } else {
-      res.status(404).send({ message: 'Loan not found!' });
+      res.status(404).send({ message: 'user not found!' });
     }
+
     await newPayment.save();
+    user.paymentHistory(newPayment._id);
     res.status(200).send({
       message: 'Payment Added Successfully!',
       newPayment,
@@ -40,6 +47,7 @@ const addPayment = async (req, res) => {
     });
   }
 };
+
 const getAllPayment = async (req, res) => {
   try {
     let { page, size } = req.query;
@@ -103,6 +111,7 @@ const updatePayment = async (req, res) => {
 };
 
 const deletePayment = async (req, res) => {
+  let user;
   const payment = await Payment.findById(req.params.id);
   if (payment) {
     const kassa = await Kassa.find({ shop: req.params.shop })
@@ -120,11 +129,11 @@ const deletePayment = async (req, res) => {
     } else {
       res.status(404).send({ message: 'Salesman not found!' });
     }
-    const loan = await Loan.findById(payment.loan);
-    if (loan) {
-      await loan.plusAmount(payment.amount);
+    if (req.body.userId) {
+      user = await User.findById(req.body.userId);
+      await user.minusAmount(req.body.amount);
     } else {
-      res.status(404).send({ message: 'Loan not found!' });
+      res.status(404).send({ message: 'user not found!' });
     }
 
     Payment.deleteOne({ _id: req.params.id }, (err) => {
