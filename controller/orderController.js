@@ -178,7 +178,7 @@ const getOrderById = async (req, res) => {
 };
 
 const deleteOrder = async (req, res) => {
-  const order = Order.findById(req.params.id);
+  const order = await Order.findById(req.params.id);
   const profit = await Profit.find({ shop: req.params.shop })
     .sort({ _id: -1 })
     .limit(1);
@@ -186,6 +186,7 @@ const deleteOrder = async (req, res) => {
   } else {
     res.status(404).send({ message: 'Kassa not found!' });
   }
+
   for (let i = 0; i < order.cart.length; i++) {
     const product = await Product.findById(order.cart[i].product);
 
