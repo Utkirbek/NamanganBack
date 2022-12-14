@@ -25,7 +25,7 @@ const getAllPermission = async (req, res) => {
   }
 };
 
-const updatePermission= async (req, res) => {
+const updatePermission = async (req, res) => {
   try {
     const permission = await Permission.findById(req.params.id);
     if (permission) {
@@ -39,17 +39,17 @@ const updatePermission= async (req, res) => {
 };
 
 const deletePermission = (req, res) => {
-  Permission.deleteOne({ _id: req.params.id }, (err) => {
-    if (err) {
-      res.status(500).send({
-        message: err.message,
-      });
-    } else {
-      res.status(200).send({
-        message: 'Permission Deleted Successfully!',
-      });
-    }
+  // Permission.deleteOne({ _id: req.params.id }, (err) => {
+  //   if (err) {
+  //     res.status(500).send({
+  //       message: err.message,
+  //     });
+  //   } else {
+  res.status(200).send({
+    message: 'Permissions are not allowed to be deleted',
   });
+  //   }
+  // });
 };
 
 module.exports = {
