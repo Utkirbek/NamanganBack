@@ -30,13 +30,13 @@ const addPayment = async (req, res) => {
 
     if (req.body.userId) {
       user = await User.findById(req.body.userId);
-      await user.minusAmount(req.body.amount);
+      await user.minusAmount(req.body.amount, newPayment._id);
     } else {
       res.status(404).send({ message: 'user not found!' });
     }
 
     await newPayment.save();
-    user.paymentHistory(newPayment._id);
+
     res.status(200).send({
       message: 'Payment Added Successfully!',
       newPayment,

@@ -46,20 +46,14 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.methods.minusLoan = function (amount) {
+userSchema.methods.minusLoan = function (amount, id) {
+  this.paymentHistory.push(id);
   this.loan -= amount;
   this.save();
 };
-userSchema.methods.plusLoan = function (amount) {
-  this.loan += amount;
-  this.save();
-};
-userSchema.methods.addLoanHistory = function (id) {
+userSchema.methods.plusLoan = function (amount, id) {
   this.loanHistory.push(id);
-  this.save();
-};
-userSchema.methods.addPaymentHistory = function (id) {
-  this.paymentHistory.push(id);
+  this.loan += amount;
   this.save();
 };
 
