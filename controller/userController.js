@@ -1,9 +1,7 @@
 require('dotenv').config();
-const cloudinary = require('../config/cloudinary');
-const uploader = require('../config/multer');
+
 const User = require('../models/User');
 const Loan = require('../models/Loan');
-const Cloudinary = require('../config/cloudinary');
 
 const registerUser = async (req, res) => {
   try {
@@ -17,7 +15,10 @@ const registerUser = async (req, res) => {
 };
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}).sort({ _id: -1 });
+    const users = await User.find({})
+      .sort({ _id: -1 })
+      .populate('loanHistory')
+      .populate('paymentHistory');
     res.send(users);
   } catch (err) {
     res.status(500).send({ message: err.message });
@@ -28,9 +29,12 @@ const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
 
-    const loans = await Loan.find({ user: user._id }).sort({
-      _id: -1,
-    });
+    const loans = await Loan.find({ user: user._id })
+      .sort({
+        _id: -1,
+      })
+      .populate('loanHistory')
+      .populate('paymentHistory');
     if (user) {
       res.send({ user, loans });
     } else {
@@ -82,13 +86,17 @@ const searchUser = async (req, res) => {
       if (search.charAt(0) === '+') {
         user = await User.find({
           phone: { $regex: new RegExp(search.slice(1)) },
-        });
+        })
+          .populate('loanHistory')
+          .populate('paymentHistory');
       } else {
         user = await User.find({
           name: {
             $regex: new RegExp(req.params.name, 'i'),
           },
-        });
+        })
+          .populate('loanHistory')
+          .populate('paymentHistory');
       }
 
       res.send(user);
