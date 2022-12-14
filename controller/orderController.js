@@ -10,7 +10,10 @@ const User = require('../models/User');
 
 const createOrder = async (req, res) => {
   try {
-    let user = await User.findById(req.body.user);
+    let user = null;
+    if (req.body.user != '') {
+      user = await User.findById(req.body.user);
+    }
 
     let data = req.body;
     data.shop = req.params.shop;
@@ -42,7 +45,9 @@ const createOrder = async (req, res) => {
         user: data.user,
         shouldPay: data.shouldPay,
       });
-      user.plusLoan(loan.amount, loan._id);
+      if (user !== null) {
+        user.plusLoan(loan.amount, loan._id);
+      }
 
       data.loan = loan._id;
     }
