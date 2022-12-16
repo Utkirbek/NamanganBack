@@ -39,16 +39,17 @@ const updatePermission = async (req, res) => {
 };
 
 const deletePermission = (req, res) => {
-  // Permission.deleteOne({ _id: req.params.id }, (err) => {
-  //   if (err) {
-  //     res.status(500).send({
-  //       message: err.message,
-  //     });
-  //   } else {
-  res.status(200).send({
-    message: 'Permissions are not allowed to be deleted',
+  Permission.deleteOne({ _id: req.params.id }, (err) => {
+    if (err) {
+      res.status(500).send({
+        message: err.message,
+      });
+    } else {
+      res.send({ message: 'Permission Deleted Successfully!' });
+    }
   });
-  //   }
+  // res.status(200).send({
+  //   message: 'Permissions are not allowed to be deleted',
   // });
 };
 
