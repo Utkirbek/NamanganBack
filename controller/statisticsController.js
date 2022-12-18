@@ -97,15 +97,13 @@ const pieChartIncome = async (req, res) => {
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setMonth(currentMonth.getMonth());
-    const monthName = currentMonth.toLocaleString('default', {
-      month: 'long',
-    });
 
     for (let i = 0; i < 4; i++) {
       const start = new Date();
       start.setDate(currentMonth.getDate() + 7 * i);
       const end = new Date();
       end.setDate(currentMonth.getDate() + 7 * (i + 1));
+
       if (isAll === 'true') {
         kassa = await Kassa.find({
           createdAt: { $gte: start, $lte: end },
@@ -123,28 +121,28 @@ const pieChartIncome = async (req, res) => {
       });
       if (i == 0) {
         weeks.push({
-          name: 'First week',
+          date: start,
           value: total,
         });
       } else if (i == 1) {
         weeks.push({
-          name: 'Second week',
+          date: start,
           value: total,
         });
       } else if (i == 2) {
         weeks.push({
-          name: 'Third week',
+          date: start,
           value: total,
         });
       } else {
         weeks.push({
-          name: 'Fourth week',
+          date: start,
           value: total,
         });
       }
     }
     data = {
-      month: monthName,
+      month: currentMonth,
       weeks: weeks,
     };
 
@@ -164,9 +162,6 @@ const pieChartSpend = async (req, res) => {
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setMonth(currentMonth.getMonth());
-    const monthName = currentMonth.toLocaleString('default', {
-      month: 'long',
-    });
 
     for (let i = 0; i < 4; i++) {
       const start = new Date();
@@ -191,28 +186,28 @@ const pieChartSpend = async (req, res) => {
       });
       if (i == 0) {
         weeks.push({
-          name: 'First week',
+          date: start,
           value: total,
         });
       } else if (i == 1) {
         weeks.push({
-          name: 'Second week',
+          date: start,
           value: total,
         });
       } else if (i == 2) {
         weeks.push({
-          name: 'Third week',
+          date: start,
           value: total,
         });
       } else {
         weeks.push({
-          name: 'Fourth week',
+          date: start,
           value: total,
         });
       }
     }
     data = {
-      month: monthName,
+      month: currentMonth,
       weeks: weeks,
     };
 
@@ -233,12 +228,7 @@ const pieChartStaffSalary = async (req, res) => {
         value: admins[i].earned_salary,
       });
     }
-    // admins.forEach((item) => {
-    //   data.unshift({
-    //     name: item.name,
-    //     value: item.earned_salary,
-    //   });
-    // });
+
     res.status(200).send(data);
   } catch (err) {
     res.status(500).send({
@@ -254,21 +244,16 @@ const barChart = async (req, res) => {
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setMonth(currentMonth.getMonth());
-    const monthName = currentMonth.toLocaleString('default', {
-      month: 'long',
-    });
 
     const days = [];
     let profit;
     for (let i = 0; i < 30; i++) {
       const start = new Date();
       start.setDate(currentMonth.getDate() + i);
+
       const end = new Date();
       end.setDate(currentMonth.getDate() + i + 1);
 
-      const dayName = start.toLocaleString('default', {
-        weekday: 'long',
-      });
       if (isAll === 'true') {
         profit = await Profit.find({
           createdAt: { $gte: start, $lte: end },
@@ -286,7 +271,7 @@ const barChart = async (req, res) => {
       });
 
       data = {
-        date: `${dayName} / ${monthName} ${i + 1}`,
+        date: start,
         value: profitTotal,
       };
       days.push(data);
