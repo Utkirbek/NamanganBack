@@ -92,7 +92,7 @@ const mainStatistics = async (req, res) => {
 const pieChartIncome = async (req, res) => {
   try {
     let { isAll } = req.query;
-    weeks = [];
+    let weeks = [];
     let kassa;
     const currentMonth = new Date();
     currentMonth.setDate(1);
@@ -156,7 +156,7 @@ const pieChartIncome = async (req, res) => {
 
 const pieChartSpend = async (req, res) => {
   try {
-    weeks = [];
+    let weeks = [];
     let spend;
     let { isAll } = req.query;
     const currentMonth = new Date();
@@ -220,7 +220,7 @@ const pieChartSpend = async (req, res) => {
 };
 const pieChartStaffSalary = async (req, res) => {
   try {
-    data = new Array();
+    let data = [];
     const admins = await Admin.find();
     for (let i = 0; i < admins.length; i++) {
       data.unshift({
