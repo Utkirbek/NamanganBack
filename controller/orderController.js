@@ -247,10 +247,87 @@ const deleteOrder = async (req, res) => {
 const updateOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
-    if (order) {
-      await spend.save();
-      res.send({ message: 'Order Updated Successfully!' });
+    const profit = await Profit.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
+
+    for (let i = 0; i < order.cart.length; i++) {
+      const product = await Product.findById(order.cart[i].product);
+
+      if (
+        product.sellingCurrency &&
+        product.currency &&
+        product.originalPrice
+      ) {
+        const currency = await Currency.findById(product.currency);
+        const sellingCurrency = await Currency.findById(
+          product.sellingCurrency
+        );
+
+        const originalPrice =
+          +product.originalPrice * +currency.equalsTo;
+        const sellingPrice =
+          +product.price * +sellingCurrency.equalsTo;
+
+        calculatedProfit =
+          (+sellingPrice - +originalPrice) * order.cart[i].quantity;
+      } else if (product.currency && product.originalPrice) {
+        const currency = await Currency.findById(product.currency);
+
+        const originalPrice =
+          +product.originalPrice * +currency.equalsTo;
+        const sellingPrice = +product.price * +currency.equalsTo;
+
+        calculatedProfit =
+          (+sellingPrice - +originalPrice) * order.cart[i].quantity;
+      } else {
+        calculatedProfit = 0;
+      }
+      product.plusQuantity(order.cart[i].quantity);
+
+      if (profit) {
+        profit[0].minusAmount(calculatedProfit);
+      } else {
+        res.status(404).send({ message: 'Profit not found!' });
+      }
     }
+    const admin = await Admin.findById(order.salesman);
+    if (admin) {
+      admin.removeSalary(order.total);
+    } else {
+      res.status(404).send({
+        message: 'Admin Not Found',
+      });
+    }
+    const kassa = await Kassa.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
+    if (kassa) {
+      await kassa[0].minusAmount(order.cashTotal);
+    } else {
+      res.status(404).send({ message: 'Kassa not found!' });
+    }
+    data = req.body;
+    for (let i = 0; i < data.cart.length; i++) {
+      if (data.cart[i].product === order.cart[i].product) {
+        data.cart[i].quantity =
+          data.cart[i].quantity - req.body.cart[i].quantity;
+      }
+    }
+    data.total = order.total - req.body.total;
+    data.cashTotal = order.cashTotal - req.body.cashTotal;
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.id,
+      data,
+      {
+        new: true,
+      }
+    );
+    res.status(200).send({
+      updatedOrder,
+      message: 'Order Updated Successfully!',
+    });
   } catch (err) {
     res.status(404).send({ message: 'Order not found!' });
   }
