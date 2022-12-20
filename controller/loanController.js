@@ -32,13 +32,13 @@ const getAllLoan = async (req, res) => {
 
     const limit = parseInt(size);
 
-    const AllLoans = await Loan.find({ });
-    const loans = await Loan.find({  })
+    const AllLoans = await Loan.find({ shop: req.params.shop });
+    const loans = await Loan.find({ shop: req.params.shop })
 
       .sort({ _id: -1 })
       .populate('user')
       .populate('salesman')
-      .populate("shop")
+      .populate('shop')
       .limit(limit)
       .skip((page - 1) * limit);
     res.send({
@@ -84,8 +84,12 @@ const deleteLoan = (req, res) => {
 const getLoanByUserId = async (req, res) => {
   try {
     const loan = await Loan.find({ user: req.params.id });
+    let total = 0;
+    for (let i = 0; i < loan.length; i++) {
+      total = +total + +loan.amount;
+    }
     res.status(200).send({
-      loan,
+      total,
     });
   } catch (err) {
     res.status(500).send({

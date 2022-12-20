@@ -1,13 +1,32 @@
-const User = require("../models/User");
-const Admin = require("../models/Admin");
-const Product = require("../models/Product");
-const Kassa = require("../models/Kassa");
-const Spend = require("../models/Spend");
-const Order = require("../models/Order");
-const Loan = require("../models/Loan");
+const User = require('../models/User');
+const Admin = require('../models/Admin');
+const Product = require('../models/Product');
+const Kassa = require('../models/Kassa');
+const Spend = require('../models/Spend');
+const Order = require('../models/Order');
+const Profit = require('../models/Profit');
 
 const mainStatistics = async (req, res) => {
   try {
+    const Allproducts = await Product.find({}).populate('currency');
+
+    let budget = 0;
+
+    Allproducts.forEach((product) => {
+      if (product.currency) {
+        let amount =
+          +product.currency.equalsTo *
+          +product.originalPrice *
+          product.quantity;
+
+        budget = budget + amount;
+      } else {
+        let amount = +product.originalPrice * product.quantity;
+
+        budget = budget + amount;
+      }
+    });
+
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
     const admins = await Admin.countDocuments();
@@ -27,7 +46,7 @@ const mainStatistics = async (req, res) => {
       createdAt: { $lte: lastMonth },
     });
 
-    const kassa = await Kassa.find();
+    const kassa = await Kassa.find({ shop: req.params.shop });
     const lastMonthKassa = await Kassa.find({
       createdAt: { $lte: lastMonth },
     });
@@ -58,6 +77,9 @@ const mainStatistics = async (req, res) => {
         total: total,
         diff: total - lastMonthTotal,
       },
+      budget: {
+        total: budget.toFixed(1),
+      },
     };
     res.status(200).send(data);
   } catch (err) {
@@ -69,50 +91,58 @@ const mainStatistics = async (req, res) => {
 
 const pieChartIncome = async (req, res) => {
   try {
-    weeks = [];
+    let { isAll } = req.query;
+    let weeks = [];
+    let kassa;
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setMonth(currentMonth.getMonth());
-    const monthName = currentMonth.toLocaleString("default", {
-      month: "long",
-    });
 
     for (let i = 0; i < 4; i++) {
       const start = new Date();
       start.setDate(currentMonth.getDate() + 7 * i);
       const end = new Date();
       end.setDate(currentMonth.getDate() + 7 * (i + 1));
-      const kassa = await Kassa.find({
-        createdAt: { $gte: start, $lte: end },
-      });
+
+      if (isAll === 'true') {
+        kassa = await Kassa.find({
+          createdAt: { $gte: start, $lte: end },
+        });
+      } else {
+        kassa = await Kassa.find({
+          shop: req.params.shop,
+          createdAt: { $gte: start, $lte: end },
+        });
+      }
+
       let total = 0;
       kassa.forEach((item) => {
         total += item.amount;
       });
       if (i == 0) {
         weeks.push({
-          name: "First week",
+          date: start,
           value: total,
         });
       } else if (i == 1) {
         weeks.push({
-          name: "Second week",
+          date: start,
           value: total,
         });
       } else if (i == 2) {
         weeks.push({
-          name: "Third week",
+          date: start,
           value: total,
         });
       } else {
         weeks.push({
-          name: "Fourth week",
+          date: start,
           value: total,
         });
       }
     }
     data = {
-      month: monthName,
+      month: currentMonth,
       weeks: weeks,
     };
 
@@ -126,50 +156,58 @@ const pieChartIncome = async (req, res) => {
 
 const pieChartSpend = async (req, res) => {
   try {
-    weeks = [];
+    let weeks = [];
+    let spend;
+    let { isAll } = req.query;
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setMonth(currentMonth.getMonth());
-    const monthName = currentMonth.toLocaleString("default", {
-      month: "long",
-    });
 
     for (let i = 0; i < 4; i++) {
       const start = new Date();
       start.setDate(currentMonth.getDate() + 7 * i);
       const end = new Date();
       end.setDate(currentMonth.getDate() + 7 * (i + 1));
-      const spend = await Spend.find({
-        createdAt: { $gte: start, $lte: end },
-      });
+
+      if (isAll === 'true') {
+        spend = await Spend.find({
+          createdAt: { $gte: start, $lte: end },
+        });
+      } else {
+        spend = await Spend.find({
+          shop: req.params.shop,
+          createdAt: { $gte: start, $lte: end },
+        });
+      }
+
       let total = 0;
       spend.forEach((item) => {
         total += item.amount;
       });
       if (i == 0) {
         weeks.push({
-          name: "First week",
+          date: start,
           value: total,
         });
       } else if (i == 1) {
         weeks.push({
-          name: "Second week",
+          date: start,
           value: total,
         });
       } else if (i == 2) {
         weeks.push({
-          name: "Third week",
+          date: start,
           value: total,
         });
       } else {
         weeks.push({
-          name: "Fourth week",
+          date: start,
           value: total,
         });
       }
     }
     data = {
-      month: monthName,
+      month: currentMonth,
       weeks: weeks,
     };
 
@@ -182,14 +220,15 @@ const pieChartSpend = async (req, res) => {
 };
 const pieChartStaffSalary = async (req, res) => {
   try {
-    data = [];
+    let data = [];
     const admins = await Admin.find();
-    admins.forEach((item) => {
-      data.push({
-        name: item.name,
-        value: item.earned_salary,
+    for (let i = 0; i < admins.length; i++) {
+      data.unshift({
+        name: admins[i].name,
+        value: admins[i].earned_salary,
       });
-    });
+    }
+
     res.status(200).send(data);
   } catch (err) {
     res.status(500).send({
@@ -200,54 +239,40 @@ const pieChartStaffSalary = async (req, res) => {
 
 const barChart = async (req, res) => {
   try {
+    let { isAll } = req.query;
+
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setMonth(currentMonth.getMonth());
-    const monthName = currentMonth.toLocaleString("default", {
-      month: "long",
-    });
 
     const days = [];
+    let profit;
     for (let i = 0; i < 30; i++) {
       const start = new Date();
       start.setDate(currentMonth.getDate() + i);
+
       const end = new Date();
       end.setDate(currentMonth.getDate() + i + 1);
 
-      const dayName = start.toLocaleString("default", { weekday: "long" });
+      if (isAll === 'true') {
+        profit = await Profit.find({
+          createdAt: { $gte: start, $lte: end },
+        });
+      } else {
+        profit = await Profit.find({
+          shop: req.params.shop,
+          createdAt: { $gte: start, $lte: end },
+        });
+      }
 
-      const kassa = await Kassa.find({
-        createdAt: { $gte: start, $lte: end },
-      });
-      let kassaTotal = 0;
-      kassa.forEach((item) => {
-        kassaTotal += item.amount;
-      });
-      const spend = await Spend.find({
-        createdAt: { $gte: start, $lte: end },
-      });
-      let spendTotal = 0;
-      spend.forEach((item) => {
-        spendTotal += item.amount;
-      });
-      const loan = await Loan.find({
-        createdAt: { $gte: start, $lte: end },
-      });
-      let loanTotal = 0;
-      loan.forEach((item) => {
-        loanTotal += item.amount;
-      });
-
-      const orders = await Order.countDocuments({
-        createdAt: { $gte: start, $lte: end },
+      let profitTotal = 0;
+      profit.forEach((item) => {
+        profitTotal += item.amount;
       });
 
       data = {
-        day: `${dayName} / ${monthName} ${i + 1}`,
-        kassa: kassaTotal,
-        spend: spendTotal,
-        loan: loanTotal,
-        order: orders,
+        date: start,
+        value: profitTotal,
       };
       days.push(data);
     }

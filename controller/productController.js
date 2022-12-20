@@ -30,13 +30,11 @@ const getAllProducts = async (req, res) => {
     let products;
     let AllProducts;
     if (minQuantity === 'true') {
-
       AllProducts = await Product.find({
         $or: [
           { $expr: { $lt: ['$quantity', '$minQuantity'] } },
           { quantity: { $lt: 5 } },
         ],
-
       });
       products = await Product.find({
         $or: [
@@ -47,10 +45,10 @@ const getAllProducts = async (req, res) => {
         .lean()
         .sort({ _id: -1 })
         .populate('currency')
+        .populate('sellingCurrency')
         .limit(limit)
         .skip((page - 1) * limit);
     } else if (noPrice === 'true') {
-
       AllProducts = await Product.find({
         $or: [
           { price: null },
@@ -58,7 +56,6 @@ const getAllProducts = async (req, res) => {
           { originalPrice: null },
           { originalPrice: 0 },
         ],
-
       });
       products = await Product.find({
         $or: [
@@ -71,6 +68,7 @@ const getAllProducts = async (req, res) => {
         .lean()
         .sort({ _id: -1 })
         .populate('currency')
+        .populate('sellingCurrency')
         .limit(limit)
         .skip((page - 1) * limit);
     } else {
@@ -79,6 +77,7 @@ const getAllProducts = async (req, res) => {
         .lean()
         .sort({ _id: -1 })
         .populate('currency')
+        .populate('sellingCurrency')
         .limit(limit)
         .skip((page - 1) * limit);
     }
@@ -86,7 +85,12 @@ const getAllProducts = async (req, res) => {
     const Products = [];
 
     products.forEach((product) => {
-      if (product.currency) {
+      if (product.sellingCurrency) {
+        const calculatedPrice =
+          product.price * product.sellingCurrency.equalsTo;
+        product.calculatedPrice = calculatedPrice.toFixed(2);
+        Products.push(product);
+      } else if (product.currency) {
         const calculatedPrice =
           product.price * product.currency.equalsTo;
         product.calculatedPrice = calculatedPrice.toFixed(2);
@@ -118,8 +122,13 @@ const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id)
       .lean()
-      .populate('currency');
+      .populate('currency')
+      .populate('sellingCurrency');
     if (product.currency) {
+      const calculatedPrice =
+        product.price * product.sellingCurrency.equalsTo;
+      product.calculatedPrice = calculatedPrice.toFixed(2);
+    } else {
       const calculatedPrice =
         product.price * product.currency.equalsTo;
       product.calculatedPrice = calculatedPrice.toFixed(2);
@@ -147,6 +156,7 @@ const updateProduct = async (req, res) => {
       product.currency = req.body.currency;
       product.minQuantity = req.body.minQuantity;
       product.unit = req.body.unit;
+      product.sellingCurrency = req.body.sellingCurrency;
       await product.save();
       res.send({
         data: product,
@@ -175,28 +185,42 @@ const deleteProduct = (req, res) => {
 const searchProduct = async (req, res) => {
   try {
     const search = req.params.title.toString();
-    console.log(search)
-    let products ;
+
+    let products;
 
     if (search) {
-      if(search.charAt(0) === "+"){
-        products = await Product.find({code : search.slice(1)})
-      }else{
-        products = await Product.find( { title: { $regex: new RegExp(search, 'i') } })
+      if (search.charAt(0) === '+') {
+        products = await Product.find({ code: search.slice(1) })
+          .lean()
+          .populate('currency')
+          .populate('sellingCurrency');
+      } else {
+        products = await Product.find({
+          title: { $regex: new RegExp(search, 'i') },
+        })
+          .lean()
+          .populate('currency')
+          .populate('sellingCurrency');
       }
-      
+
       const Products = [];
 
       products.forEach((product) => {
-        if (product.currency) {
+        if (product.sellingCurrency) {
+          const calculatedPrice =
+            product.price * product.sellingCurrency.equalsTo;
+          product.calculatedPrice = calculatedPrice.toFixed(2);
+          Products.push(product);
+        } else if (product.currency) {
           const calculatedPrice =
             product.price * product.currency.equalsTo;
-          product.calculatedPrice = calculatedPrice.toFixed();
+          product.calculatedPrice = calculatedPrice.toFixed(2);
           Products.push(product);
         } else {
           Products.push(product);
         }
       });
+
       res.send(Products);
     } else {
       res.status(404).send({
@@ -209,8 +233,45 @@ const searchProduct = async (req, res) => {
     });
   }
 };
+const allProducts = async (req, res) => {
+  try {
+    let AllProducts = await Product.find({});
+    let products = await Product.find({})
+      .lean()
+      .sort({ _id: -1 })
+      .populate('currency')
+      .populate('sellingCurrency');
+
+    const Products = [];
+
+    products.forEach((product) => {
+      if (product.sellingCurrency) {
+        const calculatedPrice =
+          product.price * product.sellingCurrency.equalsTo;
+        product.calculatedPrice = calculatedPrice.toFixed(2);
+        Products.push(product);
+      } else if (product.currency) {
+        const calculatedPrice =
+          product.price * product.currency.equalsTo;
+        product.calculatedPrice = calculatedPrice.toFixed(2);
+        Products.push(product);
+      } else {
+        Products.push(product);
+      }
+    });
+
+    res.send({
+      Products,
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
 
 module.exports = {
+  allProducts,
   addProduct,
   getAllProducts,
   getProductById,

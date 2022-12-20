@@ -8,6 +8,9 @@ const orderSchema = new mongoose.Schema(
       ref: 'User',
       default: '',
     },
+    code: {
+      type: Number,
+    },
     salesman: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Admin',
@@ -66,6 +69,10 @@ const orderSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+orderSchema.plugin(AutoIncrement, {
+  inc_field: 'code',
+  disable_hooks: true,
+});
 
 const Order = mongoose.model('Order', orderSchema);
 

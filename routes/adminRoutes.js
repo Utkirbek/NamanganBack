@@ -12,16 +12,14 @@ const {
   giveSalary,
 } = require('../controller/adminController');
 
-
 //register a staff
 router.post('/register', registerAdmin);
 
 //login a admin
 router.post('/login', loginAdmin);
 
-
-
 //add a staff
+
 router.post('/add', addStaff);
 
 //get all staff
@@ -40,7 +38,6 @@ router.delete('/:id', deleteStaff);
 router.get('/search/:name', searchAdmin);
 
 //give salary to a staff
-router.post("/salary", giveSalary);
-
+router.post('/salary', giveSalary);
 
 module.exports = router;

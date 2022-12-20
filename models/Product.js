@@ -41,6 +41,11 @@ const productSchema = new mongoose.Schema(
       ref: 'Currency',
       required: true,
     },
+    sellingCurrency: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Currency',
+      required: false,
+    },
     minQuantity: {
       type: Number,
       required: false,
@@ -67,6 +72,10 @@ const productSchema = new mongoose.Schema(
 
 productSchema.methods.minusQuantity = function (amount) {
   this.quantity -= amount;
+  this.save();
+};
+productSchema.methods.plusQuantity = function (amount) {
+  this.quantity += amount;
   this.save();
 };
 

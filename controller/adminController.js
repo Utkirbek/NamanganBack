@@ -17,6 +17,7 @@ const registerAdmin = async (req, res) => {
       });
     } else {
       const newStaff = new Admin({
+        image: req.body.image,
         name: req.body.name,
         email: req.body.email,
         role: req.body.role,
@@ -27,6 +28,7 @@ const registerAdmin = async (req, res) => {
       res.send({
         token,
         _id: staff._id,
+        image: staff.image,
         name: staff.name,
         email: staff.email,
         role: staff.role,
@@ -83,6 +85,7 @@ const addStaff = async (req, res) => {
     } else {
       const newStaff = new Admin({
         name: req.body.name,
+        image: req.body.image,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password),
         salary_percent: req.body.salary_percent,
@@ -214,12 +217,29 @@ const searchAdmin = async (req, res) => {
 const giveSalary = async (req, res) => {
   try {
     const admin = await Admin.findById(req.body.staff);
+
     if (admin) {
       admin.getSalary(req.body.amount);
     } else {
       res.status(500).send({
         message: 'Salesman not found!',
       });
+    }
+    const kassa = await Kassa.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
+    if (kassa) {
+      await kassa[0].minusAmount(req.body.amount);
+    } else {
+      res.status(404).send({ message: 'Kassa not found!' });
+    }
+    const profit = await Profit.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
+    if (profit) {
+      await profit[0].minusAmount(req.body.amount);
+    } else {
+      res.status(404).send({ message: 'Kassa not found!' });
     }
     res.send({
       message: 'Salary Given Successfully!',
