@@ -88,22 +88,22 @@ const createOrder = async (req, res) => {
     //   profit[0].addAmount(calculatedProfit);
     // }
 
-    const admin = await Admin.findById(data.salesman);
-    if (admin) {
-      admin.addSalary(order.total);
-    } else {
-      res.status(404).send({
-        message: 'Admin Not Found',
-      });
-    }
-    const kassa = await Kassa.find({ shop: req.params.shop })
-      .sort({ _id: -1 })
-      .limit(1);
-    if (kassa) {
-      await kassa[0].addAmount(data.cashTotal);
-    } else {
-      res.status(404).send({ message: 'Kassa not found!' });
-    }
+    // const admin = await Admin.findById(data.salesman);
+    // if (admin) {
+    //   admin.addSalary(order.total);
+    // } else {
+    //   res.status(404).send({
+    //     message: 'Admin Not Found',
+    //   });
+    // }
+    // const kassa = await Kassa.find({ shop: req.params.shop })
+    //   .sort({ _id: -1 })
+    //   .limit(1);
+    // if (kassa) {
+    //   await kassa[0].addAmount(data.cashTotal);
+    // } else {
+    //   res.status(404).send({ message: 'Kassa not found!' });
+    // }
     res.send({
       message: 'Order Created Successfully!',
       data,
