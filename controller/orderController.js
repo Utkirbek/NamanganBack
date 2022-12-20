@@ -38,72 +38,72 @@ const createOrder = async (req, res) => {
       data.loan = loan._id;
     }
 
-    // const order = await Order.create(data);
-    // order.setNext('code', function (err, user) {
-    //   if (err) console.log('Cannot increment the Code because ', err);
-    // });
+    const order = await Order.create(data);
+    order.setNext('code', function (err, user) {
+      if (err) console.log('Cannot increment the Code because ', err);
+    });
 
-    // const profit = await Profit.find({ shop: req.params.shop })
-    //   .sort({ _id: -1 })
-    //   .limit(1);
-    // if (profit) {
-    // } else {
-    //   res.status(404).send({ message: 'Kassa not found!' });
-    // }
+    const profit = await Profit.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
+    if (profit) {
+    } else {
+      res.status(404).send({ message: 'Kassa not found!' });
+    }
 
-    // for (let i = 0; i < order.cart.length; i++) {
-    //   const product = await Product.findById(order.cart[i].product);
-    //   let calculatedProfit;
-    //   if (
-    //     product.sellingCurrency &&
-    //     product.currency &&
-    //     product.originalPrice
-    //   ) {
-    //     const currency = await Currency.findById(product.currency);
-    //     const sellingCurrency = await Currency.findById(
-    //       product.sellingCurrency
-    //     );
+    for (let i = 0; i < order.cart.length; i++) {
+      const product = await Product.findById(order.cart[i].product);
+      let calculatedProfit;
+      if (
+        product.sellingCurrency &&
+        product.currency &&
+        product.originalPrice
+      ) {
+        const currency = await Currency.findById(product.currency);
+        const sellingCurrency = await Currency.findById(
+          product.sellingCurrency
+        );
 
-    //     const originalPrice =
-    //       +product.originalPrice * +currency.equalsTo;
-    //     const sellingPrice =
-    //       +product.price * +sellingCurrency.equalsTo;
+        const originalPrice =
+          +product.originalPrice * +currency.equalsTo;
+        const sellingPrice =
+          +product.price * +sellingCurrency.equalsTo;
 
-    //     calculatedProfit =
-    //       (+sellingPrice - +originalPrice) * order.cart[i].quantity;
-    //   } else if (product.currency && product.originalPrice) {
-    //     const currency = await Currency.findById(product.currency);
+        calculatedProfit =
+          (+sellingPrice - +originalPrice) * order.cart[i].quantity;
+      } else if (product.currency && product.originalPrice) {
+        const currency = await Currency.findById(product.currency);
 
-    //     const originalPrice =
-    //       +product.originalPrice * +currency.equalsTo;
-    //     const sellingPrice = +product.price * +currency.equalsTo;
+        const originalPrice =
+          +product.originalPrice * +currency.equalsTo;
+        const sellingPrice = +product.price * +currency.equalsTo;
 
-    //     calculatedProfit =
-    //       (+sellingPrice - +originalPrice) * order.cart[i].quantity;
-    //   } else {
-    //     calculatedProfit = 0;
-    //   }
-    //   product.minusQuantity(order.cart[i].quantity);
+        calculatedProfit =
+          (+sellingPrice - +originalPrice) * order.cart[i].quantity;
+      } else {
+        calculatedProfit = 0;
+      }
+      product.minusQuantity(order.cart[i].quantity);
 
-    //   profit[0].addAmount(calculatedProfit);
-    // }
+      profit[0].addAmount(calculatedProfit);
+    }
 
-    // const admin = await Admin.findById(data.salesman);
-    // if (admin) {
-    //   admin.addSalary(order.total);
-    // } else {
-    //   res.status(404).send({
-    //     message: 'Admin Not Found',
-    //   });
-    // }
-    // const kassa = await Kassa.find({ shop: req.params.shop })
-    //   .sort({ _id: -1 })
-    //   .limit(1);
-    // if (kassa) {
-    //   await kassa[0].addAmount(data.cashTotal);
-    // } else {
-    //   res.status(404).send({ message: 'Kassa not found!' });
-    // }
+    const admin = await Admin.findById(data.salesman);
+    if (admin) {
+      admin.addSalary(order.total);
+    } else {
+      res.status(404).send({
+        message: 'Admin Not Found',
+      });
+    }
+    const kassa = await Kassa.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
+    if (kassa) {
+      await kassa[0].addAmount(data.cashTotal);
+    } else {
+      res.status(404).send({ message: 'Kassa not found!' });
+    }
     res.send({
       message: 'Order Created Successfully!',
       data,
