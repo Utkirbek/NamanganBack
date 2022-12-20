@@ -38,7 +38,7 @@ const createOrder = async (req, res) => {
       data.loan = loan._id;
     }
 
-    const order = await Order.create(data);
+    // const order = await Order.create(data);
     order.setNext('code', function (err, user) {
       if (err) console.log('Cannot increment the Code because ', err);
     });
@@ -106,6 +106,7 @@ const createOrder = async (req, res) => {
     }
     res.send({
       message: 'Order Created Successfully!',
+      data,
     });
   } catch (err) {
     res.status(500).send(err.message);
