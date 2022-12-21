@@ -110,6 +110,20 @@ const searchUser = async (req, res) => {
   }
 };
 
+const filterUser = async (req, res) => {
+  try {
+    const { filter } = req.query;
+    const users = await User.find({})
+      .sort({ loan: filter })
+      .populate('loanHistory')
+      .populate('paymentHistory');
+    res.send(users);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
 module.exports = {
   registerUser,
   getAllUsers,
@@ -117,4 +131,5 @@ module.exports = {
   updateUser,
   deleteUser,
   searchUser,
+  filterUser,
 };

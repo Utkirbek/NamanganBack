@@ -8,7 +8,7 @@ const {
   updateUser,
   deleteUser,
   searchUser,
-  getLoanByUser,
+  filterUser,
 } = require('../controller/userController');
 
 router.post('/add', registerUser);
@@ -18,6 +18,9 @@ router.get('/', getAllUsers);
 
 //get a user
 router.get('/:id', getUserById);
+
+//get a user
+router.post('/filter', filterUser);
 
 //update a user
 router.put('/:id', updateUser);
