@@ -1,5 +1,6 @@
 const Spend = require('../models/Spend');
 const Kassa = require('../models/Kassa');
+const Profit = require('../models/Kassa');
 
 const addSpend = async (req, res) => {
   try {
@@ -9,12 +10,21 @@ const addSpend = async (req, res) => {
     const kassa = await Kassa.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .limit(1);
+    const profit = await Profit.find({ shop: req.params.shop })
+      .sort({ _id: -1 })
+      .limit(1);
     if (kassa) {
       await kassa[0].minusAmount(newSpend.amount);
     } else {
       res.status(404).send({ message: 'Kassa not found!' });
     }
-
+    if (req.body.spendType === 'spend') {
+      if (profit) {
+        await profit[0].minusAmount(newSpend.amount);
+      } else {
+        res.status(404).send({ message: 'profit not found!' });
+      }
+    }
     await newSpend.save();
 
     res.status(200).send({
