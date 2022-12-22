@@ -223,6 +223,7 @@ const giveSalary = async (req, res) => {
     const kassa = await Kassa.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .limit(1);
+    console.log(kassa);
     if (kassa) {
       await kassa[0].minusAmount(req.body.amount);
     } else {

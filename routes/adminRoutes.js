@@ -38,6 +38,6 @@ router.delete('/:id', deleteStaff);
 router.get('/search/:name', searchAdmin);
 
 //give salary to a staff
-router.post('/salary', giveSalary);
+router.post('/:shop/salary', giveSalary);
 
 module.exports = router;
