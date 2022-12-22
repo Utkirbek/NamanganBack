@@ -16,6 +16,7 @@ const addSpend = async (req, res) => {
     }
 
     await newSpend.save();
+
     res.status(200).send({
       message: 'Spend Added Successfully!',
     });

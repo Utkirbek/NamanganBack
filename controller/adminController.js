@@ -9,6 +9,7 @@ const Order = require('../models/Order');
 const Role = require('../models/Role');
 const Profit = require('../models/Profit');
 const Kassa = require('../models/Kassa');
+const Spend = require('../models/Spend');
 
 const registerAdmin = async (req, res) => {
   try {
@@ -244,6 +245,14 @@ const giveSalary = async (req, res) => {
         message: 'Salesman not found!',
       });
     }
+    let data;
+    data.shop = req.params.shop;
+    data.amount = req.body.amount;
+    data.paymentMethod = 'naqt';
+    data.description = `${admin.name}ga oylik maosh`;
+
+    const newSpend = new Spend(data);
+    await newSpend.save();
     res.send({
       message: 'Salary Given Successfully!',
     });
