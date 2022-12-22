@@ -7,6 +7,8 @@ const { signInToken } = require('../config/auth');
 const Admin = require('../models/Admin');
 const Order = require('../models/Order');
 const Role = require('../models/Role');
+const Profit = require('../models/Profit');
+const Kassa = require('../models/Kassa');
 
 const registerAdmin = async (req, res) => {
   try {
@@ -239,7 +241,7 @@ const giveSalary = async (req, res) => {
     if (profit) {
       await profit[0].minusAmount(req.body.amount);
     } else {
-      res.status(404).send({ message: 'Kassa not found!' });
+      res.status(404).send({ message: 'Profit not found!' });
     }
     res.send({
       message: 'Salary Given Successfully!',
