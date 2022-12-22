@@ -17,7 +17,7 @@ const spendSchema = new mongoose.Schema(
     },
     spendType: {
       type: String,
-      required: true,
+      required: false,
     },
     description: {
       type: String,

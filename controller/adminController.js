@@ -224,7 +224,7 @@ const giveSalary = async (req, res) => {
     const kassa = await Kassa.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .limit(1);
-    console.log(kassa);
+
     if (kassa) {
       await kassa[0].minusAmount(req.body.amount);
     } else {
@@ -245,14 +245,14 @@ const giveSalary = async (req, res) => {
         message: 'Salesman not found!',
       });
     }
-    let data;
-    data.shop = req.params.shop;
-    data.amount = req.body.amount;
-    data.paymentMethod = 'naqt';
-    data.description = `${admin.name}ga oylik maosh`;
 
-    const newSpend = new Spend(data);
-    await newSpend.save();
+    const newSpend = await Spend.create({
+      shop: req.params.shop,
+      amount: req.body.amount,
+      paymentMethod: 'naqt',
+      description: `${admin.name}ga oylik maosh`,
+    });
+
     res.send({
       message: 'Salary Given Successfully!',
     });
