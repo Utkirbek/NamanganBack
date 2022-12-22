@@ -249,6 +249,7 @@ const giveSalary = async (req, res) => {
     const newSpend = await Spend.create({
       shop: req.params.shop,
       amount: req.body.amount,
+      spendType: 'spend',
       paymentMethod: 'naqt',
       description: `${admin.name}ga oylik maosh`,
     });
