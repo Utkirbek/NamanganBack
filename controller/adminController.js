@@ -220,13 +220,6 @@ const giveSalary = async (req, res) => {
   try {
     const admin = await Admin.findById(req.body.staff);
 
-    if (admin) {
-      admin.getSalary(req.body.amount);
-    } else {
-      res.status(500).send({
-        message: 'Salesman not found!',
-      });
-    }
     const kassa = await Kassa.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .limit(1);
@@ -242,6 +235,13 @@ const giveSalary = async (req, res) => {
       await profit[0].minusAmount(req.body.amount);
     } else {
       res.status(404).send({ message: 'Profit not found!' });
+    }
+    if (admin) {
+      admin.getSalary(req.body.amount);
+    } else {
+      res.status(500).send({
+        message: 'Salesman not found!',
+      });
     }
     res.send({
       message: 'Salary Given Successfully!',
