@@ -270,7 +270,8 @@ const updateOrder = async (req, res) => {
           +product.price * +sellingCurrency.equalsTo;
 
         calculatedProfit =
-          (+sellingPrice - +originalPrice) * order.cart[i].quantity;
+          (+sellingPrice - +originalPrice) * order.cart[i].quantity -
+          req.body.cart[i].quantity;
       } else if (product.currency && product.originalPrice) {
         const currency = await Currency.findById(product.currency);
 
@@ -279,7 +280,8 @@ const updateOrder = async (req, res) => {
         const sellingPrice = +product.price * +currency.equalsTo;
 
         calculatedProfit =
-          (+sellingPrice - +originalPrice) * order.cart[i].quantity;
+          (+sellingPrice - +originalPrice) * order.cart[i].quantity -
+          req.body.cart[i].quantity;
       } else {
         calculatedProfit = 0;
       }
@@ -291,31 +293,33 @@ const updateOrder = async (req, res) => {
         res.status(404).send({ message: 'Profit not found!' });
       }
     }
+    const needToBeRemovedAmount =
+      order.cashTotal - req.body.cashTotal;
     const admin = await Admin.findById(order.salesman);
     if (admin) {
-      admin.removeSalary(order.total);
+      admin.removeSalary(needToBeRemovedAmount);
     } else {
       res.status(404).send({
         message: 'Admin Not Found',
       });
     }
+
     const kassa = await Kassa.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .limit(1);
     if (kassa) {
-      await kassa[0].minusAmount(order.cashTotal);
+      await kassa[0].minusAmount(needToBeRemovedAmount);
     } else {
       res.status(404).send({ message: 'Kassa not found!' });
     }
     data = req.body;
     for (let i = 0; i < data.cart.length; i++) {
       if (data.cart[i].product === order.cart[i].product) {
-        data.cart[i].quantity =
-          data.cart[i].quantity - req.body.cart[i].quantity;
+        data.cart[i].quantity = req.body.cart[i].quantity;
       }
     }
-    data.total = order.total - req.body.total;
-    data.cashTotal = order.cashTotal - req.body.cashTotal;
+    data.total = req.body.total;
+    data.cashTotal = req.body.cashTotal;
 
     const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,
