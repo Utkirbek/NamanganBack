@@ -285,7 +285,9 @@ const updateOrder = async (req, res) => {
       } else {
         calculatedProfit = 0;
       }
-      product.plusQuantity(order.cart[i].quantity);
+      const needToBeRemovedAmount =
+        order.cashTotal - req.body.cashTotal;
+      product.plusQuantity(needToBeRemovedAmount);
 
       if (profit) {
         profit[0].minusAmount(calculatedProfit);
