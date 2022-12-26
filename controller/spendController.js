@@ -103,7 +103,7 @@ const deleteSpend = async (req, res) => {
     }
     if (spend.spendType === 'spend') {
       if (profit) {
-        await profit[0].plusAmount(spend.amount);
+        await profit[0].addAmount(spend.amount);
       } else {
         res.status(404).send({ message: 'profit not found!' });
       }
