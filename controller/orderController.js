@@ -253,9 +253,6 @@ const updateOrder = async (req, res) => {
 
     for (let i = 0; i < order.cart.length; i++) {
       const product = await Product.findById(order.cart[i].product);
-      console.log(i);
-      console.log(product);
-      console.log(order.cart[i].product);
 
       if (
         product.sellingCurrency &&
