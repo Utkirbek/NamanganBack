@@ -6,7 +6,7 @@ const orderSchema = new mongoose.Schema(
     user: {
       type: String,
       ref: 'User',
-      default: '',
+      default: '63b1e0cf926152003394c9c2',
     },
     code: {
       type: Number,
