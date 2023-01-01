@@ -29,7 +29,6 @@ const kassaSchema = new mongoose.Schema(
 );
 
 kassaSchema.methods.addAmount = function (amount, type) {
-  console.log(this);
   if (type === 'click') {
     this.click = +this.click + +amount;
   } else if (type === 'terminal') {
@@ -37,11 +36,11 @@ kassaSchema.methods.addAmount = function (amount, type) {
   } else {
     this.cash = +this.cash + +amount;
   }
-  console.log(this);
+
   this.save();
 };
 
-kassaSchema.methods.minusAmount = function (amount) {
+kassaSchema.methods.minusAmount = function (amount, type) {
   if (type === 'click') {
     this.click = +this.click - +amount;
   } else if (type === 'terminal') {
@@ -49,6 +48,7 @@ kassaSchema.methods.minusAmount = function (amount) {
   } else {
     this.cash = +this.cash - +amount;
   }
+
   this.save();
 };
 const Kassa = mongoose.model('Kassa', kassaSchema);
