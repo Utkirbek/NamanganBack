@@ -117,7 +117,7 @@ const pieChartIncome = async (req, res) => {
 
       let total = 0;
       kassa.forEach((item) => {
-        total += item.amount;
+        total += item.cash;
       });
       if (i == 0) {
         weeks.push({
