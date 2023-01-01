@@ -48,7 +48,7 @@ const createOrder = async (req, res) => {
       .limit(1);
     if (profit) {
     } else {
-      res.status(404).send({ message: 'Kassa not found!' });
+      res.status(404).send({ message: 'Profit not found!' });
     }
 
     for (let i = 0; i < order.cart.length; i++) {
@@ -100,7 +100,7 @@ const createOrder = async (req, res) => {
       .sort({ _id: -1 })
       .limit(1);
     if (kassa) {
-      await kassa[0].addAmount(data.cashTotal);
+      await kassa[0].addAmount(data.cashTotal, data.paymentMethod);
     } else {
       res.status(404).send({ message: 'Kassa not found!' });
     }
@@ -227,7 +227,7 @@ const deleteOrder = async (req, res) => {
     .sort({ _id: -1 })
     .limit(1);
   if (kassa) {
-    await kassa[0].minusAmount(order.cashTotal);
+    await kassa[0].minusAmount(order.cashTotal, order.paymentMethod);
   } else {
     res.status(404).send({ message: 'Kassa not found!' });
   }

@@ -16,7 +16,10 @@ const addPayment = async (req, res) => {
       .limit(1);
 
     if (kassa) {
-      await kassa[0].addAmount(newPayment.amount);
+      await kassa[0].addAmount(
+        newPayment.amount,
+        newPayment.paymentMethod
+      );
     } else {
       res.status(404).send({ message: 'Kassa not found!' });
     }
@@ -91,7 +94,10 @@ const updatePayment = async (req, res) => {
         .sort({ _id: -1 })
         .limit(1);
       if (kassa) {
-        await kassa[0].minusAmount(paymentDiff);
+        await kassa[0].minusAmount(
+          paymentDiff,
+          payment.paymentMethod
+        );
       } else {
         res.status(404).send({ message: 'Kassa not found!' });
       }
@@ -118,7 +124,10 @@ const deletePayment = async (req, res) => {
       .sort({ _id: -1 })
       .limit(1);
     if (kassa) {
-      await kassa[0].minusAmount(payment.amount);
+      await kassa[0].minusAmount(
+        payment.amount,
+        payment.paymentMethod
+      );
     } else {
       res.status(404).send({ message: 'Kassa not found!' });
     }

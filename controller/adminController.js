@@ -226,7 +226,7 @@ const giveSalary = async (req, res) => {
       .limit(1);
 
     if (kassa) {
-      await kassa[0].minusAmount(req.body.amount);
+      await kassa[0].minusAmount(req.body.amount, 'cash');
     } else {
       res.status(404).send({ message: 'Kassa not found!' });
     }

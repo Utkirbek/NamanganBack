@@ -2,7 +2,17 @@ const mongoose = require('mongoose');
 
 const kassaSchema = new mongoose.Schema(
   {
-    amount: {
+    cash: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    terminal: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    click: {
       type: Number,
       required: true,
       default: 0,
@@ -18,13 +28,26 @@ const kassaSchema = new mongoose.Schema(
   }
 );
 
-kassaSchema.methods.addAmount = function (amount) {
-  this.amount = +this.amount + +amount;
+kassaSchema.methods.addAmount = function (amount, type) {
+  if (type === 'click') {
+    this.click = +this.click + +amount;
+  } else if (type === 'terminal') {
+    this.terminal = +this.terminal + +amount;
+  } else {
+    this.cash = +this.cash + +amount;
+  }
+
   this.save();
 };
 
 kassaSchema.methods.minusAmount = function (amount) {
-  this.amount = +this.amount - +amount;
+  if (type === 'click') {
+    this.click = +this.click - +amount;
+  } else if (type === 'terminal') {
+    this.terminal = +this.terminal - +amount;
+  } else {
+    this.cash = +this.cash - +amount;
+  }
   this.save();
 };
 const Kassa = mongoose.model('Kassa', kassaSchema);

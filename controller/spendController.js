@@ -15,7 +15,10 @@ const addSpend = async (req, res) => {
       .limit(1);
 
     if (kassa) {
-      await kassa[0].minusAmount(newSpend.amount);
+      await kassa[0].minusAmount(
+        newSpend.amount,
+        newSpend.paymentMethod
+      );
     } else {
       res.status(404).send({ message: 'Kassa not found!' });
     }
@@ -97,7 +100,7 @@ const deleteSpend = async (req, res) => {
       .limit(1);
 
     if (kassa) {
-      await kassa[0].addAmount(spend.amount);
+      await kassa[0].addAmount(spend.amount, spend.paymentMethod);
     } else {
       res.status(404).send({ message: 'Kassa not found!' });
     }
