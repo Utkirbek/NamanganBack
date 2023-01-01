@@ -220,13 +220,14 @@ const searchAdmin = async (req, res) => {
 const giveSalary = async (req, res) => {
   try {
     const admin = await Admin.findById(req.body.staff);
+    const paymentMethod = 'cash';
 
     const kassa = await Kassa.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .limit(1);
 
     if (kassa) {
-      await kassa[0].minusAmount(req.body.amount, 'cash');
+      await kassa[0].minusAmount(req.body.amount, paymentMethod);
     } else {
       res.status(404).send({ message: 'Kassa not found!' });
     }
