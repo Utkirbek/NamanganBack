@@ -251,7 +251,7 @@ const giveSalary = async (req, res) => {
       shop: req.params.shop,
       amount: req.body.amount,
       spendType: 'spend',
-      paymentMethod: 'naqt',
+      paymentMethod: 'cash',
       description: `${admin.name}ga oylik maosh`,
     });
 
