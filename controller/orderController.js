@@ -287,9 +287,7 @@ const updateOrder = async (req, res) => {
       }
       const needToBeRemovedAmount =
         order.cashTotal - req.body.cashTotal;
-      product.plusQuantity(
-        order.cart[i].quantity - req.body.cart[i].quantity
-      );
+      product.plusQuantity(req.body.cart[i].quantity);
 
       if (profit) {
         profit[0].minusAmount(calculatedProfit);
@@ -319,18 +317,16 @@ const updateOrder = async (req, res) => {
     data = req.body;
     for (let i = 0; i < data.cart.length; i++) {
       if (data.cart[i].product === order.cart[i].product) {
-        data.cart[i].quantity = req.body.cart[i].quantity;
+        data.cart[i].quantity =
+          order.cart[i].quantity - req.body.cart[i].quantity;
       }
     }
-    data.total = req.body.total;
-    data.cashTotal = req.body.cashTotal;
+    data.total = order.total - req.body.total;
+    data.cashTotal = order.cashTotal - req.body.cashTotal;
 
     const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,
-      data,
-      {
-        new: false,
-      }
+      data
     );
     res.status(200).send({
       updatedOrder,
