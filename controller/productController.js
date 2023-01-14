@@ -87,13 +87,13 @@ const getAllProducts = async (req, res) => {
     products.forEach((product) => {
       if (product.sellingCurrency) {
         const calculatedPrice =
-          product.price * product.sellingCurrency.equalsTo;
-        product.calculatedPrice = calculatedPrice.toFixed(2);
+          +product.price * +product.sellingCurrency.equalsTo;
+        product.calculatedPrice = +calculatedPrice.toFixed(2);
         Products.push(product);
       } else if (product.currency) {
         const calculatedPrice =
-          product.price * product.currency.equalsTo;
-        product.calculatedPrice = calculatedPrice.toFixed(2);
+          +product.price * +product.currency.equalsTo;
+        product.calculatedPrice = +calculatedPrice.toFixed(2);
         Products.push(product);
       } else {
         Products.push(product);
@@ -126,12 +126,12 @@ const getProductById = async (req, res) => {
       .populate('sellingCurrency');
     if (product.currency) {
       const calculatedPrice =
-        product.price * product.sellingCurrency.equalsTo;
-      product.calculatedPrice = calculatedPrice.toFixed(2);
+        +product.price * +product.sellingCurrency.equalsTo;
+      product.calculatedPrice = +calculatedPrice.toFixed(2);
     } else {
       const calculatedPrice =
-        product.price * product.currency.equalsTo;
-      product.calculatedPrice = calculatedPrice.toFixed(2);
+        +product.price * +product.currency.equalsTo;
+      product.calculatedPrice = +calculatedPrice.toFixed(2);
     }
     res.send(product);
   } catch (err) {
@@ -208,13 +208,13 @@ const searchProduct = async (req, res) => {
       products.forEach((product) => {
         if (product.sellingCurrency) {
           const calculatedPrice =
-            product.price * product.sellingCurrency.equalsTo;
-          product.calculatedPrice = calculatedPrice.toFixed(2);
+            +product.price * +product.sellingCurrency.equalsTo;
+          product.calculatedPrice = +calculatedPrice.toFixed(2);
           Products.push(product);
         } else if (product.currency) {
           const calculatedPrice =
-            product.price * product.currency.equalsTo;
-          product.calculatedPrice = calculatedPrice.toFixed(2);
+            +product.price * +product.currency.equalsTo;
+          product.calculatedPrice = +calculatedPrice.toFixed(2);
           Products.push(product);
         } else {
           Products.push(product);
