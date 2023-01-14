@@ -53,8 +53,10 @@ const createOrder = async (req, res) => {
 
     let calculatedProfits = [];
 
-    for (let i = 0; i < order.cart.length; i++) {
-      const product = await Product.findById(order.cart[i].product);
+    for (let i = 0; i < req.body.cart.length; i++) {
+      const product = await Product.findById(
+        req.body.cart[i].product
+      );
       let calculatedProfit = 0;
       if (
         product.sellingCurrency &&
@@ -72,7 +74,8 @@ const createOrder = async (req, res) => {
           +product.price * +sellingCurrency.equalsTo;
 
         calculatedProfit =
-          (+sellingPrice - +originalPrice) * +order.cart[i].quantity +
+          (+sellingPrice - +originalPrice) *
+            +req.body.cart[i].quantity +
           +calculatedProfit;
       } else if (product.currency && product.originalPrice) {
         const currency = await Currency.findById(product.currency);
@@ -82,11 +85,12 @@ const createOrder = async (req, res) => {
         const sellingPrice = +product.price * +currency.equalsTo;
 
         calculatedProfit =
-          (+sellingPrice - +originalPrice) * +order.cart[i].quantity +
+          (+sellingPrice - +originalPrice) *
+            +req.body.cart[i].quantity +
           +calculatedProfit;
       }
 
-      product.minusQuantity(order.cart[i].quantity);
+      product.minusQuantity(req.body.cart[i].quantity);
 
       profit[0].addAmount(calculatedProfit);
       calculatedProfits.push(calculatedProfit);
