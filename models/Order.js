@@ -64,6 +64,7 @@ const orderSchema = new mongoose.Schema(
       ref: 'Loan',
       required: false,
     },
+    calculatedProfits: [],
   },
   {
     timestamps: true,

@@ -42,10 +42,6 @@ const createOrder = async (req, res) => {
     if (data.user === '') {
       data.user = '63b1e0cf926152003394c9c2';
     }
-    const order = await Order.create(data);
-    order.setNext('code', function (err) {
-      if (err) console.log('Cannot increment the Code because ', err);
-    });
 
     const profit = await Profit.find({ shop: req.params.shop })
       .sort({ _id: -1 })
@@ -76,8 +72,8 @@ const createOrder = async (req, res) => {
           +product.price * +sellingCurrency.equalsTo;
 
         calculatedProfit =
-          (+sellingPrice - +originalPrice) * order.cart[i].quantity +
-          calculatedProfit;
+          (+sellingPrice - +originalPrice) * +order.cart[i].quantity +
+          +calculatedProfit;
       } else if (product.currency && product.originalPrice) {
         const currency = await Currency.findById(product.currency);
 
@@ -86,8 +82,8 @@ const createOrder = async (req, res) => {
         const sellingPrice = +product.price * +currency.equalsTo;
 
         calculatedProfit =
-          (+sellingPrice - +originalPrice) * order.cart[i].quantity +
-          calculatedProfit;
+          (+sellingPrice - +originalPrice) * +order.cart[i].quantity +
+          +calculatedProfit;
       }
 
       product.minusQuantity(order.cart[i].quantity);
@@ -95,6 +91,11 @@ const createOrder = async (req, res) => {
       profit[0].addAmount(calculatedProfit);
       calculatedProfits.push(calculatedProfit);
     }
+    data.calculatedProfits = calculatedProfits;
+    const order = await Order.create(data);
+    order.setNext('code', function (err) {
+      if (err) console.log('Cannot increment the Code because ', err);
+    });
 
     const admin = await Admin.findById(data.salesman);
     if (admin) {
