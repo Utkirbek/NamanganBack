@@ -55,6 +55,8 @@ const createOrder = async (req, res) => {
       res.status(404).send({ message: 'Profit not found!' });
     }
 
+    let calculatedProfits = [];
+
     for (let i = 0; i < order.cart.length; i++) {
       const product = await Product.findById(order.cart[i].product);
       let calculatedProfit;
@@ -90,6 +92,7 @@ const createOrder = async (req, res) => {
       product.minusQuantity(order.cart[i].quantity);
 
       profit[0].addAmount(calculatedProfit);
+      calculatedProfits.push(calculatedProfit);
     }
 
     const admin = await Admin.findById(data.salesman);
