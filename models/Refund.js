@@ -1,16 +1,8 @@
 const mongoose = require('mongoose');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
-const orderSchema = new mongoose.Schema(
+const refundSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      default: '63b1e0cf926152003394c9c2',
-    },
-    code: {
-      type: Number,
-    },
     salesman: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Admin',
@@ -54,26 +46,12 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: false,
     },
-    payment: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Payment',
-      required: false,
-    },
-    loan: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Loan',
-      required: false,
-    },
   },
   {
     timestamps: true,
   }
 );
-orderSchema.plugin(AutoIncrement, {
-  inc_field: 'code',
-  disable_hooks: true,
-});
 
-const Order = mongoose.model('Order', orderSchema);
+const Refund = mongoose.model('Refund', refundSchema);
 
-module.exports = Order;
+module.exports = Refund;

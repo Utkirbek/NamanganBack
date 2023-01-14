@@ -11,6 +11,7 @@ const adminRoutes = require('../routes/adminRoutes');
 const orderRoutes = require('../routes/orderRoutes');
 const permissionRoutes = require('../routes/permissionRoutes');
 const roleRoutes = require('../routes/roleRoutes');
+const refundRoutes = require('../routes/refundRoutes');
 
 const currencyRoutes = require('../routes/currencyRoutes');
 const loanRoutes = require('../routes/loanRoutes');
@@ -57,6 +58,7 @@ app.use('/api/loan/', isAuth, loanRoutes);
 app.use('/api/payment/', isAuth, paymentRoutes);
 app.use('/api/spend/', isAuth, spendRoutes);
 app.use('/api/shop', shopRoutes);
+app.use('/api/shop', refundRoutes);
 app.use('/api/statistics/', statisticsRoutes);
 
 //if you not use admin dashboard then these two route will not needed.

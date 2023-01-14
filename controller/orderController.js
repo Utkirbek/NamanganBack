@@ -7,9 +7,11 @@ const Kassa = require('../models/Kassa');
 const Profit = require('../models/Profit');
 const Currency = require('../models/Currency');
 const User = require('../models/User');
+const Refund = require('../models/Refund');
 
 const createOrder = async (req, res) => {
   try {
+    let refund = await Refund.create(req.body);
     let data = req.body;
     data.shop = req.params.shop;
     let payment;
@@ -106,6 +108,8 @@ const createOrder = async (req, res) => {
     }
     res.send({
       message: 'Order Created Successfully!',
+      refund,
+      calculatedProfit,
       data,
     });
   } catch (err) {
@@ -124,6 +128,7 @@ const getAllOrders = async (req, res) => {
     if (!size) {
       size = 20;
     }
+    let Orders = [];
     const limit = parseInt(size);
     const AllOrders = await Order.find({ shop: req.params.shop });
     const orders = await Order.find({ shop: req.params.shop })
@@ -131,9 +136,21 @@ const getAllOrders = async (req, res) => {
       .populate('salesman')
       .populate('shop')
       .populate('cart.product')
-      .populate('cart.product')
       .limit(limit)
       .skip((page - 1) * limit);
+
+    for (let i = 0; i < orders.length; i++) {
+      let id;
+      if (orders[i].user) {
+        id = orders[i].user;
+      } else {
+        id = '63b1e0cf926152003394c9c2';
+      }
+
+      const user = await User.findById(id);
+
+      orders[i].user = user;
+    }
     res.send({
       orders: orders,
       count: orders.length,

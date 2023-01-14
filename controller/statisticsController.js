@@ -281,6 +281,53 @@ const barChart = async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 };
+const barChartKassa = async (req, res) => {
+  try {
+    let { isAll } = req.query;
+
+    const currentMonth = new Date();
+    currentMonth.setDate(1);
+    currentMonth.setMonth(currentMonth.getMonth());
+
+    const days = [];
+    let kassa;
+    for (let i = 0; i < 30; i++) {
+      const start = new Date();
+      start.setDate(currentMonth.getDate() + i);
+
+      const end = new Date();
+      end.setDate(currentMonth.getDate() + i + 1);
+
+      if (isAll === 'true') {
+        kassa = await Kassa.find({
+          createdAt: { $gte: start, $lte: end },
+        });
+      } else {
+        kassa = await Kassa.find({
+          shop: req.params.shop,
+          createdAt: { $gte: start, $lte: end },
+        });
+      }
+
+      let kassaTotal = 0;
+      kassa.forEach((item) => {
+        kassaTotal += item.cash;
+
+        kassaTotal += item.terminal;
+        kassaTotal += item.click;
+      });
+
+      data = {
+        date: start,
+        value: kassaTotal,
+      };
+      days.push(data);
+    }
+    res.status(200).send(days);
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
 
 module.exports = {
   mainStatistics,
@@ -288,4 +335,5 @@ module.exports = {
   pieChartSpend,
   pieChartStaffSalary,
   barChart,
+  barChartKassa,
 };
