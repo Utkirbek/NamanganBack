@@ -41,7 +41,7 @@ const createOrder = async (req, res) => {
     }
 
     const order = await Order.create(data);
-    order.setNext('code', function (err, user) {
+    order.setNext('code', function (err) {
       if (err) console.log('Cannot increment the Code because ', err);
     });
 
