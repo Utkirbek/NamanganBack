@@ -39,7 +39,9 @@ const createOrder = async (req, res) => {
 
       data.loan = loan._id;
     }
-
+    if (data.user === '') {
+      data.user = '63b1e0cf926152003394c9c2';
+    }
     const order = await Order.create(data);
     order.setNext('code', function (err) {
       if (err) console.log('Cannot increment the Code because ', err);
