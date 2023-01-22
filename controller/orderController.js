@@ -273,7 +273,10 @@ const deleteOrder = async (req, res) => {
 
 const updateOrder = async (req, res) => {
   try {
-    let refund = await Refund.create(req.body);
+    let refund = await Refund.create({
+      ...req.body,
+      shop: req.params.shop,
+    });
     const order = await Order.findById(req.params.id);
     const profit = await Profit.find({ shop: req.params.shop })
       .sort({ _id: -1 })
