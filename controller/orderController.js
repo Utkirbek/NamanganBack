@@ -118,7 +118,7 @@ const createOrder = async (req, res) => {
     }
     res.send({
       message: 'Order Created Successfully!',
-      refund,
+
       calculatedProfits,
       data,
     });
