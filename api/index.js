@@ -12,7 +12,6 @@ const orderRoutes = require('../routes/orderRoutes');
 const permissionRoutes = require('../routes/permissionRoutes');
 const roleRoutes = require('../routes/roleRoutes');
 const refundRoutes = require('../routes/refundRoutes');
-const dailyRoutes = require('../routes/dailyRoutes');
 
 const currencyRoutes = require('../routes/currencyRoutes');
 const loanRoutes = require('../routes/loanRoutes');
@@ -25,7 +24,7 @@ const shopRoutes = require('../routes/shopRoutes');
 const statisticsRoutes = require('../routes/statisticsRoutes');
 const profitController = require('../controller/profitController');
 const kassaController = require('../controller/kassaController');
-const dailyController = require('../controller/dailyController');
+
 const { isAuth } = require('../config/auth');
 const cloudinary = require('../config/cloudinary');
 const uploader = require('../config/multer');
@@ -56,7 +55,7 @@ app.use('/api/currency/', isAuth, currencyRoutes);
 app.use('/api/permission/', isAuth, permissionRoutes);
 app.use('/api/role/', isAuth, roleRoutes);
 app.use('/api/kassa/', isAuth, kassaRoutes);
-app.use('/api/daily/', isAuth, dailyRoutes);
+
 app.use('/api/profit/', isAuth, profitRoutes);
 app.use('/api/loan/', isAuth, loanRoutes);
 app.use('/api/payment/', isAuth, paymentRoutes);
@@ -82,6 +81,5 @@ app.listen(PORT, () => console.log(`server running on port ${PORT}`));
 cron.schedule('0 0 0 * * *', () => {
   kassaController.dailyKassa();
   profitController.dailyProfit();
-  dailyController.dailyDaily();
   console.log('running a task every day at 1:00 AM');
 });

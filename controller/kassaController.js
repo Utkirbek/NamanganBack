@@ -2,17 +2,13 @@ const Kassa = require('../models/Kassa');
 const Shop = require('../models/Shop');
 
 const dailyKassa = async (req, res) => {
-
   try {
-    
     const shops = await Shop.find({});
-    
-    for (let i = 0; i <= shops.length -1 ; i++) {
-      
-     
+
+    for (let i = 0; i <= shops.length - 1; i++) {
       const newKassa = new Kassa({ shop: shops[i]._id });
       await newKassa.save();
-     
+
       console.log('new kassa created');
     }
   } catch (err) {
@@ -22,7 +18,6 @@ const dailyKassa = async (req, res) => {
 
 const getAllKassa = async (req, res) => {
   try {
-    
     let { page, size } = req.query;
 
     if (!page) {
@@ -34,8 +29,8 @@ const getAllKassa = async (req, res) => {
     }
 
     const limit = parseInt(size);
-    const AllKassa = await Kassa.find({shop:req.params.shop  });
-    const kassas = await Kassa.find({shop:req.params.shop })
+    const AllKassa = await Kassa.find({ shop: req.params.shop });
+    const kassas = await Kassa.find({ shop: req.params.shop })
       .sort({ _id: -1 })
       .limit(limit)
       .skip((page - 1) * limit)
@@ -51,7 +46,26 @@ const getAllKassa = async (req, res) => {
     });
   }
 };
+
+const getDailyKassa = async (req, res) => {
+  try {
+    const kassas = await Kassa.find({ shop: req.params.shop }).sort({
+      _id: -1,
+    });
+    const kassa = kassas[0];
+
+    const total = kassa.cash + kassa.terminal + kassa.click;
+    res.send({
+      total: total,
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
 module.exports = {
   getAllKassa,
   dailyKassa,
+  getDailyKassa,
 };

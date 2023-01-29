@@ -8,7 +8,6 @@ const Profit = require('../models/Profit');
 const Currency = require('../models/Currency');
 const User = require('../models/User');
 const Refund = require('../models/Refund');
-const Daily = require('../models/Daily');
 
 const createOrder = async (req, res) => {
   try {
@@ -49,13 +48,6 @@ const createOrder = async (req, res) => {
     if (profit) {
     } else {
       res.status(404).send({ message: 'Profit not found!' });
-    }
-    const Daily = await Daily.find({ shop: req.params.shop })
-      .sort({ _id: -1 })
-      .limit(1);
-    if (Daily) {
-    } else {
-      res.status(404).send({ message: 'Daily not found!' });
     }
 
     let calculatedProfits = [];
@@ -123,11 +115,6 @@ const createOrder = async (req, res) => {
       await kassa[0].addAmount(data.cashTotal, data.paymentMethod);
     } else {
       res.status(404).send({ message: 'Kassa not found!' });
-    }
-    if (Daily) {
-      await Daily[0].addAmount(data.total);
-    } else {
-      res.status(404).send({ message: 'Daily not found!' });
     }
     res.send({
       message: 'Order Created Successfully!',
