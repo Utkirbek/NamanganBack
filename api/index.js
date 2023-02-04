@@ -47,26 +47,26 @@ app.post('/api/upload', uploader.single('file'), async (req, res) => {
   });
 });
 
-// //this for route will need for store front, also for admin dashboard
-// app.use('/api/products/', isAuth, productRoutes);
+//this for route will need for store front, also for admin dashboard
+app.use('/api/products/', isAuth, productRoutes);
 
-// app.use('/api/user/', isAuth, userRoutes);
-// app.use('/api/currency/', isAuth, currencyRoutes);
-// app.use('/api/permission/', isAuth, permissionRoutes);
-// app.use('/api/role/', isAuth, roleRoutes);
-// app.use('/api/kassa/', isAuth, kassaRoutes);
+app.use('/api/user/', isAuth, userRoutes);
+app.use('/api/currency/', isAuth, currencyRoutes);
+app.use('/api/permission/', isAuth, permissionRoutes);
+app.use('/api/role/', isAuth, roleRoutes);
+app.use('/api/kassa/', isAuth, kassaRoutes);
 
-// app.use('/api/profit/', isAuth, profitRoutes);
-// app.use('/api/loan/', isAuth, loanRoutes);
-// app.use('/api/payment/', isAuth, paymentRoutes);
-// app.use('/api/spend/', isAuth, spendRoutes);
-// app.use('/api/shop', shopRoutes);
-// app.use('/api/refund', refundRoutes);
-// app.use('/api/statistics/', statisticsRoutes);
+app.use('/api/profit/', isAuth, profitRoutes);
+app.use('/api/loan/', isAuth, loanRoutes);
+app.use('/api/payment/', isAuth, paymentRoutes);
+app.use('/api/spend/', isAuth, spendRoutes);
+app.use('/api/shop', shopRoutes);
+app.use('/api/refund', refundRoutes);
+app.use('/api/statistics/', statisticsRoutes);
 
-// //if you not use admin dashboard then these two route will not needed.
-// app.use('/api/admin/', adminRoutes);
-// app.use('/api/orders/', isAuth, orderRoutes);
+//if you not use admin dashboard then these two route will not needed.
+app.use('/api/admin/', adminRoutes);
+app.use('/api/orders/', isAuth, orderRoutes);
 
 // Use express's default error handling middleware
 app.use((err, req, res, next) => {
